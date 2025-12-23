@@ -52,7 +52,7 @@ export default function LoginPage() {
       console.log("Login response:", data);
       if (response.ok) {
         localStorage.setItem("token", data.token);
-        if (data.currentStep < 6) {
+        if (data.currentStep < 6 && data.role === "farmer") {
           setCurrStep(data.currentStep + 1);
           router.push("/register");
         } else {

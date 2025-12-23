@@ -429,7 +429,8 @@ const Step3Identification = React.memo(
         {/* Updated Khatauni ID Input with Image Upload */}
         <div className="space-y-2 sm:col-span-2">
           <label className="block text-sm font-semibold text-gray-700">
-            Khatauni Entries (ID + Image) <span className="text-red-500">*</span>
+            Khatauni Entries (ID + Image){" "}
+            <span className="text-red-500">*</span>
           </label>
 
           {/* Input Section */}
@@ -504,54 +505,53 @@ const Step3Identification = React.memo(
           </div>
 
           {/* Display added Khatauni entries */}
-          {formData.khatauni_entries && formData.khatauni_entries.length > 0 && (
-            <div className="mt-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs sm:text-sm text-gray-700 font-semibold flex items-center gap-2">
-                  <FileText size={16} className="text-purple-600" />
-                  Added Khatauni Entries ({formData.khatauni_entries.length})
-                </p>
-              </div>
-              <div className="space-y-2">
-                {formData.khatauni_entries.map((entry, index) => (
-                  <div
-                    key={index}
-                    className="group flex items-center gap-3 p-3 bg-white border-2 border-purple-300 rounded-lg shadow-sm hover:shadow-md transition-all"
-                  >
-                    {/* Preview Image */}
-                    <div className="flex-shrink-0">
-                      <img
-                        src={entry.preview}
-                        alt={`Khatauni ${entry.id}`}
-                        className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border border-gray-200"
-                      />
-                    </div>
-                    
-                    {/* ID */}
-                    <div className="flex-1">
-                      <span className="font-medium text-gray-800 text-sm sm:text-base">
-                        ID: {entry.id}
-                      </span>
-                      <p className="text-xs text-gray-500">
-                        Image uploaded
-                      </p>
-                    </div>
-                    
-                    {/* Remove Button */}
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveKhatauniEntry(index)}
-                      className="p-2 hover:bg-red-100 rounded-full transition-colors group-hover:scale-110"
-                      aria-label={`Remove ${entry.id}`}
-                      title={`Remove ${entry.id}`}
+          {formData.khatauni_entries &&
+            formData.khatauni_entries.length > 0 && (
+              <div className="mt-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs sm:text-sm text-gray-700 font-semibold flex items-center gap-2">
+                    <FileText size={16} className="text-purple-600" />
+                    Added Khatauni Entries ({formData.khatauni_entries.length})
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  {formData.khatauni_entries.map((entry, index) => (
+                    <div
+                      key={index}
+                      className="group flex items-center gap-3 p-3 bg-white border-2 border-purple-300 rounded-lg shadow-sm hover:shadow-md transition-all"
                     >
-                      <X size={16} className="text-red-500" />
-                    </button>
-                  </div>
-                ))}
+                      {/* Preview Image */}
+                      <div className="flex-shrink-0">
+                        <img
+                          src={entry.preview}
+                          alt={`Khatauni ${entry.id}`}
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border border-gray-200"
+                        />
+                      </div>
+
+                      {/* ID */}
+                      <div className="flex-1">
+                        <span className="font-medium text-gray-800 text-sm sm:text-base">
+                          ID: {entry.id}
+                        </span>
+                        <p className="text-xs text-gray-500">Image uploaded</p>
+                      </div>
+
+                      {/* Remove Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveKhatauniEntry(index)}
+                        className="p-2 hover:bg-red-100 rounded-full transition-colors group-hover:scale-110"
+                        aria-label={`Remove ${entry.id}`}
+                        title={`Remove ${entry.id}`}
+                      >
+                        <X size={16} className="text-red-500" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Error Message */}
           {errors.khatauni_entries && (
@@ -562,24 +562,26 @@ const Step3Identification = React.memo(
           )}
 
           {/* Helper Text */}
-          {formData.khatauni_entries.length === 0 && !errors.khatauni_entries && (
-            <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-              Add Khatauni ID with its corresponding image. You can add multiple entries.
-            </p>
-          )}
+          {formData.khatauni_entries.length === 0 &&
+            !errors.khatauni_entries && (
+              <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Add Khatauni ID with its corresponding image. You can add
+                multiple entries.
+              </p>
+            )}
         </div>
 
         <div className="space-y-2">
@@ -1367,12 +1369,12 @@ const MultiStepRegistration = ({ moveStep }) => {
       Object.values(previews).forEach((url) => {
         if (url) URL.revokeObjectURL(url);
       });
-      
+
       // Clean up Khatauni entry previews
       formData.khatauni_entries.forEach((entry) => {
         if (entry.preview) URL.revokeObjectURL(entry.preview);
       });
-      
+
       // Clean up temporary Khatauni preview
       if (tempKhatauniPreview) URL.revokeObjectURL(tempKhatauniPreview);
     };
@@ -1417,8 +1419,12 @@ const MultiStepRegistration = ({ moveStep }) => {
             newErrors.pan_number = "Invalid PAN format (e.g., ABCDE1234F).";
 
           // Updated Khatauni validation for array of entries
-          if (!formData.khatauni_entries || formData.khatauni_entries.length === 0)
-            newErrors.khatauni_entries = "At least one Khatauni entry (ID + Image) is required.";
+          if (
+            !formData.khatauni_entries ||
+            formData.khatauni_entries.length === 0
+          )
+            newErrors.khatauni_entries =
+              "At least one Khatauni entry (ID + Image) is required.";
 
           const land = parseFloat(formData.land_size);
           if (
@@ -1582,16 +1588,26 @@ const MultiStepRegistration = ({ moveStep }) => {
             formDataToSend.append("land_size", formData.land_size);
 
             // Append khatauni entries (IDs and images as parallel arrays)
-            if (Array.isArray(formData.khatauni_entries) && formData.khatauni_entries.length) {
+            if (
+              Array.isArray(formData.khatauni_entries) &&
+              formData.khatauni_entries.length
+            ) {
               formData.khatauni_entries.forEach((entry, index) => {
                 // Append ID
                 formDataToSend.append(`khatauni_ids[]`, entry.id);
                 // Append corresponding image with index to maintain order
-                formDataToSend.append(`khatauni_images[]`, entry.image, `khatauni_${entry.id}_${index}.jpg`);
+                formDataToSend.append(
+                  `khatauni_images[]`,
+                  entry.image,
+                  `khatauni_${entry.id}_${index}.jpg`
+                );
               });
-              
+
               // Also send count for backend validation
-              formDataToSend.append("khatauni_count", formData.khatauni_entries.length.toString());
+              formDataToSend.append(
+                "khatauni_count",
+                formData.khatauni_entries.length.toString()
+              );
             }
 
             // Append other files
@@ -1599,8 +1615,7 @@ const MultiStepRegistration = ({ moveStep }) => {
               formDataToSend.append("userImage", files.userImage);
             if (files.aadhaarImg)
               formDataToSend.append("aadhaarImg", files.aadhaarImg);
-            if (files.panImg) 
-              formDataToSend.append("panImg", files.panImg);
+            if (files.panImg) formDataToSend.append("panImg", files.panImg);
 
             options = {
               method: "POST",
@@ -1765,9 +1780,9 @@ const MultiStepRegistration = ({ moveStep }) => {
 
     // Check for duplicates
     const isDuplicate = formData.khatauni_entries.some(
-      entry => entry.id === normalizedId
+      (entry) => entry.id === normalizedId
     );
-    
+
     if (isDuplicate) {
       setErrors((prev) => ({
         ...prev,
@@ -1780,7 +1795,7 @@ const MultiStepRegistration = ({ moveStep }) => {
     const newEntry = {
       id: normalizedId,
       image: tempKhatauniImage,
-      preview: tempKhatauniPreview
+      preview: tempKhatauniPreview,
     };
 
     // Add the new entry to the array
@@ -1797,7 +1812,13 @@ const MultiStepRegistration = ({ moveStep }) => {
     // Clear errors
     setErrors((prev) => ({ ...prev, khatauni_entries: "" }));
     if (globalError) setGlobalError("");
-  }, [formData.khatauni_entries, formData.khatauni_id_input, tempKhatauniImage, tempKhatauniPreview, globalError]);
+  }, [
+    formData.khatauni_entries,
+    formData.khatauni_id_input,
+    tempKhatauniImage,
+    tempKhatauniPreview,
+    globalError,
+  ]);
 
   const handleRemoveKhatauniEntry = useCallback(
     (index) => {
@@ -1807,8 +1828,10 @@ const MultiStepRegistration = ({ moveStep }) => {
         if (entryToRemove?.preview) {
           URL.revokeObjectURL(entryToRemove.preview);
         }
-        
-        const updatedEntries = prev.khatauni_entries.filter((_, i) => i !== index);
+
+        const updatedEntries = prev.khatauni_entries.filter(
+          (_, i) => i !== index
+        );
         return { ...prev, khatauni_entries: updatedEntries };
       });
 
@@ -1980,7 +2003,17 @@ const MultiStepRegistration = ({ moveStep }) => {
       {!showSuccessMessage ? (
         // Registration Form View
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/50 p-4 sm:p-6 md:p-8 lg:p-12">
+          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/50 p-4 sm:p-6 md:p-8 lg:p-12 relative">
+            {/* Exit Button - Top Right Corner */}
+            <button
+              type="button"
+              onClick={() => {localStorage.clear(), window.location.href = "/login";}}
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center justify-center px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all transform hover:scale-110  text-red-600 hover:text-red-800 cursor-pointer underline"
+              title="Exit Registration"
+            >
+              <X size={14} className="sm:mr-1.5 un" />
+              <span className="hidden sm:inline">Exit</span>
+            </button>
             {/* Header */}
             <div className="text-center mb-6 sm:mb-8 md:mb-12">
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2 sm:mb-4">
@@ -2096,7 +2129,7 @@ const MultiStepRegistration = ({ moveStep }) => {
                           </>
                         ) : (
                           <span className="text-sm sm:text-base">
-                            Complete Registration 🎉
+                            Complete Registration
                           </span>
                         )}
                       </button>
