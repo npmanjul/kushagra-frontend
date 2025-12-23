@@ -21,6 +21,7 @@ import {
   FileText,
   DollarSign,
   CheckCircle,
+  Minus,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -39,16 +40,16 @@ const sidebarItems = [
     href: "/manager/deposit",
   },
   {
+    id: "withdrawal",
+    label: "Withdrawal",
+    icon: Minus,
+    href: "/manager/withdraw",
+  },
+    {
     id: "Requests",
     label: "Requests",
     icon: Clock,
     href: "/manager/requests",
-  },
-  {
-    id: "inventory",
-    label: "Inventory",
-    icon: Package,
-    href: "/manager/inventory",
   },
   {
     id: "farmersmanagement",
@@ -56,57 +57,27 @@ const sidebarItems = [
     icon: Users,
     href: "/manager/farmers",
   },
+  // {
+  //   id: "creditmanagement",
+  //   label: "Credit",
+  //   icon: CreditCard,
+  //   href: "/manager/credit",
+  // },
   {
-    id: "managermanagement",
-    label: "Managers",
-    icon: User2,
-    href: "/manager/managers",
-  },
-
-  {
-    id: "creditmanagement",
-    label: "Credit",
-    icon: CreditCard,
-    href: "/manager/credit",
-  },    
-  {
-    id:"transactions",
+    id: "transactions",
     label: "Transactions",
     icon: FileText,
     href: "/manager/transactions",
   },
   {
-    id:"reports",
-    label: "Reports",
-    icon: BarChart3,
-    href: "/manager/reports",
-  },
-  {
-    id:"financial",
-    label: "Financial",
-    icon: DollarSign,
-    href: "/manager/financial",
-  },
-  {
-    id:"updateprice",
+    id: "updateprice",
     label: "Update Price",
     icon: TrendingUp,
     href: "/manager/updateprice",
   },
+
   {
-    id:"qualitycontrol",
-    label: "Quality Control",
-    icon: CheckCircle,
-    href: "/manager/qualitycontrol",
-  },
-  {
-    id:"notifications",
-    label: "Notifications",
-    icon: Bell,
-    href: "/manager/notifications",
-  },
-  {
-    id:"profile",
+    id: "profile",
     label: "Profile",
     icon: User,
     href: "/manager/profile",
@@ -184,19 +155,17 @@ export default function DashboardLayout({ children }) {
           logout();
         }
 
-
-        if(checkTokenValidation?.role === "farmer"){
+        if (checkTokenValidation?.role === "farmer") {
           router.push("/dashboard");
         }
 
-        if(checkTokenValidation?.role === "manager"){
+        if (checkTokenValidation?.role === "manager") {
           router.push("/manager");
         }
 
-        if(checkTokenValidation?.role === "admin"){
+        if (checkTokenValidation?.role === "admin") {
           router.push("/admin");
         }
-        
       } catch (error) {
         console.error("Token validation error:", error);
       }
@@ -206,7 +175,9 @@ export default function DashboardLayout({ children }) {
       try {
         const res = await getprofile();
         setProfile(res.profile);
-        setShowNotice(!res.profile.isVerified);
+        // if(res.profile.role !== "manager"){
+        //   setIsFarmer(true);
+        // }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -230,7 +201,7 @@ export default function DashboardLayout({ children }) {
         title="Important Notice"
         message="Your session will expire in 5 minutes. Please save your work."
       /> */}
-      <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} />
+      {/* <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} /> */}
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div

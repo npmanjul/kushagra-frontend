@@ -32,9 +32,9 @@ import Link from "next/link";
 import Image from "next/image";
 import useStore from "@/store/useStore";
 import { logout } from "@/utils/api";
-import PinModal from "@/components/dashboard/PinModal";
 import NoticeModal from "@/components/dashboard/NoticeModal";
 import Loader from "@/components/common/Loader";
+import PinModal from "@/components/dashboard/PinModal";
 
 const sidebarItems = [
   {
@@ -68,12 +68,12 @@ const sidebarItems = [
     href: "/admin/warehouses",
   },
 
-  {
-    id: "inventory",
-    label: "Inventory",
-    icon: Package,
-    href: "/admin/inventory",
-  },
+  // {
+  //   id: "inventory",
+  //   label: "Inventory",
+  //   icon: Package,
+  //   href: "/admin/inventory",
+  // },
   {
     id: "employeeonboarding",
     label: "Employee Onboarding",
@@ -86,25 +86,30 @@ const sidebarItems = [
     icon: Users,
     href: "/admin/farmers",
   },
+    {
+    id: "managermanagement",
+    label: "Managers",
+    icon: User2,
+    href: "/admin/managers",
+  },
   {
     id: "supervisormanagement",
     label: "Supervisors",
     icon: UserCircleIcon,
     href: "/admin/supervisors",
   },
-  {
-    id: "managermanagement",
-    label: "Managers",
-    icon: User2,
-    href: "/admin/managers",
+    {
+    id: "staffmanagement",
+    label: "Staff",
+    icon: User,
+    href: "/admin/staff",
   },
-
-  {
-    id: "creditmanagement",
-    label: "Credit",
-    icon: CreditCard,
-    href: "/admin/credit",
-  },
+  // {
+  //   id: "creditmanagement",
+  //   label: "Credit",
+  //   icon: CreditCard,
+  //   href: "/admin/credit",
+  // },
   {
     id: "transactions",
     label: "Transactions",
@@ -118,12 +123,12 @@ const sidebarItems = [
     icon: TrendingUp,
     href: "/admin/updateprice",
   },
-  {
-    id: "notifications",
-    label: "Notifications",
-    icon: Bell,
-    href: "/admin/notifications",
-  },
+  // {
+  //   id: "notifications",
+  //   label: "Notifications",
+  //   icon: Bell,
+  //   href: "/admin/notifications",
+  // },
   {
     id: "profile",
     label: "Profile",
@@ -137,7 +142,7 @@ export default function DashboardLayout({ children }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
-  const [showNotice, setShowNotice] = useState(true);
+  const [showNotice, setShowNotice] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
   const [profile, setProfile] = useState([]);
   const dropdownRef = useRef(null);
@@ -223,7 +228,9 @@ export default function DashboardLayout({ children }) {
       try {
         const res = await getprofile();
         setProfile(res.profile);
-        setShowNotice(!res.profile.isVerified);
+        if( res.profile.role === "farmer"){
+          setIsFarmer(true);
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -240,7 +247,7 @@ export default function DashboardLayout({ children }) {
 
   return (
     <div className="h-screen bg-gray-50 flex relative">
-      {/* <PinModal isOpen={pinModalOpen} onClose={() => setPinModalOpen(false)} /> */}
+      <PinModal isOpen={pinModalOpen} onClose={() => setPinModalOpen(false)} />
       {/* <AlertModal
         isOpen={showAlert}
         onClose={() => setShowAlert(false)}

@@ -112,7 +112,7 @@ const SellContent = () => {
       const response = await fetch(`${API_BASE_URL}/warehouse/allwarehouse`);
       if (!response.ok) throw new Error("Failed to fetch warehouses");
       const data = await response.json();
-      setWarehouses(Array.isArray(data) ? data : []);
+      setWarehouses(data.data || []);
     } catch (error) {
       console.error(error);
       toast.error("Failed to load warehouses");

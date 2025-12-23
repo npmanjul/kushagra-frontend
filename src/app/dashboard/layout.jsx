@@ -23,6 +23,7 @@ import { logout } from "@/utils/api";
 import PinModal from "@/components/dashboard/PinModal";
 import NoticeModal from "@/components/dashboard/NoticeModal";
 import Loader from "@/components/common/Loader";
+import { FarmerVerificationModal } from "@/components/dashboard/FarmerVerificationModal";
 
 const sidebarItems = [
   { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
@@ -32,12 +33,12 @@ const sidebarItems = [
     icon: TrendingUp,
     href: "/dashboard/sell",
   },
-  {
-    id: "calculator",
-    label: "Storage Calculator",
-    icon: Calculator,
-    href: "/dashboard/calculator",
-  },
+  // {
+  //   id: "calculator",
+  //   label: "Storage Calculator",
+  //   icon: Calculator,
+  //   href: "/dashboard/calculator",
+  // },
   {
     id: "loan",
     label: "Loan",
@@ -50,12 +51,12 @@ const sidebarItems = [
     icon: History,
     href: "/dashboard/transactions",
   },
-  {
-    id: "analytics",
-    label: "Analytics",
-    icon: PieChart,
-    href: "/dashboard/analytics",
-  },
+  // {
+  //   id: "analytics",
+  //   label: "Analytics",
+  //   icon: PieChart,
+  //   href: "/dashboard/analytics",
+  // },
   {
     id: "notifications",
     label: "Notifications",
@@ -63,12 +64,6 @@ const sidebarItems = [
     href: "/dashboard/notifications",
   },
   { id: "profile", label: "Profile", icon: User, href: "/dashboard/profile" },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    href: "/dashboard/settings",
-  },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -76,7 +71,7 @@ export default function DashboardLayout({ children }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [pinModalOpen, setPinModalOpen] = useState(false);
-  const [showNotice, setShowNotice] = useState(true);
+  const [showNotice, setShowNotice] = useState(false);
   const [showAlert, setShowAlert] = useState(true);
   const [profile, setProfile] = useState([]);
   const dropdownRef = useRef(null);
@@ -85,6 +80,7 @@ export default function DashboardLayout({ children }) {
   const { checkToken, getprofile } = useStore();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [isOpenVerificationModal, setIsOpenVerificationModal] = useState(false);
 
   // Get current tab name based on pathname
   const getCurrentTabName = () => {
@@ -160,8 +156,16 @@ export default function DashboardLayout({ children }) {
     const profileDetails = async () => {
       try {
         const res = await getprofile();
+        console.log("Profile details:", res);
         setProfile(res.profile);
-        setShowNotice(!res.profile.isVerified);
+        if (res.profile.farmerVerification.overallStatus === "rejected") {
+          setIsOpenVerificationModal(true);
+        } else if (res.profile.farmerVerification.overallStatus === "pending") {
+          setShowNotice(true);
+        } else {
+          setShowNotice(false);
+          setIsOpenVerificationModal(false);
+        }
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -185,6 +189,7 @@ export default function DashboardLayout({ children }) {
         title="Important Notice"
         message="Your session will expire in 5 minutes. Please save your work."
       /> */}
+      <FarmerVerificationModal isOpen={isOpenVerificationModal} />
       <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} />
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (

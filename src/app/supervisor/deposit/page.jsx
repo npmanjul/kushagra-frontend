@@ -159,7 +159,7 @@ const DepositContent = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setWarehouses(data);
+        setWarehouses(data.data);
       }
     } catch (error) {
       console.error(error);

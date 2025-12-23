@@ -46,10 +46,13 @@ import {
   Minus,
   ChevronDown,
   ChevronUp,
+  HardHat,
+  Wrench,
+  UserCog,
 } from "lucide-react";
 import API_BASE_URL from "@/utils/constants";
 
-// InputField Component - MOVED OUTSIDE to prevent re-creation on every render
+// InputField Component
 const InputField = ({
   label,
   field,
@@ -92,12 +95,14 @@ const InputField = ({
                 : isChanged
                 ? "border-amber-300 bg-amber-50"
                 : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} 
-            focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           >
             <option value="">Select {label}</option>
             {options.map((opt) => (
-              <option key={typeof opt === "object" ? opt.value : opt} value={typeof opt === "object" ? opt.value : opt}>
+              <option
+                key={typeof opt === "object" ? opt.value : opt}
+                value={typeof opt === "object" ? opt.value : opt}
+              >
                 {typeof opt === "object" ? opt.label : opt}
               </option>
             ))}
@@ -116,8 +121,7 @@ const InputField = ({
                 : isChanged
                 ? "border-amber-300 bg-amber-50"
                 : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} 
-            focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           />
         ) : (
           <input
@@ -139,8 +143,7 @@ const InputField = ({
                 : isChanged
                 ? "border-amber-300 bg-amber-50"
                 : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} 
-            focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500`}
+            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           />
         )}
         {hasError && (
@@ -164,11 +167,11 @@ const InputField = ({
   );
 };
 
-// SectionHeader Component - MOVED OUTSIDE
+// SectionHeader Component
 const SectionHeader = ({
   icon: Icon,
   title,
-  color = "from-indigo-500 to-purple-600",
+  color = "from-cyan-500 to-blue-600",
   collapsible = false,
   isExpanded = false,
   onToggle = null,
@@ -197,8 +200,12 @@ const SectionHeader = ({
   </div>
 );
 
-// PhotoUploadComponent - MOVED OUTSIDE
-const PhotoUploadComponent = ({ currentImage, onImageChange, onImageRemove }) => {
+// PhotoUploadComponent
+const PhotoUploadComponent = ({
+  currentImage,
+  onImageChange,
+  onImageRemove,
+}) => {
   const [preview, setPreview] = useState(currentImage);
 
   useEffect(() => {
@@ -230,7 +237,7 @@ const PhotoUploadComponent = ({ currentImage, onImageChange, onImageRemove }) =>
       </label>
       <div className="flex items-start gap-4">
         <div className="relative group">
-          <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-indigo-400 transition-colors">
+          <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-cyan-400 transition-colors">
             {preview ? (
               <>
                 <img
@@ -256,7 +263,7 @@ const PhotoUploadComponent = ({ currentImage, onImageChange, onImageRemove }) =>
                 </div>
               </>
             ) : (
-              <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-indigo-500 transition-colors">
+              <label className="cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-cyan-500 transition-colors">
                 <input
                   type="file"
                   className="hidden"
@@ -277,7 +284,7 @@ const PhotoUploadComponent = ({ currentImage, onImageChange, onImageRemove }) =>
             Supported formats: JPG, PNG (max 5MB)
           </p>
           {preview && (
-            <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg cursor-pointer transition-colors">
+            <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg cursor-pointer transition-colors">
               <input
                 type="file"
                 className="hidden"
@@ -294,7 +301,7 @@ const PhotoUploadComponent = ({ currentImage, onImageChange, onImageRemove }) =>
   );
 };
 
-const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
+const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
   // Form States
   const [formData, setFormData] = useState({});
   const [originalData, setOriginalData] = useState({});
@@ -313,12 +320,12 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
   const [error, setError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Fetch manager data from API
+  // Fetch staff data from API
   useEffect(() => {
-    if (isOpen && managerId) {
-      fetchManagerData();
+    if (isOpen && staffId) {
+      fetchStaffData();
     }
-  }, [isOpen, managerId]);
+  }, [isOpen, staffId]);
 
   // Reset states when modal closes
   useEffect(() => {
@@ -333,12 +340,12 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     }
   }, [isOpen]);
 
-  const fetchManagerData = async () => {
+  const fetchStaffData = async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/employee/getmanagerdetail?managerId=${managerId}`,
+        `${API_BASE_URL}/employee/getstaffdetail?staffId=${staffId}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -358,7 +365,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
           gender: data.gender || "",
           dob: data.dob ? data.dob.split("T")[0] : "",
           role: data.role || "",
+          designation: data.designation || "",
           is_active: data.is_active ?? true,
+          is_on_duty: data.is_on_duty ?? false,
           employee_id: data.employee_id || "",
           photo: data.photo || "",
           marital_status: data.marital_status || "",
@@ -387,6 +396,8 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
             : "",
           employment_status: data.employment_status || "",
           salary: data.salary || 0,
+          hourly_rate: data.hourly_rate || 0,
+          shift_type: data.shift_type || "",
           bank_details: data.bank_details || {
             account_number: "",
             ifsc_code: "",
@@ -414,15 +425,17 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
           hr_notes: data.hr_notes || "",
           background_check_status: data.background_check_status || "",
           warehouse: data.warehouse?._id || "",
+          supervisor: data.supervisor?._id || "",
+          supervisor_name: data.supervisor?.name || "",
         };
         setFormData(processedData);
         setOriginalData(JSON.parse(JSON.stringify(processedData)));
       } else {
-        setError(result.message || "Failed to fetch manager details");
+        setError(result.message || "Failed to fetch staff details");
       }
     } catch (err) {
-      setError("Failed to fetch manager details. Please try again.");
-      console.error("Error fetching manager:", err);
+      setError("Failed to fetch staff details. Please try again.");
+      console.error("Error fetching staff:", err);
     } finally {
       setLoading(false);
     }
@@ -457,14 +470,14 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
 
     try {
       const updatePayload = {
-        managerId: managerId,
+        staffId: staffId,
         ...formData,
         modifiedFields: Array.from(changedFields),
         modifiedAt: new Date().toISOString(),
       };
 
       const response = await fetch(
-        `${API_BASE_URL}/employee/updatemanagerdetail?managerId=${managerId}`,
+        `${API_BASE_URL}/employee/updatestaffdetail?staffId=${staffId}`,
         {
           method: "PUT",
           headers: {
@@ -493,11 +506,11 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
           onClose();
         }, 1500);
       } else {
-        setError(result.message || "Failed to update manager details");
+        setError(result.message || "Failed to update staff details");
       }
     } catch (err) {
-      setError("Failed to update manager details. Please try again.");
-      console.error("Error updating manager:", err);
+      setError("Failed to update staff details. Please try again.");
+      console.error("Error updating staff:", err);
     } finally {
       setSaving(false);
     }
@@ -635,19 +648,42 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     }));
   };
 
+  // Designation options for staff
+  const designationOptions = [
+    { value: "picker", label: "Picker" },
+    { value: "packer", label: "Packer" },
+    { value: "loader", label: "Loader" },
+    { value: "forklift_operator", label: "Forklift Operator" },
+    { value: "inventory_clerk", label: "Inventory Clerk" },
+    { value: "quality_checker", label: "Quality Checker" },
+    { value: "receiving_clerk", label: "Receiving Clerk" },
+    { value: "shipping_clerk", label: "Shipping Clerk" },
+    { value: "warehouse_associate", label: "Warehouse Associate" },
+    { value: "material_handler", label: "Material Handler" },
+  ];
+
+  // Shift type options
+  const shiftOptions = [
+    { value: "morning", label: "Morning (6 AM - 2 PM)" },
+    { value: "afternoon", label: "Afternoon (2 PM - 10 PM)" },
+    { value: "night", label: "Night (10 PM - 6 AM)" },
+    { value: "rotating", label: "Rotating Shifts" },
+    { value: "flexible", label: "Flexible" },
+  ];
+
   // Tabs Configuration
   const tabs = [
     {
       id: "personal",
       label: "Personal Info",
       icon: User,
-      color: "from-blue-500 to-indigo-600",
+      color: "from-blue-500 to-cyan-600",
     },
     {
       id: "employment",
       label: "Employment",
       icon: Briefcase,
-      color: "from-violet-500 to-purple-600",
+      color: "from-teal-500 to-emerald-600",
     },
     {
       id: "documents",
@@ -669,7 +705,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     },
   ];
 
-  // Render helper for InputField - passing context props
+  // Render helper for InputField
   const renderInputField = (props) => {
     const { field, nestedPath } = props;
     const value = nestedPath
@@ -678,7 +714,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     const hasError = errors[field];
     const isValid = validationStatus[field] === "success";
     const isChanged = changedFields.has(nestedPath || field);
-    
+
     return (
       <InputField
         {...props}
@@ -693,7 +729,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     );
   };
 
-  // Render helper for SectionHeader - passing context props
+  // Render helper for SectionHeader
   const renderSectionHeader = (props) => {
     const { sectionKey } = props;
     return (
@@ -714,38 +750,38 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
           field: "line1",
           nestedPath: `${prefix}.line1`,
           icon: Home,
-          placeholder: "Street address"
+          placeholder: "Street address",
         })}
         {renderInputField({
           label: "Address Line 2",
           field: "line2",
           nestedPath: `${prefix}.line2`,
           icon: Home,
-          placeholder: "Apartment, suite, etc."
+          placeholder: "Apartment, suite, etc.",
         })}
         {renderInputField({
           label: "City",
           field: "city",
           nestedPath: `${prefix}.city`,
-          icon: MapPin
+          icon: MapPin,
         })}
         {renderInputField({
           label: "State",
           field: "state",
           nestedPath: `${prefix}.state`,
-          icon: MapPin
+          icon: MapPin,
         })}
         {renderInputField({
           label: "Country",
           field: "country",
           nestedPath: `${prefix}.country`,
-          icon: Globe
+          icon: Globe,
         })}
         {renderInputField({
           label: "Postal Code",
           field: "postalCode",
           nestedPath: `${prefix}.postalCode`,
-          icon: Hash
+          icon: Hash,
         })}
       </div>
     </div>
@@ -824,8 +860,10 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
     return (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-8 flex flex-col items-center justify-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mb-4" />
-          <p className="text-gray-600 font-medium">Loading manager details...</p>
+          <Loader2 className="w-12 h-12 text-cyan-600 animate-spin mb-4" />
+          <p className="text-gray-600 font-medium">
+            Loading staff details...
+          </p>
         </div>
       </div>
     );
@@ -845,8 +883,8 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
           <p className="text-gray-600 text-center mb-6">{error}</p>
           <div className="flex gap-3">
             <button
-              onClick={fetchManagerData}
-              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex items-center gap-2"
+              onClick={fetchStaffData}
+              className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition-colors flex items-center gap-2"
             >
               <RefreshCw className="w-4 h-4" />
               Retry
@@ -869,7 +907,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[92vh] overflow-hidden flex flex-col">
           {/* Header */}
           <div className="relative overflow-hidden flex-shrink-0">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600">
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"></div>
             </div>
             <div className="relative px-5 py-4">
@@ -880,7 +918,10 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     <div className="absolute -inset-1 bg-white/20 rounded-full blur animate-pulse"></div>
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-white/50">
                       <img
-                        src={formData.photo || `https://ui-avatars.com/api/?name=${formData.name}&background=random&size=256`}
+                        src={
+                          formData.photo ||
+                          `https://ui-avatars.com/api/?name=${formData.name}&background=random&size=256`
+                        }
                         alt={formData.name}
                         className="w-full h-full object-cover"
                       />
@@ -889,12 +930,21 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                   <div>
                     <h2 className="text-lg font-bold text-white flex items-center gap-2">
                       <Edit3 className="w-5 h-5" />
-                      Edit Manager Profile
+                      Edit Staff Profile
                     </h2>
                     <div className="flex items-center gap-3 text-white/70 text-xs mt-1">
                       <span>{formData.name}</span>
                       <span>•</span>
                       <span>ID: {formData.employee_id}</span>
+                      {formData.designation && (
+                        <>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Wrench className="w-3 h-3" />
+                            {formData.designation.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+                          </span>
+                        </>
+                      )}
                       {isDirty && (
                         <>
                           <span>•</span>
@@ -924,7 +974,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
             <div className="bg-green-50 border-b border-green-200 px-5 py-3 flex items-center gap-3">
               <CheckCircle2 className="w-5 h-5 text-green-600" />
               <span className="text-sm font-medium text-green-800">
-                Manager details updated successfully!
+                Staff details updated successfully!
               </span>
             </div>
           )}
@@ -934,7 +984,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
             <div className="bg-red-50 border-b border-red-200 px-5 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <AlertCircle className="w-5 h-5 text-red-600" />
-                <span className="text-sm font-medium text-red-800">{error}</span>
+                <span className="text-sm font-medium text-red-800">
+                  {error}
+                </span>
               </div>
               <button
                 onClick={() => setError(null)}
@@ -961,7 +1013,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 >
                   <div
                     className={`p-1.5 rounded-lg bg-gradient-to-br ${
-                      activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
+                      activeTab === tab.id
+                        ? tab.color
+                        : "from-gray-300 to-gray-400"
                     } shadow-sm`}
                   >
                     <Icon className="w-3.5 h-3.5 text-white" />
@@ -980,48 +1034,60 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 <>
                   {/* Basic Information */}
                   <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                    {renderSectionHeader({ icon: User, title: "Basic Information" })}
+                    {renderSectionHeader({
+                      icon: User,
+                      title: "Basic Information",
+                    })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
                         label: "Full Name",
                         field: "name",
                         required: true,
-                        icon: User
+                        icon: User,
                       })}
                       {renderInputField({
                         label: "Employee ID",
                         field: "employee_id",
                         icon: Hash,
-                        disabled: true
+                        disabled: true,
                       })}
                       {renderInputField({
                         label: "Date of Birth",
                         field: "dob",
                         type: "date",
-                        icon: Calendar
+                        icon: Calendar,
                       })}
                       {renderInputField({
                         label: "Gender",
                         field: "gender",
                         options: ["male", "female", "other"],
-                        icon: User
+                        icon: User,
                       })}
                       {renderInputField({
                         label: "Marital Status",
                         field: "marital_status",
                         options: ["Single", "Married", "Divorced", "Widowed"],
-                        icon: Heart
+                        icon: Heart,
                       })}
                       {renderInputField({
                         label: "Nationality",
                         field: "nationality",
-                        icon: Globe
+                        icon: Globe,
                       })}
                       {renderInputField({
                         label: "Blood Group",
                         field: "blood_group",
-                        options: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-                        icon: Droplet
+                        options: [
+                          "A+",
+                          "A-",
+                          "B+",
+                          "B-",
+                          "AB+",
+                          "AB-",
+                          "O+",
+                          "O-",
+                        ],
+                        icon: Droplet,
                       })}
                     </div>
                   </div>
@@ -1031,7 +1097,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     {renderSectionHeader({
                       icon: Phone,
                       title: "Contact Information",
-                      color: "from-green-500 to-emerald-600"
+                      color: "from-green-500 to-emerald-600",
                     })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
@@ -1039,13 +1105,13 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                         field: "phone_number",
                         required: true,
                         icon: Phone,
-                        placeholder: "10 digit phone number"
+                        placeholder: "10 digit phone number",
                       })}
                       {renderInputField({
                         label: "Secondary Phone",
                         field: "secondary_phone_number",
                         icon: Phone,
-                        placeholder: "10 digit phone number"
+                        placeholder: "10 digit phone number",
                       })}
                       <div className="md:col-span-2">
                         {renderInputField({
@@ -1053,7 +1119,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                           field: "email",
                           type: "email",
                           required: true,
-                          icon: Mail
+                          icon: Mail,
                         })}
                       </div>
                     </div>
@@ -1064,7 +1130,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     {renderSectionHeader({
                       icon: Home,
                       title: "Permanent Address",
-                      color: "from-orange-500 to-red-600"
+                      color: "from-orange-500 to-red-600",
                     })}
                     {renderAddressFields("permanent_address")}
                   </div>
@@ -1075,25 +1141,27 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                       {renderSectionHeader({
                         icon: MapPin,
                         title: "Current Address",
-                        color: "from-teal-500 to-cyan-600"
+                        color: "from-teal-500 to-cyan-600",
                       })}
                       <label className="flex items-center gap-2 cursor-pointer">
                         <input
                           type="checkbox"
                           checked={formData.same_as_permanent}
                           onChange={(e) =>
-                            handleInputChange("same_as_permanent", e.target.checked)
+                            handleInputChange(
+                              "same_as_permanent",
+                              e.target.checked
+                            )
                           }
-                          className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="w-4 h-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500"
                         />
                         <span className="text-xs text-gray-600">
                           Same as permanent address
                         </span>
                       </label>
                     </div>
-                    {!formData.same_as_permanent && (
-                      renderAddressFields("current_address")
-                    )}
+                    {!formData.same_as_permanent &&
+                      renderAddressFields("current_address")}
                     {formData.same_as_permanent && (
                       <p className="text-sm text-gray-500 italic">
                         Current address is same as permanent address
@@ -1106,7 +1174,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     {renderSectionHeader({
                       icon: ImageIcon,
                       title: "Profile Photo",
-                      color: "from-purple-500 to-pink-600"
+                      color: "from-purple-500 to-pink-600",
                     })}
                     {renderPhotoUpload(formData.photo)}
                   </div>
@@ -1118,39 +1186,63 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 <>
                   {/* Employment Details */}
                   <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                    {renderSectionHeader({ icon: Briefcase, title: "Employment Details" })}
+                    {renderSectionHeader({
+                      icon: Briefcase,
+                      title: "Employment Details",
+                    })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
-                        label: "Role",
-                        field: "role",
-                        options: ["manager", "supervisor", "admin"],
-                        icon: Briefcase
+                        label: "Designation",
+                        field: "designation",
+                        options: designationOptions,
+                        icon: Wrench,
                       })}
                       {renderInputField({
                         label: "Employment Type",
                         field: "employment_type",
-                        options: ["Full-Time", "Part-Time", "Contract", "Internship"],
-                        icon: FileCheck
+                        options: [
+                          "Full-Time",
+                          "Part-Time",
+                          "Contract",
+                          "Temporary",
+                          "Daily Wage",
+                        ],
+                        icon: FileCheck,
                       })}
                       {renderInputField({
                         label: "Employment Status",
                         field: "employment_status",
-                        options: ["Active", "On Leave", "Terminated", "Resigned"],
-                        icon: Activity
+                        options: [
+                          "Active",
+                          "On Leave",
+                          "Terminated",
+                          "Resigned",
+                        ],
+                        icon: Activity,
                       })}
                       {renderInputField({
                         label: "Date of Joining",
                         field: "date_of_joining",
                         type: "date",
-                        icon: Calendar
+                        icon: Calendar,
+                      })}
+                      {renderInputField({
+                        label: "Shift Type",
+                        field: "shift_type",
+                        options: shiftOptions,
+                        icon: Clock,
                       })}
                       {renderInputField({
                         label: "Total Experience (Years)",
                         field: "total_experience_years",
                         type: "number",
-                        icon: Clock
+                        icon: Clock,
                       })}
-                      <div className="flex items-center gap-3">
+                    </div>
+
+                    {/* Status Toggles */}
+                    <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <label className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
                           <Activity className="w-3.5 h-3.5 text-gray-400" />
                           Active Status
@@ -1164,10 +1256,37 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                             }
                             className="sr-only peer"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-cyan-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+                        </label>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <label className="text-xs font-medium text-gray-700 flex items-center gap-1.5">
+                          <HardHat className="w-3.5 h-3.5 text-gray-400" />
+                          On Duty
+                        </label>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={formData.is_on_duty}
+                            onChange={(e) =>
+                              handleInputChange("is_on_duty", e.target.checked)
+                            }
+                            className="sr-only peer"
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-orange-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
                         </label>
                       </div>
                     </div>
+
+                    {/* Supervisor Info */}
+                    {formData.supervisor_name && (
+                      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
+                        <div className="flex items-center gap-2 text-sm text-blue-800">
+                          <UserCog className="w-4 h-4" />
+                          <span>Reports to: <strong>{formData.supervisor_name}</strong></span>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Work Experience */}
@@ -1176,7 +1295,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                       {renderSectionHeader({
                         icon: History,
                         title: "Work Experience",
-                        color: "from-violet-500 to-purple-600"
+                        color: "from-violet-500 to-purple-600",
                       })}
                       <button
                         onClick={() =>
@@ -1189,7 +1308,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                             lastDrawnSalary: 0,
                           })
                         }
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Add Experience
@@ -1206,7 +1325,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                               Experience #{index + 1}
                             </span>
                             <button
-                              onClick={() => removeArrayItem("experience", index)}
+                              onClick={() =>
+                                removeArrayItem("experience", index)
+                              }
                               className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1228,7 +1349,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1246,7 +1367,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1264,7 +1385,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1282,7 +1403,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1300,7 +1421,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     Number(e.target.value)
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="md:col-span-2 space-y-1.5">
@@ -1318,13 +1439,14 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                   )
                                 }
                                 rows={2}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 resize-none"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 resize-none"
                               />
                             </div>
                           </div>
                         </div>
                       ))}
-                      {(!formData.experience || formData.experience.length === 0) && (
+                      {(!formData.experience ||
+                        formData.experience.length === 0) && (
                         <p className="text-sm text-gray-500 text-center py-4">
                           No work experience added
                         </p>
@@ -1339,50 +1461,53 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 <>
                   {/* Government IDs */}
                   <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                    {renderSectionHeader({ icon: CreditCard, title: "Government IDs" })}
+                    {renderSectionHeader({
+                      icon: CreditCard,
+                      title: "Government IDs",
+                    })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
                         label: "PAN Number",
                         field: "pan_number",
                         nestedPath: "govt_ids.pan_number",
-                        icon: CreditCard
+                        icon: CreditCard,
                       })}
                       {renderInputField({
                         label: "Aadhaar Number",
                         field: "aadhaar_number",
                         nestedPath: "govt_ids.aadhaar_number",
-                        icon: CreditCard
+                        icon: CreditCard,
                       })}
                       {renderInputField({
                         label: "Passport Number",
                         field: "passport_number",
                         nestedPath: "govt_ids.passport_number",
-                        icon: FileText
+                        icon: FileText,
                       })}
                       {renderInputField({
                         label: "Passport Expiry",
                         field: "passport_expiry",
                         nestedPath: "govt_ids.passport_expiry",
                         type: "date",
-                        icon: Calendar
+                        icon: Calendar,
                       })}
                       {renderInputField({
                         label: "PF Number",
                         field: "pf_number",
                         nestedPath: "govt_ids.pf_number",
-                        icon: FileText
+                        icon: FileText,
                       })}
                       {renderInputField({
                         label: "ESI Number",
                         field: "esi_number",
                         nestedPath: "govt_ids.esi_number",
-                        icon: FileText
+                        icon: FileText,
                       })}
                       {renderInputField({
                         label: "Tax Status",
                         field: "tax_status",
                         nestedPath: "govt_ids.tax_status",
-                        icon: FileText
+                        icon: FileText,
                       })}
                     </div>
                   </div>
@@ -1393,7 +1518,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                       {renderSectionHeader({
                         icon: GraduationCap,
                         title: "Education",
-                        color: "from-blue-500 to-indigo-600"
+                        color: "from-blue-500 to-indigo-600",
                       })}
                       <button
                         onClick={() =>
@@ -1406,7 +1531,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                             certificateUrl: "",
                           })
                         }
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Add Education
@@ -1423,7 +1548,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                               Education #{index + 1}
                             </span>
                             <button
-                              onClick={() => removeArrayItem("education", index)}
+                              onClick={() =>
+                                removeArrayItem("education", index)
+                              }
                               className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1445,7 +1572,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1463,7 +1590,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1481,7 +1608,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1499,7 +1626,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     Number(e.target.value)
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1517,13 +1644,14 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                           </div>
                         </div>
                       ))}
-                      {(!formData.education || formData.education.length === 0) && (
+                      {(!formData.education ||
+                        formData.education.length === 0) && (
                         <p className="text-sm text-gray-500 text-center py-4">
                           No education records added
                         </p>
@@ -1537,7 +1665,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                       {renderSectionHeader({
                         icon: Award,
                         title: "Certifications",
-                        color: "from-amber-500 to-orange-600"
+                        color: "from-amber-500 to-orange-600",
                       })}
                       <button
                         onClick={() =>
@@ -1549,7 +1677,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                             credentialUrl: "",
                           })
                         }
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Add Certification
@@ -1566,7 +1694,9 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                               Certification #{index + 1}
                             </span>
                             <button
-                              onClick={() => removeArrayItem("certifications", index)}
+                              onClick={() =>
+                                removeArrayItem("certifications", index)
+                              }
                               className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1588,7 +1718,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1606,7 +1736,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1624,7 +1754,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1642,7 +1772,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                           </div>
@@ -1664,13 +1794,23 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 <>
                   {/* Salary Information */}
                   <div className="bg-white rounded-xl p-5 border border-gray-200 shadow-sm">
-                    {renderSectionHeader({ icon: Wallet, title: "Salary Information" })}
+                    {renderSectionHeader({
+                      icon: Wallet,
+                      title: "Salary Information",
+                    })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
                         label: "Monthly Salary (₹)",
                         field: "salary",
                         type: "number",
-                        icon: Wallet
+                        icon: Wallet,
+                      })}
+                      {renderInputField({
+                        label: "Hourly Rate (₹)",
+                        field: "hourly_rate",
+                        type: "number",
+                        icon: Clock,
+                        placeholder: "For part-time/hourly workers",
                       })}
                     </div>
                   </div>
@@ -1680,44 +1820,44 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     {renderSectionHeader({
                       icon: Landmark,
                       title: "Bank Account Details",
-                      color: "from-green-500 to-emerald-600"
+                      color: "from-green-500 to-emerald-600",
                     })}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {renderInputField({
                         label: "Account Holder Name",
                         field: "account_holder",
                         nestedPath: "bank_details.account_holder",
-                        icon: User
+                        icon: User,
                       })}
                       {renderInputField({
                         label: "Account Number",
                         field: "account_number",
                         nestedPath: "bank_details.account_number",
-                        icon: CreditCard
+                        icon: CreditCard,
                       })}
                       {renderInputField({
                         label: "Bank Name",
                         field: "bank_name",
                         nestedPath: "bank_details.bank_name",
-                        icon: Landmark
+                        icon: Landmark,
                       })}
                       {renderInputField({
                         label: "Branch Name",
                         field: "branch_name",
                         nestedPath: "bank_details.branch_name",
-                        icon: MapPin
+                        icon: MapPin,
                       })}
                       {renderInputField({
                         label: "IFSC Code",
                         field: "ifsc_code",
                         nestedPath: "bank_details.ifsc_code",
-                        icon: Hash
+                        icon: Hash,
                       })}
                       {renderInputField({
                         label: "UPI ID",
                         field: "upi_id",
                         nestedPath: "bank_details.upi_id",
-                        icon: CreditCard
+                        icon: CreditCard,
                       })}
                     </div>
                   </div>
@@ -1733,7 +1873,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                       {renderSectionHeader({
                         icon: PhoneCall,
                         title: "Emergency Contacts",
-                        color: "from-red-500 to-rose-600"
+                        color: "from-red-500 to-rose-600",
                       })}
                       <button
                         onClick={() =>
@@ -1745,7 +1885,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                             address: "",
                           })
                         }
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors"
                       >
                         <Plus className="w-3.5 h-3.5" />
                         Add Contact
@@ -1786,7 +1926,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1803,7 +1943,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               >
                                 <option value="">Select</option>
                                 <option value="Spouse">Spouse</option>
@@ -1829,7 +1969,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="space-y-1.5">
@@ -1847,7 +1987,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                     e.target.value
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500"
                               />
                             </div>
                             <div className="md:col-span-2 space-y-1.5">
@@ -1865,7 +2005,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                                   )
                                 }
                                 rows={2}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 resize-none"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-cyan-500 resize-none"
                               />
                             </div>
                           </div>
@@ -1885,7 +2025,7 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                     {renderSectionHeader({
                       icon: Activity,
                       title: "Medical & HR Information",
-                      color: "from-pink-500 to-rose-600"
+                      color: "from-pink-500 to-rose-600",
                     })}
                     <div className="space-y-4">
                       {renderInputField({
@@ -1893,20 +2033,21 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                         field: "medical_conditions",
                         type: "textarea",
                         icon: Activity,
-                        placeholder: "List any medical conditions or allergies..."
+                        placeholder:
+                          "List any medical conditions or allergies...",
                       })}
                       {renderInputField({
                         label: "Background Check Status",
                         field: "background_check_status",
                         options: ["Pending", "In Progress", "Passed", "Failed"],
-                        icon: ShieldCheck
+                        icon: ShieldCheck,
                       })}
                       {renderInputField({
                         label: "HR Notes",
                         field: "hr_notes",
                         type: "textarea",
                         icon: FileText,
-                        placeholder: "Internal HR notes..."
+                        placeholder: "Internal HR notes...",
                       })}
                     </div>
                   </div>
@@ -1950,8 +2091,10 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={!isDirty || Object.keys(errors).length > 0 || saving}
-                  className={`group px-5 py-2 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium text-sm flex items-center gap-2 ${
+                  disabled={
+                    !isDirty || Object.keys(errors).length > 0 || saving
+                  }
+                  className={`group px-5 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium text-sm flex items-center gap-2 ${
                     !isDirty || Object.keys(errors).length > 0 || saving
                       ? "opacity-50 cursor-not-allowed"
                       : "transform hover:scale-105"
@@ -1986,4 +2129,4 @@ const ManagerEditModal = ({ isOpen, onClose, onSave, managerId }) => {
   );
 };
 
-export default ManagerEditModal;
+export default StaffEditModal;

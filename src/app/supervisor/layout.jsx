@@ -43,12 +43,12 @@ const sidebarItems = [
     icon: Plus,
     href: "/supervisor/deposit",
   },
-  {
-    id: "sell",
-    label: "Sell Grain",
-    icon: ShoppingCart,
-    href: "/supervisor/sell",
-  },
+  // {
+  //   id: "sell",
+  //   label: "Sell Grain",
+  //   icon: ShoppingCart,
+  //   href: "/supervisor/sell",
+  // },
   {
     id: "withdraw",
     label: "Withdraw Grain",
@@ -62,72 +62,30 @@ const sidebarItems = [
     href: "/supervisor/requests",
   },
   {
-    id: "warehouse",
-    label: "Warehouse",
-    icon: Warehouse,
-    href: "/supervisor/warehouses",
-  },
-
-  {
-    id: "inventory",
-    label: "Inventory",
-    icon: Package,
-    href: "/supervisor/inventory",
-  },
-  {
     id: "farmersmanagement",
     label: "Farmers",
     icon: Users,
     href: "/supervisor/farmers",
   },
-  {
-    id: "managermanagement",
-    label: "Managers",
-    icon: User2,
-    href: "/supervisor/managers",
-  },
 
-  {
-    id: "creditmanagement",
-    label: "Credit",
-    icon: CreditCard,
-    href: "/supervisor/credit",
-  },
+  // {
+  //   id: "creditmanagement",
+  //   label: "Credit",
+  //   icon: CreditCard,
+  //   href: "/supervisor/credit",
+  // },
   {
     id: "transactions",
     label: "Transactions",
     icon: FileText,
     href: "/supervisor/transactions",
   },
-  {
-    id: "reports",
-    label: "Reports",
-    icon: BarChart3,
-    href: "/supervisor/reports",
-  },
-  {
-    id: "financial",
-    label: "Financial",
-    icon: DollarSign,
-    href: "/supervisor/financial",
-  },
+
   {
     id: "updateprice",
     label: "Update Price",
     icon: TrendingUp,
     href: "/supervisor/updateprice",
-  },
-  {
-    id: "qualitycontrol",
-    label: "Quality Control",
-    icon: CheckCircle,
-    href: "/supervisor/qualitycontrol",
-  },
-  {
-    id: "notifications",
-    label: "Notifications",
-    icon: Bell,
-    href: "/supervisor/notifications",
   },
   {
     id: "profile",
@@ -252,7 +210,7 @@ export default function DashboardLayout({ children }) {
         title="Important Notice"
         message="Your session will expire in 5 minutes. Please save your work."
       /> */}
-      <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} />
+      {/* <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} /> */}
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div

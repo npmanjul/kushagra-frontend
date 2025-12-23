@@ -154,12 +154,17 @@ const DepositContent = () => {
   const fetchWarehouses = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/warehouse/allwarehouse`);
+      const response = await fetch(`${API_BASE_URL}/warehouse/allwarehouse`,{
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       if (!response.ok) throw new Error("Failed to fetch warehouses");
       const data = await response.json();
 
       if (response.ok) {
-        setWarehouses(data);
+        setWarehouses(data.data);
       }
     } catch (error) {
       console.error(error);

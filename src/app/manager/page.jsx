@@ -206,10 +206,7 @@ export default function Dashboard() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h2 className="text-3xl font-bold text-gray-900">Dashboard Overview</h2>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-full flex items-center transition-colors">
-          <Download className="w-4 h-4 mr-2" />
-          Download Report
-        </button>
+        {/* <DownloadInvoice/> */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

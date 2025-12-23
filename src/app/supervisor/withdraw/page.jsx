@@ -239,10 +239,9 @@ const WithdrawalPage = () => {
         total_value: calculateTotalAmount(),
         reason: withdrawalReason,
         notes: withdrawalNotes,
-        transaction_type: "withdrawal"
       };
 
-      const response = await fetch(`${API_BASE_URL}/transaction/withdraw`, {
+      const response = await fetch(`${API_BASE_URL}/withdrawal/grainwithdrawal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

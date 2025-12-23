@@ -258,7 +258,7 @@ const WarehouseModal = ({ isOpen, onClose, onSubmit, managers, supervisors, staf
                   <option value="">Select a manager</option>
                   {managers?.map((manager) => (
                     <option key={manager._id} value={manager._id}>
-                      {manager.name}
+                      {manager.name}-{manager.warehouse_name?manager.warehouse_name:"No Warehouse Assigned"},{manager.warehouse_location}
                     </option>
                   ))}
                 </select>
@@ -292,7 +292,7 @@ const WarehouseModal = ({ isOpen, onClose, onSubmit, managers, supervisors, staf
                   <option value="">Select a supervisor</option>
                   {supervisors?.map((supervisor) => (
                     <option key={supervisor._id} value={supervisor._id}>
-                      {supervisor.name}
+                      {supervisor.name}-{supervisor.warehouse_name?supervisor.warehouse_name:"No Warehouse Assigned"},{supervisor.warehouse_location}
                     </option>
                   ))}
                 </select>
@@ -335,7 +335,7 @@ const WarehouseModal = ({ isOpen, onClose, onSubmit, managers, supervisors, staf
                               key={id}
                               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-500 to-indigo-500 text-white text-sm rounded-full font-medium"
                             >
-                              {member.name}
+                              {member.name}-{member.warehouse_name?member.warehouse_name:"No Warehouse Assigned"},{member.warehouse_location}
                               <button
                                 type="button"
                                 onClick={(e) => {
@@ -444,7 +444,7 @@ const WarehouseModal = ({ isOpen, onClose, onSubmit, managers, supervisors, staf
                             <span className={`text-sm font-medium ${
                               formData.staff_ids.includes(member._id) ? "text-blue-700" : "text-gray-700"
                             }`}>
-                              {member.name}
+                              {member.name}-{member.warehouse_name?member.warehouse_name:"No Warehouse Assigned"},{member.warehouse_location}
                             </span>
                           </div>
                         ))}

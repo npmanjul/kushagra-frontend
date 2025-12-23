@@ -44,78 +44,87 @@ import {
   Hash,
   UserCheck,
   UserX,
+  HardHat,
+  Wrench,
+  Package,
+  ClipboardList,
 } from "lucide-react";
-import SupervisorViewModal from "@/components/admin/SupervisorViewModal";
-import SupervisorEditModal from "@/components/admin/SupervisorEditModal";
+import StaffViewModal from "@/components/admin/StaffViewModal";
+import StaffEditModal from "@/components/admin/StaffEditModal";
 import API_BASE_URL from "@/utils/constants";
 
 const Page = () => {
   // State Management
-  const [supervisors, setSupervisors] = useState([]);
+  const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedSupervisor, setSelectedSupervisor] = useState(null);
+  const [selectedStaff, setSelectedStaff] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [roleFilter, setRoleFilter] = useState("all");
   const [viewType, setViewType] = useState("table");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  // Fetch supervisors from API
+  // Fetch staff from API
   useEffect(() => {
-    fetchSupervisors();
+    fetchStaff();
   }, []);
 
-  const fetchSupervisors = async () => {
+  const fetchStaff = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/warehouse/allsupervisor`);
+      const response = await fetch(`${API_BASE_URL}/warehouse/allstaff`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
       const result = await response.json();
 
       if (result.success) {
-        setSupervisors(result.data || []);
+        setStaff(result.data || []);
       } else {
-        setError(result.message || "Failed to fetch supervisors");
+        setError(result.message || "Failed to fetch staff");
       }
     } catch (err) {
-      setError("Failed to fetch supervisors. Please try again.");
-      console.error("Error fetching supervisors:", err);
+      setError("Failed to fetch staff. Please try again.");
+      console.error("Error fetching staff:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleView = (supervisor) => {
-    setSelectedSupervisor(supervisor);
+  const handleView = (staffMember) => {
+    setSelectedStaff(staffMember);
     setIsViewModalOpen(true);
   };
 
-  const handleEdit = (supervisor) => {
-    setSelectedSupervisor(supervisor);
+  const handleEdit = (staffMember) => {
+    setSelectedStaff(staffMember);
     setIsEditModalOpen(true);
   };
 
   const handleSave = (updatedData) => {
     // Update the local state with the updated data
-    setSupervisors((prev) =>
-      prev.map((sup) =>
-        sup._id === updatedData._id ? { ...sup, ...updatedData } : sup
+    setStaff((prev) =>
+      prev.map((s) =>
+        s._id === updatedData._id ? { ...s, ...updatedData } : s
       )
     );
     setIsEditModalOpen(false);
   };
 
-  const handleToggleStatus = async (supervisorId, currentStatus) => {
+  const handleToggleStatus = async (staffId, currentStatus) => {
     try {
       // API call to toggle status would go here
-      setSupervisors((prev) =>
-        prev.map((sup) =>
-          sup._id === supervisorId ? { ...sup, is_active: !currentStatus } : sup
+      setStaff((prev) =>
+        prev.map((s) =>
+          s._id === staffId ? { ...s, is_active: !currentStatus } : s
         )
       );
     } catch (err) {
@@ -123,69 +132,77 @@ const Page = () => {
     }
   };
 
-  // Filter supervisors
-  const filteredSupervisors = supervisors.filter((sup) => {
+  // Filter staff
+  const filteredStaff = staff.filter((s) => {
     const matchesSearch =
-      sup.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sup.employee_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sup.phone?.includes(searchQuery) ||
-      sup.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sup.warehouse_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      sup.warehouse_location?.toLowerCase().includes(searchQuery.toLowerCase());
+      s.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.employee_id?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.phone?.includes(searchQuery) ||
+      s.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.warehouse_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.warehouse_location?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      s.designation?.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesStatus =
       statusFilter === "all" ||
-      (statusFilter === "active" && sup.is_active) ||
-      (statusFilter === "inactive" && !sup.is_active) ||
-      (statusFilter === "engaged" && sup.is_engaged) ||
-      (statusFilter === "available" && !sup.is_engaged);
+      (statusFilter === "active" && s.is_active) ||
+      (statusFilter === "inactive" && !s.is_active) ||
+      (statusFilter === "on_duty" && s.is_on_duty) ||
+      (statusFilter === "off_duty" && !s.is_on_duty);
 
-    return matchesSearch && matchesStatus;
+    const matchesRole =
+      roleFilter === "all" ||
+      s.designation?.toLowerCase() === roleFilter.toLowerCase();
+
+    return matchesSearch && matchesStatus && matchesRole;
   });
 
   // Pagination
-  const totalPages = Math.ceil(filteredSupervisors.length / itemsPerPage);
-  const paginatedSupervisors = filteredSupervisors.slice(
+  const totalPages = Math.ceil(filteredStaff.length / itemsPerPage);
+  const paginatedStaff = filteredStaff.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
+  // Get unique designations for filter
+  const designations = [...new Set(staff.map((s) => s.designation).filter(Boolean))];
+
   // Calculate stats
   const stats = [
     {
-      label: "Total Supervisors",
-      value: supervisors.length,
-      icon: UserCog,
-      color: "from-blue-500 to-indigo-600",
+      label: "Total Staff",
+      value: staff.length,
+      icon: Users,
+      color: "from-blue-500 to-cyan-600",
       bgColor: "bg-blue-50",
-      change: `${supervisors.length}`,
+      change: `${staff.length}`,
       trend: "neutral",
     },
     {
       label: "Active",
-      value: supervisors.filter((s) => s.is_active).length,
+      value: staff.filter((s) => s.is_active).length,
       icon: CheckCircle2,
       color: "from-green-500 to-emerald-600",
       bgColor: "bg-green-50",
-      change: `${Math.round((supervisors.filter((s) => s.is_active).length / supervisors.length) * 100) || 0}%`,
+      change: `${Math.round((staff.filter((s) => s.is_active).length / staff.length) * 100) || 0}%`,
       trend: "up",
     },
     {
-      label: "Engaged",
-      value: supervisors.filter((s) => s.is_engaged).length,
-      icon: Users,
-      color: "from-purple-500 to-pink-600",
-      bgColor: "bg-purple-50",
-      change: `${supervisors.filter((s) => s.is_engaged).length}`,
+      label: "On Duty",
+      value: staff.filter((s) => s.is_on_duty).length,
+      icon: HardHat,
+      color: "from-orange-500 to-amber-600",
+      bgColor: "bg-orange-50",
+      change: `${staff.filter((s) => s.is_on_duty).length}`,
       trend: "up",
     },
     {
       label: "Available",
-      value: supervisors.filter((s) => !s.is_engaged && s.is_active).length,
+      value: staff.filter((s) => !s.is_on_duty && s.is_active).length,
       icon: UserCheck,
-      color: "from-amber-500 to-orange-600",
-      bgColor: "bg-amber-50",
-      change: `${supervisors.filter((s) => !s.is_engaged && s.is_active).length}`,
+      color: "from-teal-500 to-cyan-600",
+      bgColor: "bg-teal-50",
+      change: `${staff.filter((s) => !s.is_on_duty && s.is_active).length}`,
       trend: "neutral",
     },
   ];
@@ -202,7 +219,7 @@ const Page = () => {
   };
 
   // Get status badge
-  const getStatusBadge = (isActive, isEngaged) => {
+  const getStatusBadge = (isActive, isOnDuty) => {
     if (!isActive) {
       return {
         label: "Inactive",
@@ -211,12 +228,12 @@ const Page = () => {
         dotColor: "bg-gray-400",
       };
     }
-    if (isEngaged) {
+    if (isOnDuty) {
       return {
-        label: "Engaged",
-        bgColor: "bg-purple-100",
-        textColor: "text-purple-700",
-        dotColor: "bg-purple-500",
+        label: "On Duty",
+        bgColor: "bg-orange-100",
+        textColor: "text-orange-700",
+        dotColor: "bg-orange-500",
       };
     }
     return {
@@ -227,41 +244,56 @@ const Page = () => {
     };
   };
 
-  // Supervisor Card Component
-  const SupervisorCard = ({ supervisor }) => {
-    const status = getStatusBadge(supervisor.is_active, supervisor.is_engaged);
+  // Get designation badge color
+  const getDesignationColor = (designation) => {
+    const colors = {
+      "picker": "bg-blue-100 text-blue-700",
+      "packer": "bg-purple-100 text-purple-700",
+      "loader": "bg-amber-100 text-amber-700",
+      "forklift_operator": "bg-red-100 text-red-700",
+      "inventory_clerk": "bg-cyan-100 text-cyan-700",
+      "quality_checker": "bg-green-100 text-green-700",
+      "default": "bg-gray-100 text-gray-700",
+    };
+    return colors[designation?.toLowerCase()] || colors.default;
+  };
+
+  // Staff Card Component
+  const StaffCard = ({ staffMember }) => {
+    const status = getStatusBadge(staffMember.is_active, staffMember.is_on_duty);
+    const designationColor = getDesignationColor(staffMember.designation);
 
     return (
-      <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-xl hover:border-violet-200 transition-all duration-300 group">
+      <div className="bg-white rounded-xl p-4 sm:p-5 shadow-sm border border-gray-100 hover:shadow-xl hover:border-cyan-200 transition-all duration-300 group">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-shadow">
                 <img
-                  src={supervisor.photo}
-                  alt={supervisor.name}
+                  src={staffMember.photo}
+                  alt={staffMember.name}
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    e.target.src = `https://ui-avatars.com/api/?name=${supervisor.name}&background=random&size=256`;
+                    e.target.src = `https://ui-avatars.com/api/?name=${staffMember.name}&background=random&size=256`;
                   }}
                 />
               </div>
               <div
                 className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white ${
-                  supervisor.is_active ? "bg-green-500" : "bg-gray-400"
+                  staffMember.is_active ? "bg-green-500" : "bg-gray-400"
                 }`}
               />
             </div>
             <div>
               <p className="font-semibold text-gray-900 flex items-center gap-2 text-sm sm:text-base">
-                {supervisor.name}
-                {supervisor.is_active && supervisor.is_engaged && (
-                  <Award className="w-4 h-4 text-amber-500" />
+                {staffMember.name}
+                {staffMember.is_active && staffMember.is_on_duty && (
+                  <HardHat className="w-4 h-4 text-orange-500" />
                 )}
               </p>
               <p className="text-xs text-gray-500 font-mono">
-                {supervisor.employee_id}
+                {staffMember.employee_id}
               </p>
             </div>
           </div>
@@ -275,17 +307,27 @@ const Page = () => {
           </span>
         </div>
 
+        {/* Designation Badge */}
+        {staffMember.designation && (
+          <div className="mb-3">
+            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${designationColor}`}>
+              <Wrench className="w-3 h-3" />
+              {staffMember.designation.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+            </span>
+          </div>
+        )}
+
         {/* Warehouse Info */}
-        <div className="bg-gradient-to-r from-violet-50 to-purple-50 rounded-lg p-3 mb-4">
+        <div className="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-3 mb-4">
           <div className="flex items-center gap-2 mb-1">
-            <Building2 className="w-4 h-4 text-violet-600" />
+            <Building2 className="w-4 h-4 text-cyan-600" />
             <span className="text-sm font-medium text-gray-800">
-              {supervisor.warehouse_name || "Not Assigned"}
+              {staffMember.warehouse_name || "Not Assigned"}
             </span>
           </div>
           <div className="flex items-center gap-1 text-xs text-gray-600">
             <MapPin className="w-3 h-3" />
-            {supervisor.warehouse_location || "N/A"}
+            {staffMember.warehouse_location || "N/A"}
           </div>
         </div>
 
@@ -295,28 +337,36 @@ const Page = () => {
             <div className="p-1.5 bg-gray-100 rounded-lg">
               <Phone className="w-3.5 h-3.5 text-gray-500" />
             </div>
-            <span className="truncate">{supervisor.phone}</span>
+            <span className="truncate">{staffMember.phone}</span>
           </div>
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <div className="p-1.5 bg-gray-100 rounded-lg">
               <Mail className="w-3.5 h-3.5 text-gray-500" />
             </div>
-            <span className="truncate text-xs">{supervisor.email}</span>
+            <span className="truncate text-xs">{staffMember.email}</span>
           </div>
         </div>
+
+        {/* Supervisor Info */}
+        {staffMember.supervisor_name && (
+          <div className="flex items-center gap-2 text-xs text-gray-500 mb-4 pb-3 border-b border-gray-100">
+            <UserCog className="w-3.5 h-3.5" />
+            <span>Reports to: <span className="font-medium text-gray-700">{staffMember.supervisor_name}</span></span>
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex gap-2 pt-3 border-t border-gray-100">
           <button
-            onClick={() => handleView(supervisor)}
+            onClick={() => handleView(staffMember)}
             className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 text-sm font-medium group-hover:shadow-sm"
           >
             <Eye className="w-4 h-4" />
             View
           </button>
           <button
-            onClick={() => handleEdit(supervisor)}
-            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-violet-500 to-purple-600 text-white rounded-xl hover:shadow-lg hover:shadow-violet-200 transition-all duration-200 text-sm font-medium"
+            onClick={() => handleEdit(staffMember)}
+            className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl hover:shadow-lg hover:shadow-cyan-200 transition-all duration-200 text-sm font-medium"
           >
             <Edit3 className="w-4 h-4" />
             Edit
@@ -332,17 +382,17 @@ const Page = () => {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
         <div className="text-center">
           <div className="relative">
-            <div className="w-16 h-16 border-4 border-violet-200 rounded-full animate-spin border-t-violet-600 mx-auto" />
-            <UserCog className="w-6 h-6 text-violet-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <div className="w-16 h-16 border-4 border-cyan-200 rounded-full animate-spin border-t-cyan-600 mx-auto" />
+            <Users className="w-6 h-6 text-cyan-600 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
-          <p className="mt-4 text-gray-600 font-medium">Loading supervisors...</p>
+          <p className="mt-4 text-gray-600 font-medium">Loading staff...</p>
         </div>
       </div>
     );
   }
 
   // Error State
-  if (error && supervisors.length === 0) {
+  if (error && staff.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
@@ -350,12 +400,12 @@ const Page = () => {
             <AlertCircle className="w-8 h-8 text-red-600" />
           </div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Failed to Load Supervisors
+            Failed to Load Staff
           </h3>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={fetchSupervisors}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all font-medium"
+            onClick={fetchStaff}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl hover:shadow-lg transition-all font-medium"
           >
             <RefreshCw className="w-4 h-4" />
             Try Again
@@ -372,16 +422,16 @@ const Page = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
           <div className="w-full sm:w-auto">
             <div className="flex items-center gap-2 sm:gap-3 mb-2">
-              <div className="p-2 sm:p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg sm:rounded-xl shadow-lg shadow-violet-200">
-                <UserCog className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="p-2 sm:p-2.5 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg sm:rounded-xl shadow-lg shadow-cyan-200">
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
-                Supervisor Management
+                Staff Management
               </h1>
               <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500 animate-pulse" />
             </div>
             <p className="text-gray-500 text-xs sm:text-sm ml-0 sm:ml-14">
-              Manage and monitor all supervisors across warehouses
+              Manage and monitor all warehouse staff members
             </p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
@@ -393,7 +443,7 @@ const Page = () => {
             </button>
 
             <button
-              onClick={fetchSupervisors}
+              onClick={fetchStaff}
               className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white border border-gray-200 rounded-lg sm:rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 text-gray-600 text-xs sm:text-sm font-medium shadow-sm"
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -405,9 +455,9 @@ const Page = () => {
               <span className="hidden sm:inline">Export</span>
             </button>
 
-            <button className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg hover:shadow-violet-200 transition-all duration-300 text-xs sm:text-sm font-semibold flex-1 sm:flex-initial">
+            <button className="flex items-center justify-center gap-2 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-lg sm:rounded-xl hover:shadow-lg hover:shadow-cyan-200 transition-all duration-300 text-xs sm:text-sm font-semibold flex-1 sm:flex-initial">
               <Plus className="w-4 h-4" />
-              <span>Add Supervisor</span>
+              <span>Add Staff</span>
             </button>
           </div>
         </div>
@@ -500,31 +550,49 @@ const Page = () => {
               <Search className="w-4 h-4 absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search by name, ID, phone, email, warehouse..."
+                placeholder="Search by name, ID, phone, email, warehouse, designation..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent focus:bg-white transition-all duration-200 text-sm"
+                className="w-full pl-9 sm:pl-11 pr-3 sm:pr-4 py-2 sm:py-2.5 bg-gray-50 border border-gray-200 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent focus:bg-white transition-all duration-200 text-sm"
               />
             </div>
 
             {/* Filter Buttons - Desktop */}
             <div className="hidden sm:flex items-center gap-2">
-              {["all", "active", "inactive", "engaged", "available"].map(
+              {["all", "active", "inactive", "on_duty", "off_duty"].map(
                 (status) => (
                   <button
                     key={status}
                     onClick={() => setStatusFilter(status)}
                     className={`px-3 py-2 text-xs font-medium rounded-lg capitalize transition-all duration-200 ${
                       statusFilter === status
-                        ? "bg-violet-600 text-white shadow-md"
+                        ? "bg-cyan-600 text-white shadow-md"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                     }`}
                   >
-                    {status}
+                    {status.replace(/_/g, " ")}
                   </button>
                 )
               )}
             </div>
+
+            {/* Role Filter - Desktop */}
+            {designations.length > 0 && (
+              <div className="hidden lg:block">
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="px-3 py-2 text-xs font-medium rounded-lg border border-gray-200 bg-gray-50 focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                >
+                  <option value="all">All Roles</option>
+                  {designations.map((d) => (
+                    <option key={d} value={d}>
+                      {d.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Mobile Filter Button */}
             <button
@@ -533,8 +601,8 @@ const Page = () => {
             >
               <Filter className="w-4 h-4" />
               Filters
-              {statusFilter !== "all" && (
-                <span className="w-2 h-2 rounded-full bg-violet-500" />
+              {(statusFilter !== "all" || roleFilter !== "all") && (
+                <span className="w-2 h-2 rounded-full bg-cyan-500" />
               )}
             </button>
 
@@ -544,7 +612,7 @@ const Page = () => {
                 onClick={() => setViewType("table")}
                 className={`p-1.5 rounded transition-all ${
                   viewType === "table"
-                    ? "bg-white shadow-sm text-violet-600"
+                    ? "bg-white shadow-sm text-cyan-600"
                     : "text-gray-600"
                 }`}
                 title="Table View"
@@ -555,7 +623,7 @@ const Page = () => {
                 onClick={() => setViewType("grid")}
                 className={`p-1.5 rounded transition-all ${
                   viewType === "grid"
-                    ? "bg-white shadow-sm text-violet-600"
+                    ? "bg-white shadow-sm text-cyan-600"
                     : "text-gray-600"
                 }`}
                 title="Grid View"
@@ -567,7 +635,7 @@ const Page = () => {
 
           {/* Mobile Filters */}
           {showFilters && (
-            <div className="sm:hidden mt-3 pt-3 border-t border-gray-100 animate-in slide-in-from-top duration-200">
+            <div className="sm:hidden mt-3 pt-3 border-t border-gray-100 animate-in slide-in-from-top duration-200 space-y-3">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-500 font-medium">
                   Filter by status:
@@ -580,25 +648,56 @@ const Page = () => {
                 </button>
               </div>
               <div className="flex gap-2 flex-wrap">
-                {["all", "active", "inactive", "engaged", "available"].map(
+                {["all", "active", "inactive", "on_duty", "off_duty"].map(
                   (status) => (
                     <button
                       key={status}
                       onClick={() => {
                         setStatusFilter(status);
-                        setShowFilters(false);
                       }}
                       className={`px-3 py-1.5 text-xs font-medium rounded-lg capitalize transition-all duration-200 ${
                         statusFilter === status
-                          ? "bg-violet-600 text-white"
+                          ? "bg-cyan-600 text-white"
                           : "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {status}
+                      {status.replace(/_/g, " ")}
                     </button>
                   )
                 )}
               </div>
+              {designations.length > 0 && (
+                <>
+                  <div className="text-xs text-gray-500 font-medium mt-2">
+                    Filter by role:
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    <button
+                      onClick={() => setRoleFilter("all")}
+                      className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
+                        roleFilter === "all"
+                          ? "bg-cyan-600 text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      All Roles
+                    </button>
+                    {designations.map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setRoleFilter(d)}
+                        className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 ${
+                          roleFilter === d
+                            ? "bg-cyan-600 text-white"
+                            : "bg-gray-100 text-gray-600"
+                        }`}
+                      >
+                        {d.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -608,20 +707,23 @@ const Page = () => {
           <p className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-gray-700">
-              {paginatedSupervisors.length}
+              {paginatedStaff.length}
             </span>{" "}
             of{" "}
             <span className="font-semibold text-gray-700">
-              {filteredSupervisors.length}
+              {filteredStaff.length}
             </span>{" "}
-            supervisors
+            staff members
           </p>
-          {statusFilter !== "all" && (
+          {(statusFilter !== "all" || roleFilter !== "all") && (
             <button
-              onClick={() => setStatusFilter("all")}
-              className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+              onClick={() => {
+                setStatusFilter("all");
+                setRoleFilter("all");
+              }}
+              className="text-xs text-cyan-600 hover:text-cyan-700 font-medium flex items-center gap-1"
             >
-              Clear filter
+              Clear filters
               <X className="w-3 h-3" />
             </button>
           )}
@@ -635,7 +737,10 @@ const Page = () => {
                 <thead>
                   <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                      Supervisor
+                      Staff Member
+                    </th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Designation
                     </th>
                     <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                       Warehouse
@@ -652,32 +757,33 @@ const Page = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {paginatedSupervisors.map((supervisor) => {
+                  {paginatedStaff.map((staffMember) => {
                     const status = getStatusBadge(
-                      supervisor.is_active,
-                      supervisor.is_engaged
+                      staffMember.is_active,
+                      staffMember.is_on_duty
                     );
+                    const designationColor = getDesignationColor(staffMember.designation);
                     return (
                       <tr
-                        key={supervisor._id}
-                        className="hover:bg-gradient-to-r hover:from-violet-50/30 hover:to-white transition-all duration-200 group"
+                        key={staffMember._id}
+                        className="hover:bg-gradient-to-r hover:from-cyan-50/30 hover:to-white transition-all duration-200 group"
                       >
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
                             <div className="relative">
                               <div className="w-11 h-11 rounded-xl overflow-hidden shadow-md group-hover:shadow-lg transition-all duration-200">
                                 <img
-                                  src={supervisor.photo}
-                                  alt={supervisor.name}
+                                  src={staffMember.photo}
+                                  alt={staffMember.name}
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
-                                    e.target.src = `https://ui-avatars.com/api/?name=${supervisor.name}&background=random&size=256`;
+                                    e.target.src = `https://ui-avatars.com/api/?name=${staffMember.name}&background=random&size=256`;
                                   }}
                                 />
                               </div>
                               <div
                                 className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${
-                                  supervisor.is_active
+                                  staffMember.is_active
                                     ? "bg-green-500"
                                     : "bg-gray-400"
                                 }`}
@@ -685,29 +791,39 @@ const Page = () => {
                             </div>
                             <div>
                               <p className="font-semibold text-gray-900 text-sm flex items-center gap-2">
-                                {supervisor.name}
-                                {supervisor.is_active && supervisor.is_engaged && (
-                                  <Award className="w-4 h-4 text-amber-500" />
+                                {staffMember.name}
+                                {staffMember.is_active && staffMember.is_on_duty && (
+                                  <HardHat className="w-4 h-4 text-orange-500" />
                                 )}
                               </p>
                               <p className="text-xs text-gray-500 font-mono">
-                                {supervisor.employee_id}
+                                {staffMember.employee_id}
                               </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
+                          {staffMember.designation ? (
+                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${designationColor}`}>
+                              <Wrench className="w-3 h-3" />
+                              {staffMember.designation.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}
+                            </span>
+                          ) : (
+                            <span className="text-xs text-gray-400">Not Assigned</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4">
                           <div className="flex items-center gap-2">
-                            <div className="p-2 bg-violet-50 rounded-lg">
-                              <Building2 className="w-4 h-4 text-violet-600" />
+                            <div className="p-2 bg-cyan-50 rounded-lg">
+                              <Building2 className="w-4 h-4 text-cyan-600" />
                             </div>
                             <div>
                               <p className="text-sm font-medium text-gray-900">
-                                {supervisor.warehouse_name || "Not Assigned"}
+                                {staffMember.warehouse_name || "Not Assigned"}
                               </p>
                               <div className="flex items-center gap-1 text-xs text-gray-500">
                                 <MapPin className="w-3 h-3" />
-                                {supervisor.warehouse_location || "N/A"}
+                                {staffMember.warehouse_location || "N/A"}
                               </div>
                             </div>
                           </div>
@@ -716,11 +832,11 @@ const Page = () => {
                           <div className="space-y-1.5">
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <Phone className="w-3.5 h-3.5 text-gray-400" />
-                              {supervisor.phone}
+                              {staffMember.phone}
                             </div>
                             <div className="flex items-center gap-2 text-xs text-gray-500">
                               <Mail className="w-3 h-3 text-gray-400" />
-                              {supervisor.email}
+                              {staffMember.email}
                             </div>
                           </div>
                         </td>
@@ -734,10 +850,10 @@ const Page = () => {
                               />
                               {status.label}
                             </span>
-                            {supervisor.is_engaged && (
+                            {staffMember.supervisor_name && (
                               <p className="text-xs text-gray-500 flex items-center gap-1">
-                                <Users className="w-3 h-3" />
-                                Currently Engaged
+                                <UserCog className="w-3 h-3" />
+                                {staffMember.supervisor_name}
                               </p>
                             )}
                           </div>
@@ -745,15 +861,15 @@ const Page = () => {
                         <td className="px-6 py-4">
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => handleView(supervisor)}
+                              onClick={() => handleView(staffMember)}
                               className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 text-xs font-semibold"
                             >
                               <Eye className="w-3.5 h-3.5" />
                               View
                             </button>
                             <button
-                              onClick={() => handleEdit(supervisor)}
-                              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-violet-500 to-purple-500 text-white rounded-lg hover:shadow-md hover:shadow-violet-200 transition-all duration-200 text-xs font-semibold"
+                              onClick={() => handleEdit(staffMember)}
+                              className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg hover:shadow-md hover:shadow-cyan-200 transition-all duration-200 text-xs font-semibold"
                             >
                               <Edit3 className="w-3.5 h-3.5" />
                               Edit
@@ -801,7 +917,7 @@ const Page = () => {
                         onClick={() => setCurrentPage(pageNum)}
                         className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
                           currentPage === pageNum
-                            ? "bg-violet-600 text-white shadow-sm"
+                            ? "bg-cyan-600 text-white shadow-sm"
                             : "text-gray-600 hover:bg-gray-100"
                         }`}
                       >
@@ -825,40 +941,41 @@ const Page = () => {
         {/* Grid View */}
         {viewType === "grid" && (
           <div className="hidden lg:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {paginatedSupervisors.map((supervisor) => (
-              <SupervisorCard key={supervisor._id} supervisor={supervisor} />
+            {paginatedStaff.map((staffMember) => (
+              <StaffCard key={staffMember._id} staffMember={staffMember} />
             ))}
           </div>
         )}
 
         {/* Mobile View - Always Cards */}
         <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {paginatedSupervisors.map((supervisor) => (
-            <SupervisorCard key={supervisor._id} supervisor={supervisor} />
+          {paginatedStaff.map((staffMember) => (
+            <StaffCard key={staffMember._id} staffMember={staffMember} />
           ))}
         </div>
 
         {/* Empty State */}
-        {filteredSupervisors.length === 0 && !loading && (
+        {filteredStaff.length === 0 && !loading && (
           <div className="bg-white rounded-xl sm:rounded-2xl p-8 sm:p-16 text-center">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <UserCog className="w-8 h-8 text-gray-400" />
+              <Users className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No supervisors found
+              No staff members found
             </h3>
             <p className="text-sm text-gray-500 mb-6">
-              {searchQuery || statusFilter !== "all"
+              {searchQuery || statusFilter !== "all" || roleFilter !== "all"
                 ? "Try adjusting your search or filter criteria"
-                : "No supervisors have been added yet"}
+                : "No staff members have been added yet"}
             </p>
-            {(searchQuery || statusFilter !== "all") && (
+            {(searchQuery || statusFilter !== "all" || roleFilter !== "all") && (
               <button
                 onClick={() => {
                   setSearchQuery("");
                   setStatusFilter("all");
+                  setRoleFilter("all");
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2 text-violet-600 hover:bg-violet-50 rounded-lg transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-2 px-4 py-2 text-cyan-600 hover:bg-cyan-50 rounded-lg transition-colors text-sm font-medium"
               >
                 <RefreshCw className="w-4 h-4" />
                 Clear filters
@@ -868,7 +985,7 @@ const Page = () => {
         )}
 
         {/* Mobile Pagination */}
-        {filteredSupervisors.length > 0 && totalPages > 1 && (
+        {filteredStaff.length > 0 && totalPages > 1 && (
           <div className="lg:hidden bg-white rounded-xl p-3 border border-gray-100">
             <div className="flex items-center justify-between">
               <p className="text-xs text-gray-500">
@@ -883,7 +1000,7 @@ const Page = () => {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
-                <span className="px-3 py-1 bg-violet-600 text-white text-sm font-medium rounded-lg">
+                <span className="px-3 py-1 bg-cyan-600 text-white text-sm font-medium rounded-lg">
                   {currentPage}
                 </span>
                 <button
@@ -900,17 +1017,17 @@ const Page = () => {
       </div>
 
       {/* View Modal */}
-      <SupervisorViewModal
+      <StaffViewModal
         isOpen={isViewModalOpen}
         onClose={() => setIsViewModalOpen(false)}
-        supervisorId={selectedSupervisor?._id}
+        staffId={selectedStaff?._id}
       />
 
       {/* Edit Modal */}
-      <SupervisorEditModal
+      <StaffEditModal
         isOpen={isEditModalOpen}
         onClose={() => setIsEditModalOpen(false)}
-        supervisorId={selectedSupervisor?._id}
+        staffId={selectedStaff?._id}
         onSave={handleSave}
       />
     </>
