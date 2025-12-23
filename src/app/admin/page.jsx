@@ -727,8 +727,10 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="space-y-3 overflow-y-auto max-h-[400px] pr-2">
-              {Object.entries(marketRates).map(
-                ([type, { max, avg, min, change }]) => (
+              {marketRates && Object.entries(marketRates).map(
+                ([type, priceData]) => {
+                  const { max, avg, min, change } = priceData || {};
+                  return (
                   <div
                     key={type}
                     className="bg-gradient-to-r from-gray-50 to-white border border-gray-100 rounded-xl p-4 hover:shadow-md transition-all"
@@ -748,27 +750,29 @@ export default function Dashboard() {
                         <span className="text-sm text-gray-600">Max</span>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-gray-900">
-                            {formatRupee(max)}
+                            {formatRupee(max || 0)}
                           </span>
-                          <span
-                            className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
-                              change?.max >= 0
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {change?.max >= 0 ? (
-                              <>
-                                <TrendingUp className="h-3 w-3" />+
-                                {change?.max?.toFixed(2)}%
-                              </>
-                            ) : (
-                              <>
-                                <TrendingDown className="h-3 w-3" />
-                                {change?.max?.toFixed(2)}%
-                              </>
-                            )}
-                          </span>
+                          {change && typeof change.max === 'number' && (
+                            <span
+                              className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                change.max >= 0
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {change.max >= 0 ? (
+                                <>
+                                  <TrendingUp className="h-3 w-3" />+
+                                  {change.max.toFixed(2)}%
+                                </>
+                              ) : (
+                                <>
+                                  <TrendingDown className="h-3 w-3" />
+                                  {change.max.toFixed(2)}%
+                                </>
+                              )}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -776,27 +780,29 @@ export default function Dashboard() {
                         <span className="text-sm text-gray-600">Avg</span>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-gray-900">
-                            {formatRupee(avg)}
+                            {formatRupee(avg || 0)}
                           </span>
-                          <span
-                            className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
-                              change?.avg >= 0
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {change?.avg >= 0 ? (
-                              <>
-                                <TrendingUp className="h-3 w-3" />+
-                                {change?.avg?.toFixed(2)}%
-                              </>
-                            ) : (
-                              <>
-                                <TrendingDown className="h-3 w-3" />
-                                {change?.avg?.toFixed(2)}%
-                              </>
-                            )}
-                          </span>
+                          {change && typeof change.avg === 'number' && (
+                            <span
+                              className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                change.avg >= 0
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {change.avg >= 0 ? (
+                                <>
+                                  <TrendingUp className="h-3 w-3" />+
+                                  {change.avg.toFixed(2)}%
+                                </>
+                              ) : (
+                                <>
+                                  <TrendingDown className="h-3 w-3" />
+                                  {change.avg.toFixed(2)}%
+                                </>
+                              )}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -804,32 +810,35 @@ export default function Dashboard() {
                         <span className="text-sm text-gray-600">Min</span>
                         <div className="flex items-center gap-2">
                           <span className="font-semibold text-gray-900">
-                            {formatRupee(min)}
+                            {formatRupee(min || 0)}
                           </span>
-                          <span
-                            className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
-                              change?.min >= 0
-                                ? "bg-emerald-100 text-emerald-700"
-                                : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            {change?.min >= 0 ? (
-                              <>
-                                <TrendingUp className="h-3 w-3" />+
-                                {change?.min?.toFixed(2)}%
-                              </>
-                            ) : (
-                              <>
-                                <TrendingDown className="h-3 w-3" />
-                                {change?.min?.toFixed(2)}%
-                              </>
-                            )}
-                          </span>
+                          {change && typeof change.min === 'number' && (
+                            <span
+                              className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium ${
+                                change.min >= 0
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {change.min >= 0 ? (
+                                <>
+                                  <TrendingUp className="h-3 w-3" />+
+                                  {change.min.toFixed(2)}%
+                                </>
+                              ) : (
+                                <>
+                                  <TrendingDown className="h-3 w-3" />
+                                  {change.min.toFixed(2)}%
+                                </>
+                              )}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
                   </div>
-                )
+                  );
+                }
               )}
             </div>
           )}

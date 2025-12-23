@@ -67,13 +67,12 @@ const sidebarItems = [
     icon: Warehouse,
     href: "/admin/warehouses",
   },
-
-  // {
-  //   id: "inventory",
-  //   label: "Inventory",
-  //   icon: Package,
-  //   href: "/admin/inventory",
-  // },
+  {
+    id: "graincategories",
+    label: "Grain Categories",
+    icon: Package,
+    href: "/admin/graincategories",
+  },
   {
     id: "employeeonboarding",
     label: "Employee Onboarding",
@@ -86,7 +85,7 @@ const sidebarItems = [
     icon: Users,
     href: "/admin/farmers",
   },
-    {
+  {
     id: "managermanagement",
     label: "Managers",
     icon: User2,
@@ -98,7 +97,7 @@ const sidebarItems = [
     icon: UserCircleIcon,
     href: "/admin/supervisors",
   },
-    {
+  {
     id: "staffmanagement",
     label: "Staff",
     icon: User,
@@ -228,7 +227,7 @@ export default function DashboardLayout({ children }) {
       try {
         const res = await getprofile();
         setProfile(res.profile);
-        if( res.profile.role === "farmer"){
+        if (res.profile.role === "farmer") {
           setIsFarmer(true);
         }
         setLoading(false);
