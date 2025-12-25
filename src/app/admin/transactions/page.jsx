@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from "react";
+import axios from "axios";
 import {
   ArrowDownCircle,
   ArrowUpCircle,
@@ -22,109 +22,400 @@ import {
   Download,
   TrendingUp,
   ChevronsLeft,
-  ChevronsRight
-} from 'lucide-react';
-import API_BASE_URL from '@/utils/constants';
+  ChevronsRight,
+  FileDown,
+  CalendarRange,
+  X,
+  FileSpreadsheet,
+} from "lucide-react";
+import API_BASE_URL from "@/utils/constants";
+import TransactionFilterModal from "@/components/common/TransactionFilterModal";
+import handlePrint from "@/utils/printPDF";
 
 const TransactionsList = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeCategory, setActiveCategory] = useState('');
+  const [activeCategory, setActiveCategory] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [warehouse, setWarehouse] = useState('');
+  const [warehouse, setWarehouse] = useState("");
   const [pagination, setPagination] = useState({
     currentPage: 1,
     limit: 20,
     totalRecords: 0,
-    totalPages: 1
+    totalPages: 1,
   });
   const [transactionCounts, setTransactionCounts] = useState({
     sell: 0,
     deposit: 0,
     withdraw: 0,
-    loan: 0
+    loan: 0,
   });
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const limit = 20;
+
+  // Date filter states
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [showDateFilter, setShowDateFilter] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+
+  // Download states
+  const [downloadingAll, setDownloadingAll] = useState(false);
+  const [downloadingId, setDownloadingId] = useState(null);
+
+  // Items per page
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+
+  const limit = itemsPerPage;
 
   const categories = [
-    { key: '', label: 'All', icon: Filter, color: 'bg-gradient-to-r from-slate-600 to-slate-700', lightColor: 'bg-slate-50', textColor: 'text-slate-600', accent: 'border-slate-400' },
-    { key: 'deposit', label: 'Deposit', icon: ArrowDownCircle, color: 'bg-gradient-to-r from-emerald-500 to-teal-500', lightColor: 'bg-emerald-50', textColor: 'text-emerald-600', accent: 'border-emerald-400' },
-    { key: 'withdraw', label: 'Withdraw', icon: ArrowUpCircle, color: 'bg-gradient-to-r from-orange-400 to-amber-500', lightColor: 'bg-orange-50', textColor: 'text-orange-600', accent: 'border-orange-400' },
-    { key: 'sell', label: 'Sell', icon: DollarSign, color: 'bg-gradient-to-r from-sky-500 to-blue-500', lightColor: 'bg-sky-50', textColor: 'text-sky-600', accent: 'border-sky-400' },
-    { key: 'loan', label: 'Loan', icon: Wallet, color: 'bg-gradient-to-r from-violet-500 to-purple-500', lightColor: 'bg-violet-50', textColor: 'text-violet-600', accent: 'border-violet-400' },
+    {
+      key: "",
+      label: "All",
+      icon: Filter,
+      color: "bg-gradient-to-r from-slate-600 to-slate-700",
+      lightColor: "bg-slate-50",
+      textColor: "text-slate-600",
+      accent: "border-slate-400",
+    },
+    {
+      key: "deposit",
+      label: "Deposit",
+      icon: ArrowDownCircle,
+      color: "bg-gradient-to-r from-emerald-500 to-teal-500",
+      lightColor: "bg-emerald-50",
+      textColor: "text-emerald-600",
+      accent: "border-emerald-400",
+    },
+    {
+      key: "withdraw",
+      label: "Withdraw",
+      icon: ArrowUpCircle,
+      color: "bg-gradient-to-r from-orange-400 to-amber-500",
+      lightColor: "bg-orange-50",
+      textColor: "text-orange-600",
+      accent: "border-orange-400",
+    },
+    {
+      key: "sell",
+      label: "Sell",
+      icon: DollarSign,
+      color: "bg-gradient-to-r from-sky-500 to-blue-500",
+      lightColor: "bg-sky-50",
+      textColor: "text-sky-600",
+      accent: "border-sky-400",
+    },
+    {
+      key: "loan",
+      label: "Loan",
+      icon: Wallet,
+      color: "bg-gradient-to-r from-violet-500 to-purple-500",
+      lightColor: "bg-violet-50",
+      textColor: "text-violet-600",
+      accent: "border-violet-400",
+    },
   ];
+
+  const handleDownload = (transactions) => {
+    console.log("Downloaded transactions:", transactions);
+  };
 
   useEffect(() => {
     fetchTransactions();
-  }, [activeCategory, currentPage]);
+  }, [activeCategory, currentPage, itemsPerPage]);
 
   const fetchTransactions = async () => {
     setLoading(true);
     setError(null);
     try {
+      const params = {
+        transaction_type: activeCategory,
+        limit: limit,
+        page: currentPage,
+      };
+
+      // Add date filters if set
+      if (startDate) {
+        params.start_date = startDate;
+      }
+      if (endDate) {
+        params.end_date = endDate;
+      }
+
       const response = await axios.get(
         `${API_BASE_URL}/transaction/getalltransactions`,
         {
-          params: {
-            transaction_type: activeCategory,
-            limit: limit,
-            page: currentPage,
-          },
+          params,
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       );
-      
-      // Update state with new response structure
+
       setTransactions(response.data.data || []);
-      setPagination(response.data.pagination || {
-        currentPage: 1,
-        limit: 20,
-        totalRecords: 0,
-        totalPages: 1
-      });
-      setTransactionCounts(response.data.transactionCounts || {
-        sell: 0,
-        deposit: 0,
-        withdraw: 0,
-        loan: 0
-      });
+      setPagination(
+        response.data.pagination || {
+          currentPage: 1,
+          limit: 20,
+          totalRecords: 0,
+          totalPages: 1,
+        }
+      );
+      setTransactionCounts(
+        response.data.transactionCounts || {
+          sell: 0,
+          deposit: 0,
+          withdraw: 0,
+          loan: 0,
+        }
+      );
       setWarehouse(response.data.warehouse);
     } catch (err) {
-      setError('Failed to fetch transactions. Please try again.');
-      console.error('Error fetching transactions:', err);
+      setError("Failed to fetch transactions. Please try again.");
+      console.error("Error fetching transactions:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // Apply date filter
+  const applyDateFilter = () => {
+    setCurrentPage(1);
+    fetchTransactions();
+  };
+
+  // Clear date filters
+  const clearDateFilters = () => {
+    setStartDate("");
+    setEndDate("");
+    setCurrentPage(1);
+    setTimeout(() => fetchTransactions(), 0);
+  };
+
+  // Format date for display
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // Format date for input
+  const formatDateForInput = (date) => {
+    if (!date) return "";
+    return new Date(date).toISOString().split("T")[0];
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount || 0);
+  };
+
+  // Generate CSV content from transactions
+  const generateTransactionCSV = (transactionsData) => {
+    const headers = [
+      "Transaction ID",
+      "Date",
+      "Type",
+      "Status",
+      "Farmer Name",
+      "Farmer ID",
+      "Email",
+      "Phone",
+      "Warehouse Name",
+      "Warehouse Location",
+      "Grain Details",
+      "Total Quantity (qtl)",
+      "Total Amount (INR)",
+      "Remarks",
+      "Supervisor Approval",
+      "Supervisor Approved By",
+      "Supervisor Approval Date",
+      "Manager Approval",
+      "Manager Approved By",
+      "Manager Approval Date",
+      "Admin Approval",
+      "Admin Approved By",
+      "Admin Approval Date",
+    ];
+
+    const rows = transactionsData.map((t) => {
+      const totalQuantity =
+        t.grain?.reduce((sum, g) => sum + (g.quantity_quintal || 0), 0) || 0;
+      const grainDetails =
+        t.grain
+          ?.map(
+            (g) =>
+              `${g.category_id?.grain_type || "Unknown"} - Grade ${
+                g.category_id?.quality || "N/A"
+              }: ${g.quantity_quintal?.toFixed(2) || 0} qtl @ ${
+                g.price_per_quintal || 0
+              }/qtl`
+          )
+          .join(" | ") || "";
+
+      return [
+        t._id,
+        formatDate(t.transaction_date),
+        t.transaction_type?.toUpperCase(),
+        t.transaction_status?.toUpperCase(),
+        t.user_id?.name || "",
+        t.user_id?.farmerProfile?.farmerId || "",
+        t.user_id?.email || "",
+        t.user_id?.phone_number || "",
+        t.warehouse_id?.name || "",
+        t.warehouse_id?.location || "",
+        grainDetails,
+        totalQuantity.toFixed(2),
+        t.total_amount || 0,
+        t.remarks?.replace(/_/g, " ") || "",
+        t.approval_status?.supervisor_approval?.status ? "Approved" : "Pending",
+        t.approval_status?.supervisor_approval?.user_id?.name || "",
+        t.approval_status?.supervisor_approval?.date
+          ? formatDate(t.approval_status.supervisor_approval.date)
+          : "",
+        t.approval_status?.manager_approval?.status ? "Approved" : "Pending",
+        t.approval_status?.manager_approval?.user_id?.name || "",
+        t.approval_status?.manager_approval?.date
+          ? formatDate(t.approval_status.manager_approval.date)
+          : "",
+        t.approval_status?.admin_approval?.status ? "Approved" : "Pending",
+        t.approval_status?.admin_approval?.user_id?.name || "",
+        t.approval_status?.admin_approval?.date
+          ? formatDate(t.approval_status.admin_approval.date)
+          : "",
+      ];
+    });
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) =>
+        row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")
+      ),
+    ].join("\n");
+
+    return csvContent;
+  };
+
+  // Download CSV file
+  const downloadCSV = (content, filename) => {
+    const BOM = "\uFEFF";
+    const blob = new Blob([BOM + content], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Download single transaction
+  const downloadTransaction = async (transaction, e) => {
+    e.stopPropagation();
+    setDownloadingId(transaction._id);
+    try {
+      const csv = generateTransactionCSV([transaction]);
+      const filename = `transaction_${
+        transaction.transaction_type
+      }_${transaction._id.slice(-8)}_${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
+      downloadCSV(csv, filename);
+    } catch (err) {
+      console.error("Error downloading transaction:", err);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  // Download all transactions (with current filters)
+  const downloadAllTransactions = async () => {
+    setDownloadingAll(true);
+    try {
+      const params = {
+        transaction_type: activeCategory,
+        limit: 100000, // Get all matching records
+        page: 1,
+      };
+
+      if (startDate) params.start_date = startDate;
+      if (endDate) params.end_date = endDate;
+
+      const response = await axios.get(
+        `${API_BASE_URL}/transaction/getalltransactions`,
+        {
+          params,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const allTransactions = response.data.data || [];
+
+      if (allTransactions.length === 0) {
+        alert("No transactions to download");
+        return;
+      }
+
+      const csv = generateTransactionCSV(allTransactions);
+      const dateRange =
+        startDate && endDate
+          ? `_${startDate}_to_${endDate}`
+          : startDate
+          ? `_from_${startDate}`
+          : endDate
+          ? `_until_${endDate}`
+          : "";
+      const typeLabel = activeCategory || "all";
+      const filename = `transactions_${typeLabel}${dateRange}_${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
+
+      downloadCSV(csv, filename);
+    } catch (err) {
+      console.error("Error downloading transactions:", err);
+      alert("Failed to download transactions. Please try again.");
+    } finally {
+      setDownloadingAll(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     const statusConfig = {
-      completed: { 
-        color: 'bg-green-100 text-green-800 border-green-200', 
+      completed: {
+        color: "bg-green-100 text-green-800 border-green-200",
         icon: CheckCircle,
-        gradient: 'bg-gradient-to-r from-green-500 to-emerald-500'
+        gradient: "bg-gradient-to-r from-green-500 to-emerald-500",
       },
-      pending: { 
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-200', 
+      pending: {
+        color: "bg-yellow-100 text-yellow-800 border-yellow-200",
         icon: Clock,
-        gradient: 'bg-gradient-to-r from-yellow-500 to-amber-500'
+        gradient: "bg-gradient-to-r from-yellow-500 to-amber-500",
       },
-      rejected: { 
-        color: 'bg-red-100 text-red-800 border-red-200', 
+      rejected: {
+        color: "bg-red-100 text-red-800 border-red-200",
         icon: XCircle,
-        gradient: 'bg-gradient-to-r from-red-500 to-rose-500'
+        gradient: "bg-gradient-to-r from-red-500 to-rose-500",
       },
     };
     const config = statusConfig[status] || statusConfig.pending;
     const Icon = config.icon;
-    
+
     return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm ${config.color}`}>
+      <span
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border shadow-sm ${config.color}`}
+      >
         <Icon size={14} />
         {status?.charAt(0).toUpperCase() + status?.slice(1)}
       </span>
@@ -133,14 +424,14 @@ const TransactionsList = () => {
 
   const getTransactionTypeIcon = (type) => {
     const icons = {
-      deposit: { icon: ArrowDownCircle, color: 'text-green-600 bg-green-100' },
-      withdraw: { icon: ArrowUpCircle, color: 'text-orange-600 bg-orange-100' },
-      sell: { icon: DollarSign, color: 'text-blue-600 bg-blue-100' },
-      loan: { icon: Wallet, color: 'text-purple-600 bg-purple-100' },
+      deposit: { icon: ArrowDownCircle, color: "text-green-600 bg-green-100" },
+      withdraw: { icon: ArrowUpCircle, color: "text-orange-600 bg-orange-100" },
+      sell: { icon: DollarSign, color: "text-blue-600 bg-blue-100" },
+      loan: { icon: Wallet, color: "text-purple-600 bg-purple-100" },
     };
     const config = icons[type] || icons.deposit;
     const Icon = config.icon;
-    
+
     return (
       <div className={`p-3 rounded-2xl ${config.color} shadow-sm`}>
         <Icon size={24} strokeWidth={2} />
@@ -148,37 +439,26 @@ const TransactionsList = () => {
     );
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0,
-    }).format(amount || 0);
-  };
-
   const getTotalTransactions = () => {
-    return transactionCounts.sell + transactionCounts.deposit + 
-           transactionCounts.withdraw + transactionCounts.loan;
+    return (
+      transactionCounts.sell +
+      transactionCounts.deposit +
+      transactionCounts.withdraw +
+      transactionCounts.loan
+    );
   };
 
   const ApprovalStatusComponent = ({ approval }) => {
     if (!approval) return null;
 
     const approvals = [
-      { label: 'Supervisor', data: approval.supervisor_approval, shortLabel: 'SUP' },
-      { label: 'Manager', data: approval.manager_approval, shortLabel: 'MGR' },
-      { label: 'Admin', data: approval.admin_approval, shortLabel: 'ADM' },
+      {
+        label: "Supervisor",
+        data: approval.supervisor_approval,
+        shortLabel: "SUP",
+      },
+      { label: "Manager", data: approval.manager_approval, shortLabel: "MGR" },
+      { label: "Admin", data: approval.admin_approval, shortLabel: "ADM" },
     ];
 
     return (
@@ -188,10 +468,10 @@ const TransactionsList = () => {
             key={index}
             className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-all ${
               item.data?.status
-                ? 'bg-green-100 text-green-700 border border-green-200'
+                ? "bg-green-100 text-green-700 border border-green-200"
                 : item.data?.date
-                ? 'bg-red-100 text-red-700 border border-red-200'
-                : 'bg-gray-100 text-gray-500 border border-gray-200'
+                ? "bg-red-100 text-red-700 border border-red-200"
+                : "bg-gray-100 text-gray-500 border border-gray-200"
             }`}
             title={item.label}
           >
@@ -214,23 +494,47 @@ const TransactionsList = () => {
     if (!transaction) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div 
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+        onClick={onClose}
+      >
+        <div
           className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Modal Header */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-5 flex items-center justify-between">
             <div>
-              <h3 className="text-xl font-bold text-gray-800">Transaction Details</h3>
-              <p className="text-sm text-gray-500 mt-0.5">ID: {transaction._id?.slice(-8).toUpperCase()}</p>
+              <h3 className="text-xl font-bold text-gray-800">
+                Transaction Details
+              </h3>
+              <p className="text-sm text-gray-500 mt-0.5">
+                ID: {transaction._id?.slice(-8).toUpperCase()}
+              </p>
             </div>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <XCircle size={24} className="text-gray-400 hover:text-gray-600" />
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() =>
+                  handlePrint({
+                    data: selectedTransaction,
+                    service: "usertransaction",
+                  })
+                }
+                className="flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors font-medium"
+              >
+                <Download size={18} />
+                Download PDF
+              </button>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              >
+                <XCircle
+                  size={24}
+                  className="text-gray-400 hover:text-gray-600"
+                />
+              </button>
+            </div>
           </div>
 
           {/* Modal Body */}
@@ -257,17 +561,28 @@ const TransactionsList = () => {
               </h4>
               <div className="flex items-center gap-4">
                 <img
-                  src={transaction.user_id?.farmerProfile?.user_image || '/placeholder-user.png'}
+                  src={
+                    transaction.user_id?.farmerProfile?.user_image ||
+                    "/placeholder-user.png"
+                  }
                   alt={transaction.user_id?.name}
                   className="w-16 h-16 rounded-2xl object-cover border-4 border-white shadow-lg"
                   onError={(e) => {
-                    e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(transaction.user_id?.name || 'User');
+                    e.target.src =
+                      "https://ui-avatars.com/api/?name=" +
+                      encodeURIComponent(transaction.user_id?.name || "User");
                   }}
                 />
                 <div className="flex-1">
-                  <p className="font-bold text-gray-800 text-lg">{transaction.user_id?.name}</p>
-                  <p className="text-sm text-gray-500">{transaction.user_id?.email}</p>
-                  <p className="text-sm text-gray-500">{transaction.user_id?.phone_number}</p>
+                  <p className="font-bold text-gray-800 text-lg">
+                    {transaction.user_id?.name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {transaction.user_id?.email}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {transaction.user_id?.phone_number}
+                  </p>
                   <span className="inline-block mt-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold">
                     {transaction.user_id?.farmerProfile?.farmerId}
                   </span>
@@ -286,7 +601,9 @@ const TransactionsList = () => {
                   <p className="font-bold text-gray-800">
                     {transaction.warehouse_id.name}
                   </p>
-                  <p className="text-sm text-gray-600">{transaction.warehouse_id.location}</p>
+                  <p className="text-sm text-gray-600">
+                    {transaction.warehouse_id.location}
+                  </p>
                 </div>
               </div>
             )}
@@ -314,16 +631,22 @@ const TransactionsList = () => {
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
                       <div className="bg-gray-50 rounded-xl p-3">
                         <p className="text-gray-500 text-xs">Quantity</p>
-                        <p className="font-bold text-gray-800">{item.quantity_quintal?.toFixed(2)} qtl</p>
+                        <p className="font-bold text-gray-800">
+                          {item.quantity_quintal?.toFixed(2)} qtl
+                        </p>
                       </div>
                       <div className="bg-gray-50 rounded-xl p-3">
                         <p className="text-gray-500 text-xs">Price/Quintal</p>
-                        <p className="font-bold text-gray-800">{formatCurrency(item.price_per_quintal)}</p>
+                        <p className="font-bold text-gray-800">
+                          {formatCurrency(item.price_per_quintal)}
+                        </p>
                       </div>
                       {item.moisture_content > 0 && (
                         <div className="bg-yellow-50 rounded-xl p-3">
                           <p className="text-gray-500 text-xs">Moisture</p>
-                          <p className="font-bold text-yellow-700">{item.moisture_content}%</p>
+                          <p className="font-bold text-yellow-700">
+                            {item.moisture_content}%
+                          </p>
                         </div>
                       )}
                     </div>
@@ -336,8 +659,12 @@ const TransactionsList = () => {
             <div className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 rounded-2xl p-5 text-white shadow-lg">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-blue-100 text-sm font-medium">Total Amount</p>
-                  <p className="text-4xl font-bold mt-1">{formatCurrency(transaction.total_amount)}</p>
+                  <p className="text-blue-100 text-sm font-medium">
+                    Total Amount
+                  </p>
+                  <p className="text-4xl font-bold mt-1">
+                    {formatCurrency(transaction.total_amount)}
+                  </p>
                 </div>
                 <div className="p-4 bg-white/20 rounded-2xl backdrop-blur-sm">
                   <TrendingUp size={32} />
@@ -353,28 +680,39 @@ const TransactionsList = () => {
               </h4>
               <div className="space-y-3">
                 {[
-                  { label: 'Supervisor', data: transaction.approval_status?.supervisor_approval },
-                  { label: 'Manager', data: transaction.approval_status?.manager_approval },
-                  { label: 'Admin', data: transaction.approval_status?.admin_approval },
+                  {
+                    label: "Supervisor",
+                    data: transaction.approval_status?.supervisor_approval,
+                  },
+                  {
+                    label: "Manager",
+                    data: transaction.approval_status?.manager_approval,
+                  },
+                  {
+                    label: "Admin",
+                    data: transaction.approval_status?.admin_approval,
+                  },
                 ].map((item, index) => (
                   <div
                     key={index}
                     className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${
                       item.data?.status
-                        ? 'bg-green-50 border-green-200'
+                        ? "bg-green-50 border-green-200"
                         : item.data?.date
-                        ? 'bg-red-50 border-red-200'
-                        : 'bg-gray-50 border-gray-200'
+                        ? "bg-red-50 border-red-200"
+                        : "bg-gray-50 border-gray-200"
                     }`}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-xl ${
-                        item.data?.status
-                          ? 'bg-green-100'
-                          : item.data?.date
-                          ? 'bg-red-100'
-                          : 'bg-gray-200'
-                      }`}>
+                      <div
+                        className={`p-2 rounded-xl ${
+                          item.data?.status
+                            ? "bg-green-100"
+                            : item.data?.date
+                            ? "bg-red-100"
+                            : "bg-gray-200"
+                        }`}
+                      >
                         {item.data?.status ? (
                           <CheckCircle className="text-green-600" size={24} />
                         ) : item.data?.date ? (
@@ -384,11 +722,17 @@ const TransactionsList = () => {
                         )}
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-800">{item.label}</p>
+                        <p className="font-semibold text-gray-800">
+                          {item.label}
+                        </p>
                         {item.data?.user_id ? (
-                          <p className="text-sm text-gray-500">{item.data.user_id.name}</p>
+                          <p className="text-sm text-gray-500">
+                            {item.data.user_id.name}
+                          </p>
                         ) : (
-                          <p className="text-sm text-gray-400">Pending approval</p>
+                          <p className="text-sm text-gray-400">
+                            Pending approval
+                          </p>
                         )}
                       </div>
                     </div>
@@ -405,9 +749,11 @@ const TransactionsList = () => {
             {/* Remarks */}
             {transaction.remarks && (
               <div className="bg-amber-50 rounded-2xl p-4 border border-amber-200">
-                <p className="text-sm text-amber-700 font-medium mb-1">Remarks</p>
+                <p className="text-sm text-amber-700 font-medium mb-1">
+                  Remarks
+                </p>
                 <p className="font-semibold text-gray-800 capitalize">
-                  {transaction.remarks.replace(/_/g, ' ')}
+                  {transaction.remarks.replace(/_/g, " ")}
                 </p>
               </div>
             )}
@@ -416,7 +762,8 @@ const TransactionsList = () => {
             <div className="flex items-center gap-3 text-gray-500 bg-gray-50 rounded-xl p-3">
               <Calendar size={18} />
               <span className="text-sm">
-                <span className="font-medium">Transaction Date:</span> {formatDate(transaction.transaction_date)}
+                <span className="font-medium">Transaction Date:</span>{" "}
+                {formatDate(transaction.transaction_date)}
               </span>
             </div>
           </div>
@@ -425,16 +772,95 @@ const TransactionsList = () => {
     );
   };
 
+  // Date Filter Component
+  const DateFilterComponent = () => {
+    return (
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div className="flex items-center gap-2 text-gray-700 font-semibold">
+            <CalendarRange size={20} className="text-blue-500" />
+            <span>Date Range Filter</span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 flex-1">
+            <div className="flex-1">
+              <label className="block text-xs text-gray-500 mb-1">
+                Start Date
+              </label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                max={endDate || undefined}
+              />
+            </div>
+            <div className="flex-1">
+              <label className="block text-xs text-gray-500 mb-1">
+                End Date
+              </label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                min={startDate || undefined}
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={applyDateFilter}
+              disabled={loading}
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all font-semibold shadow-lg shadow-blue-200 disabled:opacity-50"
+            >
+              <Search size={16} />
+              Apply Filter
+            </button>
+
+            {(startDate || endDate) && (
+              <button
+                onClick={clearDateFilters}
+                className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-all font-medium"
+              >
+                <X size={16} />
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Active filter indicator */}
+        {(startDate || endDate) && (
+          <div className="mt-3 flex items-center gap-2 text-sm">
+            <span className="text-gray-500">Active filter:</span>
+            <span className="px-3 py-1 bg-blue-50 text-blue-700 rounded-lg font-medium">
+              {startDate && endDate
+                ? `${new Date(startDate).toLocaleDateString()} - ${new Date(
+                    endDate
+                  ).toLocaleDateString()}`
+                : startDate
+                ? `From ${new Date(startDate).toLocaleDateString()}`
+                : `Until ${new Date(endDate).toLocaleDateString()}`}
+            </span>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   // Pagination Component
   const PaginationControls = () => {
-    if (pagination.totalPages <= 1) return null;
+    if (pagination.totalPages <= 1 && pagination.totalRecords <= itemsPerPage)
+      return null;
 
     const getPageNumbers = () => {
       const pages = [];
       const maxVisible = 5;
       let start = Math.max(1, currentPage - Math.floor(maxVisible / 2));
       let end = Math.min(pagination.totalPages, start + maxVisible - 1);
-      
+
       if (end - start + 1 < maxVisible) {
         start = Math.max(1, end - maxVisible + 1);
       }
@@ -447,12 +873,45 @@ const TransactionsList = () => {
 
     return (
       <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-        <p className="text-gray-600 text-sm">
-          Showing <span className="font-bold text-gray-800">{((currentPage - 1) * pagination.limit) + 1}</span> to{' '}
-          <span className="font-bold text-gray-800">{Math.min(currentPage * pagination.limit, pagination.totalRecords)}</span> of{' '}
-          <span className="font-bold text-gray-800">{pagination.totalRecords}</span> transactions
-        </p>
-        
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          <p className="text-gray-600 text-sm">
+            Showing{" "}
+            <span className="font-bold text-gray-800">
+              {(currentPage - 1) * pagination.limit + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-bold text-gray-800">
+              {Math.min(
+                currentPage * pagination.limit,
+                pagination.totalRecords
+              )}
+            </span>{" "}
+            of{" "}
+            <span className="font-bold text-gray-800">
+              {pagination.totalRecords}
+            </span>{" "}
+            transactions
+          </p>
+
+          {/* Items per page selector */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">Per page:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+            </select>
+          </div>
+        </div>
+
         <div className="flex items-center gap-1.5">
           {/* First Page */}
           <button
@@ -476,19 +935,48 @@ const TransactionsList = () => {
 
           {/* Page Numbers */}
           <div className="hidden sm:flex items-center gap-1">
+            {currentPage > 3 && pagination.totalPages > 5 && (
+              <>
+                <button
+                  onClick={() => setCurrentPage(1)}
+                  className="w-10 h-10 rounded-xl text-gray-600 hover:bg-gray-100 border border-gray-200 font-semibold"
+                >
+                  1
+                </button>
+                {currentPage > 4 && (
+                  <span className="px-2 text-gray-400">...</span>
+                )}
+              </>
+            )}
+
             {getPageNumbers().map((pageNum) => (
               <button
                 key={pageNum}
                 onClick={() => setCurrentPage(pageNum)}
                 className={`w-10 h-10 rounded-xl font-semibold transition-all ${
                   currentPage === pageNum
-                    ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-200'
-                    : 'text-gray-600 hover:bg-gray-100 border border-gray-200'
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-200"
+                    : "text-gray-600 hover:bg-gray-100 border border-gray-200"
                 }`}
               >
                 {pageNum}
               </button>
             ))}
+
+            {currentPage < pagination.totalPages - 2 &&
+              pagination.totalPages > 5 && (
+                <>
+                  {currentPage < pagination.totalPages - 3 && (
+                    <span className="px-2 text-gray-400">...</span>
+                  )}
+                  <button
+                    onClick={() => setCurrentPage(pagination.totalPages)}
+                    className="w-10 h-10 rounded-xl text-gray-600 hover:bg-gray-100 border border-gray-200 font-semibold"
+                  >
+                    {pagination.totalPages}
+                  </button>
+                </>
+              )}
           </div>
 
           {/* Mobile Page Indicator */}
@@ -499,7 +987,11 @@ const TransactionsList = () => {
 
           {/* Next Page */}
           <button
-            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, pagination.totalPages))}
+            onClick={() =>
+              setCurrentPage((prev) =>
+                Math.min(prev + 1, pagination.totalPages)
+              )
+            }
             disabled={currentPage === pagination.totalPages}
             className="flex items-center gap-1 px-3 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
           >
@@ -521,23 +1013,74 @@ const TransactionsList = () => {
     );
   };
 
+  // Jump to page component
+  const JumpToPage = () => {
+    const [jumpPage, setJumpPage] = useState("");
+
+    const handleJump = () => {
+      const page = parseInt(jumpPage);
+      if (page >= 1 && page <= pagination.totalPages) {
+        setCurrentPage(page);
+        setJumpPage("");
+      }
+    };
+
+    if (pagination.totalPages <= 5) return null;
+
+    return (
+      <div className="flex items-center gap-2 mt-4 justify-center">
+        <span className="text-sm text-gray-500">Jump to page:</span>
+        <input
+          type="number"
+          min="1"
+          max={pagination.totalPages}
+          value={jumpPage}
+          onChange={(e) => setJumpPage(e.target.value)}
+          onKeyPress={(e) => e.key === "Enter" && handleJump()}
+          className="w-20 px-3 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+          placeholder="Page"
+        />
+        <button
+          onClick={handleJump}
+          className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition-all text-sm font-medium"
+        >
+          Go
+        </button>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen p-4 ">
+    <div className="min-h-screen p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-2">
-            Transactions
-          </h1>
-          <p className="text-gray-600">
-            Manage and track all your grain transactions
-          </p>
+              Transactions
+            </h1>
+            <p className="text-gray-600">
+              Manage and track all your grain transactions
+            </p>
           </div>
-          <p className="text-gray-100 font-bold bg-blue-600 px-6 py-1 rounded-full">
-            {warehouse}
-          </p>
+          <div className="flex items-center gap-3">
+            {/* Download All Button */}
+            <button
+              onClick={() => setIsFilterModalOpen(true)}
+              disabled={downloadingAll || loading || transactions.length === 0}
+              className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all font-semibold shadow-lg shadow-green-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <FileSpreadsheet size={18} />
+              Download All
+            </button>
+            <p className="text-gray-100 font-bold bg-blue-600 px-6 py-2 rounded-full">
+              {warehouse}
+            </p>
+          </div>
         </div>
+
+        {/* Date Filter */}
+        <DateFilterComponent />
 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -551,14 +1094,22 @@ const TransactionsList = () => {
                   setCurrentPage(1);
                 }}
                 className={`relative overflow-hidden bg-white rounded-2xl p-5 shadow-sm border-2 transition-all cursor-pointer group hover:shadow-xl ${
-                  activeCategory === cat.key ? 'border-blue-400 shadow-lg shadow-blue-100' : 'border-gray-100 hover:border-gray-200'
+                  activeCategory === cat.key
+                    ? "border-blue-400 shadow-lg shadow-blue-100"
+                    : "border-gray-100 hover:border-gray-200"
                 }`}
               >
-                <div className={`absolute top-0 right-0 w-20 h-20 ${cat.lightColor} rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity`} />
-                <div className={`relative z-10 w-12 h-12 ${cat.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}>
+                <div
+                  className={`absolute top-0 right-0 w-20 h-20 ${cat.lightColor} rounded-bl-full opacity-50 group-hover:opacity-100 transition-opacity`}
+                />
+                <div
+                  className={`relative z-10 w-12 h-12 ${cat.color} rounded-2xl flex items-center justify-center mb-4 shadow-lg`}
+                >
                   <cat.icon size={24} className="text-white" />
                 </div>
-                <p className="text-gray-500 text-sm font-medium relative z-10">{cat.label}</p>
+                <p className="text-gray-500 text-sm font-medium relative z-10">
+                  {cat.label}
+                </p>
                 <p className="text-3xl font-bold text-gray-800 mt-1 relative z-10">
                   {count}
                 </p>
@@ -588,14 +1139,16 @@ const TransactionsList = () => {
               >
                 <cat.icon size={18} />
                 {cat.label}
-                {cat.key === '' ? (
+                {cat.key === "" ? (
                   <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-lg text-xs">
                     {getTotalTransactions()}
                   </span>
                 ) : (
-                  <span className={`ml-1 px-2 py-0.5 rounded-lg text-xs ${
-                    activeCategory === cat.key ? 'bg-white/20' : 'bg-gray-100'
-                  }`}>
+                  <span
+                    className={`ml-1 px-2 py-0.5 rounded-lg text-xs ${
+                      activeCategory === cat.key ? "bg-white/20" : "bg-gray-100"
+                    }`}
+                  >
                     {transactionCounts[cat.key] || 0}
                   </span>
                 )}
@@ -606,16 +1159,34 @@ const TransactionsList = () => {
 
         {/* Refresh Button & Info */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <p className="text-gray-600">
-              Showing <span className="font-bold text-gray-800">{transactions.length}</span> of{' '}
-              <span className="font-bold text-gray-800">{pagination.totalRecords}</span> transactions
+              Showing{" "}
+              <span className="font-bold text-gray-800">
+                {transactions.length}
+              </span>{" "}
+              of{" "}
+              <span className="font-bold text-gray-800">
+                {pagination.totalRecords}
+              </span>{" "}
+              transactions
             </p>
             {activeCategory && (
-              <span className={`px-3 py-1 rounded-lg text-xs font-semibold ${
-                categories.find(c => c.key === activeCategory)?.lightColor
-              } ${categories.find(c => c.key === activeCategory)?.textColor}`}>
-                {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)} only
+              <span
+                className={`px-3 py-1 rounded-lg text-xs font-semibold ${
+                  categories.find((c) => c.key === activeCategory)?.lightColor
+                } ${
+                  categories.find((c) => c.key === activeCategory)?.textColor
+                }`}
+              >
+                {activeCategory.charAt(0).toUpperCase() +
+                  activeCategory.slice(1)}{" "}
+                only
+              </span>
+            )}
+            {(startDate || endDate) && (
+              <span className="px-3 py-1 rounded-lg text-xs font-semibold bg-blue-50 text-blue-600">
+                Date filtered
               </span>
             )}
           </div>
@@ -624,7 +1195,7 @@ const TransactionsList = () => {
             disabled={loading}
             className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all font-medium shadow-sm"
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
             Refresh
           </button>
         </div>
@@ -637,7 +1208,9 @@ const TransactionsList = () => {
                 <div className="w-16 h-16 border-4 border-blue-200 rounded-full animate-pulse"></div>
                 <div className="absolute top-0 left-0 w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
-              <p className="text-gray-500 font-medium">Loading transactions...</p>
+              <p className="text-gray-500 font-medium">
+                Loading transactions...
+              </p>
             </div>
           </div>
         )}
@@ -648,7 +1221,9 @@ const TransactionsList = () => {
             <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <XCircle className="w-8 h-8 text-red-500" />
             </div>
-            <p className="text-red-700 font-semibold text-lg mb-2">Oops! Something went wrong</p>
+            <p className="text-red-700 font-semibold text-lg mb-2">
+              Oops! Something went wrong
+            </p>
             <p className="text-red-600 mb-4">{error}</p>
             <button
               onClick={fetchTransactions}
@@ -667,13 +1242,25 @@ const TransactionsList = () => {
                 <div className="w-20 h-20 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <Package className="w-10 h-10 text-gray-400" />
                 </div>
-                <p className="text-gray-700 text-xl font-semibold mb-2">No transactions found</p>
-                <p className="text-gray-500">
-                  {activeCategory 
-                    ? `No ${activeCategory} transactions available. Try a different filter.`
-                    : 'No transactions available yet. Check back later.'
-                  }
+                <p className="text-gray-700 text-xl font-semibold mb-2">
+                  No transactions found
                 </p>
+                <p className="text-gray-500">
+                  {activeCategory || startDate || endDate
+                    ? "No transactions match your filters. Try adjusting your search criteria."
+                    : "No transactions available yet. Check back later."}
+                </p>
+                {(activeCategory || startDate || endDate) && (
+                  <button
+                    onClick={() => {
+                      setActiveCategory("");
+                      clearDateFilters();
+                    }}
+                    className="mt-4 px-5 py-2.5 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors font-medium"
+                  >
+                    Clear All Filters
+                  </button>
+                )}
               </div>
             ) : (
               transactions.map((transaction) => (
@@ -691,11 +1278,18 @@ const TransactionsList = () => {
                       {getTransactionTypeIcon(transaction.transaction_type)}
                       <div className="flex items-center gap-3 min-w-0">
                         <img
-                          src={transaction.user_id?.farmerProfile?.user_image || '/placeholder-user.png'}
+                          src={
+                            transaction.user_id?.farmerProfile?.user_image ||
+                            "/placeholder-user.png"
+                          }
                           alt={transaction.user_id?.name}
                           className="w-12 h-12 rounded-xl object-cover border-2 border-gray-100 shadow-sm flex-shrink-0"
                           onError={(e) => {
-                            e.target.src = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(transaction.user_id?.name || 'User');
+                            e.target.src =
+                              "https://ui-avatars.com/api/?name=" +
+                              encodeURIComponent(
+                                transaction.user_id?.name || "User"
+                              );
                           }}
                         />
                         <div className="min-w-0">
@@ -718,12 +1312,16 @@ const TransactionsList = () => {
                             className="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold border border-blue-100"
                           >
                             <Package size={14} className="mr-1.5" />
-                            {item.category_id?.grain_type} 
-                            <span className="ml-1 text-blue-500">({item.quantity_quintal?.toFixed(2)} qtl)</span>
+                            {item.category_id?.grain_type}
+                            <span className="ml-1 text-blue-500">
+                              ({item.quantity_quintal?.toFixed(2)} qtl)
+                            </span>
                           </span>
                         ))}
                       </div>
-                      <ApprovalStatusComponent approval={transaction.approval_status} />
+                      <ApprovalStatusComponent
+                        approval={transaction.approval_status}
+                      />
                     </div>
 
                     {/* Amount & Status */}
@@ -739,9 +1337,15 @@ const TransactionsList = () => {
                       </div>
                       <div className="flex flex-col items-end gap-2">
                         {getStatusBadge(transaction.transaction_status)}
-                        <button className="opacity-0 group-hover:opacity-100 transition-all p-2 bg-gray-100 rounded-xl hover:bg-blue-100 hover:text-blue-600">
-                          <Eye size={18} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          {/* View Button */}
+                          <button
+                            className="opacity-0 group-hover:opacity-100 transition-all p-2 bg-gray-100 rounded-xl hover:bg-blue-100 hover:text-blue-600"
+                            title="View Details"
+                          >
+                            <Eye size={18} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -752,14 +1356,15 @@ const TransactionsList = () => {
                       <div className="flex items-center gap-2 text-gray-600 bg-gray-50 px-3 py-1.5 rounded-lg">
                         <MapPin size={14} className="text-purple-500" />
                         <span className="text-sm">
-                          {transaction.warehouse_id.name}, {transaction.warehouse_id.location}
+                          {transaction.warehouse_id.name},{" "}
+                          {transaction.warehouse_id.location}
                         </span>
                       </div>
                     )}
                     {transaction.remarks && (
                       <div className="flex items-center gap-2 bg-amber-50 px-3 py-1.5 rounded-lg">
                         <span className="text-sm text-amber-700 font-medium capitalize">
-                          {transaction.remarks.replace(/_/g, ' ')}
+                          {transaction.remarks.replace(/_/g, " ")}
                         </span>
                       </div>
                     )}
@@ -771,7 +1376,12 @@ const TransactionsList = () => {
         )}
 
         {/* Pagination */}
-        {!loading && !error && <PaginationControls />}
+        {!loading && !error && transactions.length > 0 && (
+          <>
+            <PaginationControls />
+            <JumpToPage />
+          </>
+        )}
 
         {/* Transaction Detail Modal */}
         {isModalOpen && (
@@ -783,6 +1393,12 @@ const TransactionsList = () => {
             }}
           />
         )}
+
+        <TransactionFilterModal
+          isOpen={isFilterModalOpen}
+          onClose={() => setIsFilterModalOpen(false)}
+          onDownload={handleDownload}
+        />
       </div>
     </div>
   );
