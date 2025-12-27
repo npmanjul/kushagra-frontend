@@ -28,7 +28,15 @@ import {
   BadgeCheck,
   UserCircle,
   CalendarDays,
+  Wheat,
+  Loader2,
+  TrendingDown,
+  ArrowUpRight,
+  ArrowDownRight,
+  XCircle,
+  DollarSign,
 } from "lucide-react";
+import API_BASE_URL from "@/utils/constants";
 
 const WarehouseDetailsModal = ({
   isOpen,
@@ -37,6 +45,9 @@ const WarehouseDetailsModal = ({
 }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [imageErrors, setImageErrors] = useState({});
+  const [inventoryData, setInventoryData] = useState(null);
+  const [isLoadingInventory, setIsLoadingInventory] = useState(false);
+  const [inventoryError, setInventoryError] = useState(null);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -60,15 +71,67 @@ const WarehouseDetailsModal = ({
     if (isOpen) {
       setActiveTab("overview");
       setImageErrors({});
+      fetchInventoryData();
     }
   }, [isOpen]);
 
+  // Fetch inventory data from API
+  const fetchInventoryData = async () => {
+    if (!warehouse?._id) return;
+    
+    setIsLoadingInventory(true);
+    setInventoryError(null);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/warehouse/inventory`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch inventory");
+
+      const data = await response.json();
+      
+      if (data.success && data.warehouses) {
+        // Find the matching warehouse by ID
+        const matchedWarehouse = data.warehouses.find(
+          w => w.warehouseId === warehouse._id
+        );
+        
+        if (matchedWarehouse) {
+          setInventoryData(matchedWarehouse);
+        } else {
+          setInventoryError("No inventory data found for this warehouse");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching inventory:", error);
+      setInventoryError(error.message || "Failed to load inventory data");
+    } finally {
+      setIsLoadingInventory(false);
+    }
+  };
+
   if (!isOpen || !warehouse) return null;
 
+  // Calculate actual used capacity from inventory data
+  const calculateActualUsedCapacity = () => {
+    if (!inventoryData?.categories) return warehouse.used_capacity_quintal || 0;
+    
+    return inventoryData.categories.reduce((total, category) => {
+      const deposited = category.deposit?.completed?.qty || 0;
+      const withdrawn = category.withdraw?.completed || 0;
+      const sold = category.sell?.completed?.qty || 0;
+      const available = deposited - withdrawn - sold;
+      return total + Math.max(0, available);
+    }, 0);
+  };
+
   // Handle API response structure
-  const usedCapacity = warehouse.used_capacity_quintal || 0;
   const totalCapacity = warehouse.capacity_quintal || 0;
-  const availableCapacity = totalCapacity - usedCapacity;
+  const usedCapacity = inventoryData ? calculateActualUsedCapacity() : (warehouse.used_capacity_quintal || 0);
+  const availableCapacity = Math.max(0, totalCapacity - usedCapacity);
   const capacityPercentage =
     totalCapacity > 0 ? Math.round((usedCapacity / totalCapacity) * 100) : 0;
 
@@ -462,7 +525,7 @@ const WarehouseDetailsModal = ({
                     <StatusIcon className={`w-4 h-4 ${status.badgeText}`} />
                   </div>
                   <span className="text-sm font-medium text-slate-300">
-                    Storage Capacity
+                    Storage Capacity {inventoryData ? '(Live Data)' : ''}
                   </span>
                 </div>
                 <span
@@ -481,16 +544,28 @@ const WarehouseDetailsModal = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mt-3 text-sm">
-                <span className="text-slate-400">
-                  {usedCapacity.toLocaleString()} quintal used
-                </span>
-                <span className="font-bold text-white text-lg">
-                  {capacityPercentage}%
-                </span>
-                <span className="text-slate-400">
-                  {totalCapacity.toLocaleString()} quintal total
-                </span>
+              <div className="grid grid-cols-3 gap-2 mt-3 text-sm">
+                <div className="text-center">
+                  <p className="text-xs text-slate-500 mb-0.5">Used</p>
+                  <p className="font-bold text-white">
+                    {usedCapacity.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-slate-400">Qtl</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-slate-500 mb-0.5">Capacity</p>
+                  <p className="font-bold text-white text-lg">
+                    {capacityPercentage}%
+                  </p>
+                  <p className="text-xs text-emerald-400">{availableCapacity.toLocaleString()} available</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-slate-500 mb-0.5">Total</p>
+                  <p className="font-bold text-white">
+                    {totalCapacity.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-slate-400">Qtl</p>
+                </div>
               </div>
             </div>
           </div>
@@ -551,14 +626,14 @@ const WarehouseDetailsModal = ({
                 <StatCard
                   icon={Box}
                   value={usedCapacity}
-                  label="Used Capacity (Quintal)"
+                  label={`Used Space (${capacityPercentage}%)`}
                   gradient="from-emerald-500 to-teal-600"
                   shadowColor="shadow-emerald-500/25"
                 />
                 <StatCard
                   icon={Layers}
                   value={availableCapacity}
-                  label="Available Space (Quintal)"
+                  label={`Available Space (${100 - capacityPercentage}%)`}
                   gradient="from-purple-500 to-pink-600"
                   shadowColor="shadow-purple-500/25"
                 />
@@ -797,29 +872,296 @@ const WarehouseDetailsModal = ({
           {/* Inventory Tab */}
           {activeTab === "inventory" && (
             <div
-              className="text-center py-16"
+              className="space-y-6"
               style={{ animation: "fadeIn 0.3s ease-out" }}
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner">
-                <Package className="w-12 h-12 text-gray-400" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                Inventory Management
-              </h3>
-              <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
-                Track and manage inventory items stored in this warehouse. View
-                stock levels, recent transactions, and more.
-              </p>
-              <div className="flex items-center justify-center gap-4 mt-8">
-                <button className="px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105 flex items-center gap-2">
-                  <ExternalLink className="w-5 h-5" />
-                  View Inventory
-                </button>
-                <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 flex items-center gap-2">
-                  <Package className="w-5 h-5" />
-                  Add Items
-                </button>
-              </div>
+              {isLoadingInventory ? (
+                <div className="text-center py-16">
+                  <Loader2 className="w-12 h-12 text-violet-600 animate-spin mx-auto mb-4" />
+                  <p className="text-gray-600">Loading inventory data...</p>
+                </div>
+              ) : inventoryError ? (
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 bg-red-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                    <XCircle className="w-12 h-12 text-red-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Failed to Load Inventory</h3>
+                  <p className="text-gray-500 mb-4">{inventoryError}</p>
+                  <button
+                    onClick={fetchInventoryData}
+                    className="px-6 py-3 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700 transition-all"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : inventoryData && inventoryData.categories && inventoryData.categories.length > 0 ? (
+                <>
+                  {/* Inventory Summary Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div className="p-5 bg-gradient-to-br from-emerald-50 to-green-50 rounded-2xl border border-emerald-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <Package className="w-8 h-8 text-emerald-600" />
+                        <ArrowUpRight className="w-5 h-5 text-emerald-500" />
+                      </div>
+                      <p className="text-2xl font-bold text-emerald-900">
+                        {inventoryData.categories.reduce((sum, cat) => sum + (cat.deposit?.completed?.qty || 0), 0)}
+                      </p>
+                      <p className="text-sm text-emerald-700 mt-1">Total Deposits (Qtl)</p>
+                    </div>
+                    <div className="p-5 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <TrendingDown className="w-8 h-8 text-blue-600" />
+                        <ArrowDownRight className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <p className="text-2xl font-bold text-blue-900">
+                        {inventoryData.categories.reduce((sum, cat) => sum + (cat.withdraw?.completed || 0), 0)}
+                      </p>
+                      <p className="text-sm text-blue-700 mt-1">Total Withdrawals (Qtl)</p>
+                    </div>
+                    <div className="p-5 bg-gradient-to-br from-purple-50 to-violet-50 rounded-2xl border border-purple-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <Activity className="w-8 h-8 text-purple-600" />
+                        <CheckCircle2 className="w-5 h-5 text-purple-500" />
+                      </div>
+                      <p className="text-2xl font-bold text-purple-900">
+                        {inventoryData.categories.reduce((sum, cat) => sum + (cat.sell?.completed?.qty || 0), 0)}
+                      </p>
+                      <p className="text-sm text-purple-700 mt-1">Total Sales (Qtl)</p>
+                    </div>
+                    <div className="p-5 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-100">
+                      <div className="flex items-center justify-between mb-2">
+                        <DollarSign className="w-8 h-8 text-amber-600" />
+                        <TrendingUp className="w-5 h-5 text-amber-500" />
+                      </div>
+                      <p className="text-2xl font-bold text-amber-900">
+                        ₹{inventoryData.categories.reduce((sum, cat) => sum + (cat.deposit?.completed?.amount || 0), 0).toLocaleString()}
+                      </p>
+                      <p className="text-sm text-amber-700 mt-1">Total Value</p>
+                    </div>
+                  </div>
+
+                  {/* Grain Categories - Grouped by Type */}
+                  <div className="space-y-6">
+                    {(() => {
+                      // Group categories by grain type
+                      const groupedByGrainType = inventoryData.categories.reduce((acc, category) => {
+                        const grainType = category.grain_type;
+                        if (!acc[grainType]) {
+                          acc[grainType] = [];
+                        }
+                        acc[grainType].push(category);
+                        return acc;
+                      }, {});
+
+                      // Sort qualities: A, B, C
+                      const sortQualities = (categories) => {
+                        return categories.sort((a, b) => {
+                          const qualityOrder = { 'A': 1, 'B': 2, 'C': 3 };
+                          return (qualityOrder[a.quality] || 999) - (qualityOrder[b.quality] || 999);
+                        });
+                      };
+
+                      // Define color schemes for different grain types
+                      const grainTypeColors = {
+                        'Wheat': {
+                          bg: 'from-amber-50 to-orange-50',
+                          border: 'border-amber-200',
+                          text: 'text-amber-600',
+                          gradient: 'from-amber-500 to-orange-600'
+                        },
+                        'Rice': {
+                          bg: 'from-emerald-50 to-green-50',
+                          border: 'border-emerald-200',
+                          text: 'text-emerald-600',
+                          gradient: 'from-emerald-500 to-green-600'
+                        },
+                        'Corn': {
+                          bg: 'from-yellow-50 to-amber-50',
+                          border: 'border-yellow-200',
+                          text: 'text-yellow-600',
+                          gradient: 'from-yellow-500 to-amber-600'
+                        },
+                        'default': {
+                          bg: 'from-violet-50 to-purple-50',
+                          border: 'border-violet-200',
+                          text: 'text-violet-600',
+                          gradient: 'from-violet-500 to-purple-600'
+                        }
+                      };
+
+                      return Object.entries(groupedByGrainType).map(([grainType, categories]) => {
+                        const colors = grainTypeColors[grainType] || grainTypeColors['default'];
+                        const sortedCategories = sortQualities(categories);
+                        
+                        // Calculate totals for this grain type
+                        const totalDeposits = categories.reduce((sum, cat) => sum + (cat.deposit?.completed?.qty || 0), 0);
+                        const totalWithdrawals = categories.reduce((sum, cat) => sum + (cat.withdraw?.completed || 0), 0);
+                        const totalSales = categories.reduce((sum, cat) => sum + (cat.sell?.completed?.qty || 0), 0);
+                        const totalAvailable = totalDeposits - totalWithdrawals - totalSales;
+
+                        return (
+                          <div key={grainType} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                            {/* Grain Type Header */}
+                            <div className={`p-5 bg-gradient-to-r ${colors.bg} border-b ${colors.border}`}>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className={`w-12 h-12 bg-gradient-to-br ${colors.gradient} rounded-xl flex items-center justify-center shadow-lg`}>
+                                    <Wheat className="w-6 h-6 text-white" />
+                                  </div>
+                                  <div>
+                                    <h3 className={`text-xl font-bold ${colors.text}`}>{grainType}</h3>
+                                    <p className="text-sm text-gray-600">{categories.length} quality variant{categories.length > 1 ? 's' : ''}</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <p className={`text-3xl font-bold ${colors.text}`}>{totalAvailable}</p>
+                                  <p className="text-xs text-gray-500">Total Available Qtl</p>
+                                </div>
+                              </div>
+                              
+                              {/* Quick Stats */}
+                              <div className="grid grid-cols-3 gap-3 mt-4">
+                                <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center">
+                                  <p className="text-sm text-gray-600 mb-1">Deposits</p>
+                                  <p className="text-lg font-bold text-gray-900">{totalDeposits}</p>
+                                </div>
+                                <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center">
+                                  <p className="text-sm text-gray-600 mb-1">Withdrawals</p>
+                                  <p className="text-lg font-bold text-gray-900">{totalWithdrawals}</p>
+                                </div>
+                                <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 text-center">
+                                  <p className="text-sm text-gray-600 mb-1">Sales</p>
+                                  <p className="text-lg font-bold text-gray-900">{totalSales}</p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Quality Variants */}
+                            <div className="p-6">
+                              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                {sortedCategories.map((category, index) => {
+                                  const availableQty = (category.deposit?.completed?.qty || 0) - 
+                                                     (category.withdraw?.completed || 0) - 
+                                                     (category.sell?.completed?.qty || 0);
+                                  
+                                  return (
+                                    <div
+                                      key={category.category_id || index}
+                                      className="group p-5 bg-gradient-to-br from-slate-50 to-gray-50 rounded-2xl border border-gray-100 hover:border-violet-200 hover:shadow-lg transition-all duration-300"
+                                    >
+                                      {/* Header */}
+                                      <div className="flex items-start justify-between mb-4">
+                                        <div className="flex items-center gap-3">
+                                          <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center">
+                                            <span className="text-white font-bold text-sm">{category.quality}</span>
+                                          </div>
+                                          <div>
+                                            <h4 className="font-bold text-gray-900">Quality {category.quality}</h4>
+                                            <span className="text-xs text-gray-500">
+                                              {category.grain_type}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div className="text-right">
+                                          <p className="text-2xl font-bold text-violet-600">{availableQty}</p>
+                                          <p className="text-xs text-gray-500">Available Qtl</p>
+                                        </div>
+                                      </div>
+
+                                      {/* Stats Grid */}
+                                      <div className="grid grid-cols-2 gap-3">
+                                        {/* Deposits */}
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                          <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs text-gray-500">Deposits</span>
+                                            <Package className="w-3.5 h-3.5 text-emerald-500" />
+                                          </div>
+                                          <p className="text-lg font-bold text-gray-900">{category.deposit?.completed?.qty || 0}</p>
+                                          <p className="text-xs text-gray-500">₹{(category.deposit?.completed?.amount || 0).toLocaleString()}</p>
+                                        </div>
+
+                                        {/* Withdrawals */}
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                          <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs text-gray-500">Withdrawals</span>
+                                            <TrendingDown className="w-3.5 h-3.5 text-blue-500" />
+                                          </div>
+                                          <p className="text-lg font-bold text-gray-900">{category.withdraw?.completed || 0}</p>
+                                          <p className="text-xs text-gray-500">
+                                            {category.withdraw?.pending || 0} pending
+                                          </p>
+                                        </div>
+
+                                        {/* Sales */}
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                          <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs text-gray-500">Sales</span>
+                                            <Activity className="w-3.5 h-3.5 text-purple-500" />
+                                          </div>
+                                          <p className="text-lg font-bold text-gray-900">{category.sell?.completed?.qty || 0}</p>
+                                          <p className="text-xs text-gray-500">₹{(category.sell?.completed?.amount || 0).toLocaleString()}</p>
+                                        </div>
+
+                                        {/* Loans */}
+                                        <div className="bg-white rounded-xl p-3 border border-gray-100">
+                                          <div className="flex items-center justify-between mb-1">
+                                            <span className="text-xs text-gray-500">Loans</span>
+                                            <DollarSign className="w-3.5 h-3.5 text-amber-500" />
+                                          </div>
+                                          <p className="text-lg font-bold text-gray-900">{category.loan?.completed || 0}</p>
+                                          <p className="text-xs text-gray-500">
+                                            {category.loan?.pending || 0} pending
+                                          </p>
+                                        </div>
+                                      </div>
+
+                                      {/* Rejected Status */}
+                                      {category.deposit?.rejected?.qty > 0 && (
+                                        <div className="mt-3 pt-3 border-t border-gray-200">
+                                          <div className="flex items-center gap-2 text-xs text-red-600">
+                                            <XCircle className="w-3.5 h-3.5" />
+                                            <span>
+                                              {category.deposit?.rejected?.qty} deposits rejected (₹{category.deposit?.rejected?.amount?.toLocaleString()})
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {/* Pending Status */}
+                                      {(category.deposit?.pending?.qty > 0 || category.sell?.pending?.qty > 0 || category.withdraw?.pending > 0) && (
+                                        <div className="mt-3 pt-3 border-t border-gray-200">
+                                          <div className="flex items-center gap-2 text-xs text-amber-600">
+                                            <Clock className="w-3.5 h-3.5" />
+                                            <span>
+                                              {category.deposit?.pending?.qty || 0} deposits, {category.sell?.pending?.qty || 0} sales, {category.withdraw?.pending || 0} withdrawals pending
+                                            </span>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                </>
+              ) : (
+                <div className="text-center py-16">
+                  <div className="w-24 h-24 bg-gradient-to-br from-gray-100 to-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                    <Package className="w-12 h-12 text-gray-400" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                    No Inventory Data
+                  </h3>
+                  <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
+                    No grain inventory found for this warehouse. Start by adding grain deposits.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>

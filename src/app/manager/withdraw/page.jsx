@@ -35,7 +35,9 @@ import {
   Zap,
   DollarSign,
   TrendingUp,
-  IndianRupee
+  IndianRupee,
+  Building2,
+  Warehouse
 } from "lucide-react";
 import toast from "react-hot-toast";
 import API_BASE_URL from "@/utils/constants";
@@ -59,6 +61,13 @@ const WithdrawalPage = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [withdrawalNotes, setWithdrawalNotes] = useState("");
 
+  // New states for warehouse inventory
+  const [warehouseInventory, setWarehouseInventory] = useState([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
+  const [isLoadingWarehouses, setIsLoadingWarehouses] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [assignedWarehouseId, setAssignedWarehouseId] = useState(null);
+
   // Predefined withdrawal reasons
   const withdrawalReasons = [
     { id: "personal_use", label: "Personal Use", icon: User, color: "blue" },
@@ -67,6 +76,127 @@ const WithdrawalPage = () => {
     { id: "processing", label: "Processing", icon: Package, color: "orange" },
     { id: "other", label: "Other", icon: FileText, color: "gray" }
   ];
+
+  // Fetch user role and assigned warehouse on mount
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        // Decode token or fetch user profile to get role and assigned warehouse
+        const response = await fetch(`${API_BASE_URL}/user/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUserRole(data.user?.role || data.role);
+          console.log( data.warehouseId);
+          setAssignedWarehouseId(data.user?.warehouseId || data.warehouseId);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+    fetchWarehouseInventory();
+  }, []);
+
+  // Fetch warehouse inventory
+  const fetchWarehouseInventory = async () => {
+    setIsLoadingWarehouses(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/warehouse/inventory`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch warehouse inventory");
+
+      const data = await response.json();
+      
+      // Handle admin response (multiple warehouses)
+      if (data.success && data.warehouses) {
+        setWarehouseInventory(data.warehouses);
+        
+        // Auto-select warehouse for manager/supervisor
+        if (assignedWarehouseId) {
+          const assignedWarehouse = data.warehouses.find(
+            w => w.warehouseId === assignedWarehouseId
+          );
+          if (assignedWarehouse) {
+            setSelectedWarehouse(assignedWarehouse);
+          }
+        } else if (data.warehouses.length === 1) {
+          // If only one warehouse, auto-select it
+          setSelectedWarehouse(data.warehouses[0]);
+        }
+      } 
+      // Handle manager/supervisor response (single warehouse)
+      else if (data.warehouseId && data.categories) {
+        const singleWarehouse = {
+          warehouseId: data.warehouseId,
+          warehouseName: data.warehouseName,
+          warehouseLocation: data.warehouseLocation,
+          categories: data.categories
+        };
+        setWarehouseInventory([singleWarehouse]);
+        setSelectedWarehouse(singleWarehouse);
+      }
+    } catch (error) {
+      console.error("Error fetching warehouse inventory:", error);
+      toast.error("Failed to load warehouse inventory");
+    } finally {
+      setIsLoadingWarehouses(false);
+    }
+  };
+
+  // Auto-select warehouse when assignedWarehouseId changes
+  useEffect(() => {
+    if (assignedWarehouseId && warehouseInventory.length > 0) {
+      const assignedWarehouse = warehouseInventory.find(
+        w => w.warehouseId === assignedWarehouseId
+      );
+      if (assignedWarehouse) {
+        setSelectedWarehouse(assignedWarehouse);
+      }
+    }
+  }, [assignedWarehouseId, warehouseInventory]);
+
+  // Get available quantity for withdrawal from warehouse
+  const getWarehouseAvailableQty = (categoryId) => {
+    if (!selectedWarehouse) return 0;
+    
+    const category = selectedWarehouse.categories?.find(
+      c => c.category_id === categoryId
+    );
+    
+    if (!category) return 0;
+    
+    // Available = completed deposits - completed withdrawals - completed sells
+    const deposited = category.deposit?.completed?.qty || 0;
+    const withdrawn = category.withdraw?.completed || 0;
+    const sold = category.sell?.completed?.qty || 0;
+    
+    return Math.max(0, deposited - withdrawn - sold);
+  };
+
+  // Get maximum withdrawal quantity (min of user inventory and warehouse availability)
+  const getMaxWithdrawalQty = () => {
+    if (!selectedInventoryItem) return 0;
+    
+    const userQty = parseFloat(selectedInventoryItem.quantity) || 0;
+    const warehouseQty = getWarehouseAvailableQty(
+      selectedInventoryItem.category_id || selectedInventoryItem.grain_id
+    );
+    
+    return Math.min(userQty, warehouseQty);
+  };
 
   // Helper functions
   const detectSearchType = (query) => {
@@ -137,18 +267,28 @@ const WithdrawalPage = () => {
       const data = await response.json();
       const deposits = Array.isArray(data.deposits) ? data.deposits : [];
 
+      // Filter and normalize deposits based on selected warehouse
       const normalized = deposits
-        .map(d => ({
-          category_id: d.category_id,
-          grain_id: d.grain_id || d.category_id,
-          grain_type: d.grain_type || "Unknown",
-          quality: d.quality || "Standard",
-          quantity: Number(d.total_quantity ?? 0),
-          deposited_date: d.deposited_date || null,
-          last_transaction: d.last_transaction || null,
-        }))
-        .filter(d => d.quantity > 0)
-        .sort((a,b)=> b.quantity - a.quantity);
+        .map(d => {
+          const categoryId = d.category_id || d.grain_id;
+          const warehouseAvailable = selectedWarehouse 
+            ? getWarehouseAvailableQty(categoryId) 
+            : Number(d.total_quantity ?? 0);
+          
+          return {
+            category_id: categoryId,
+            grain_id: d.grain_id || categoryId,
+            grain_type: d.grain_type || "Unknown",
+            quality: d.quality || "Standard",
+            quantity: Number(d.total_quantity ?? 0),
+            warehouseAvailable: warehouseAvailable,
+            deposited_date: d.deposited_date || null,
+            last_transaction: d.last_transaction || null,
+            warehouseId: selectedWarehouse?.warehouseId || d.warehouseId || null,
+          };
+        })
+        .filter(d => d.quantity > 0 && d.warehouseAvailable > 0)
+        .sort((a,b) => b.quantity - a.quantity);
 
       setUserInventory(normalized);
       setCurrentStep(2);
@@ -198,6 +338,13 @@ const WithdrawalPage = () => {
     }
   }, [selectedInventoryItem]);
 
+  // Refetch user inventory when warehouse changes
+  useEffect(() => {
+    if (selectedUser && selectedWarehouse) {
+      fetchUserInventory(selectedUser._id || selectedUser.id);
+    }
+  }, [selectedWarehouse]);
+
   const handleSelectUser = (user) => {
     setSelectedUser(user);
     setSearchQuery("");
@@ -213,6 +360,12 @@ const WithdrawalPage = () => {
     setWithdrawalNotes("");
   };
 
+  const handleSelectWarehouse = (warehouse) => {
+    setSelectedWarehouse(warehouse);
+    setSelectedInventoryItem(null);
+    setWithdrawQuantity("");
+  };
+
   const calculateTotalAmount = () => {
     if (!withdrawQuantity || !todayPrice?.price) return 0;
     return (parseFloat(withdrawQuantity) * parseFloat(todayPrice.price)).toFixed(2);
@@ -224,8 +377,14 @@ const WithdrawalPage = () => {
       return;
     }
 
-    if (parseFloat(withdrawQuantity) > parseFloat(selectedInventoryItem.quantity)) {
-      toast.error("Withdrawal quantity cannot exceed available quantity");
+    const maxQty = getMaxWithdrawalQty();
+    if (parseFloat(withdrawQuantity) > maxQty) {
+      toast.error(`Withdrawal quantity cannot exceed ${maxQty} Qtl (warehouse limit)`);
+      return;
+    }
+
+    if (!selectedWarehouse) {
+      toast.error("Please select a warehouse");
       return;
     }
 
@@ -237,6 +396,7 @@ const WithdrawalPage = () => {
         quantity: withdrawQuantity,
         price: todayPrice?.price || 0,
         total_value: calculateTotalAmount(),
+        WarehouseId: selectedWarehouse.warehouseId,
         reason: withdrawalReason,
         notes: withdrawalNotes,
       };
@@ -253,6 +413,9 @@ const WithdrawalPage = () => {
       if (!response.ok) throw new Error("Failed to process withdrawal");
 
       toast.success("Withdrawal processed successfully!");
+      
+      // Refresh warehouse inventory
+      await fetchWarehouseInventory();
       
       setSelectedUser(null);
       setUserInventory([]);
@@ -272,15 +435,24 @@ const WithdrawalPage = () => {
     }
   };
 
+  // Check if user is manager or supervisor (should have auto-selected warehouse)
+  const isWarehouseStaff = userRole === 'manager' || userRole === 'supervisor' || userRole === 'admin';
+  const canSelectWarehouse = !isWarehouseStaff || !assignedWarehouseId;
+
   // Confirmation Modal Component
   const ConfirmWithdrawalModal = () => {
     if (!showConfirmModal) return null;
 
+    const maxQty = getMaxWithdrawalQty();
     const remainingQty = selectedInventoryItem
       ? (parseFloat(selectedInventoryItem.quantity) - parseFloat(withdrawQuantity || 0)).toFixed(2)
       : "0";
 
-    const selectedReason = withdrawalReasons.find(r => r.id === withdrawalReason);
+    const warehouseRemainingQty = selectedInventoryItem
+      ? (getWarehouseAvailableQty(selectedInventoryItem.category_id) - parseFloat(withdrawQuantity || 0)).toFixed(2)
+      : "0";
+
+    const selectedReasonObj = withdrawalReasons.find(r => r.id === withdrawalReason);
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -314,6 +486,18 @@ const WithdrawalPage = () => {
 
             {/* Content Grid */}
             <div className="space-y-4">
+              {/* Warehouse Details */}
+              <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-2xl p-5 border border-gray-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <Building2 className="h-5 w-5 text-slate-600" />
+                  <h4 className="font-semibold text-gray-800">Warehouse Details</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <InfoItem label="Warehouse" value={selectedWarehouse?.warehouseName} />
+                  <InfoItem label="Location" value={selectedWarehouse?.warehouseLocation} />
+                </div>
+              </div>
+
               {/* Farmer Details */}
               <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
                 <div className="flex items-center gap-2 mb-3">
@@ -337,10 +521,28 @@ const WithdrawalPage = () => {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   <InfoItem label="Type" value={selectedInventoryItem?.grain_type} />
                   <InfoItem label="Quality" value={selectedInventoryItem?.quality} />
-                  <InfoItem label="Current Stock" value={`${selectedInventoryItem?.quantity} Qtl`} />
+                  <InfoItem label="User's Stock" value={`${selectedInventoryItem?.quantity} Qtl`} />
+                  <InfoItem label="Warehouse Stock" value={`${getWarehouseAvailableQty(selectedInventoryItem?.category_id)} Qtl`} />
                   <InfoItem label="Withdrawing" value={`${withdrawQuantity || 0} Qtl`} highlight />
-                  <InfoItem label="Remaining" value={`${remainingQty} Qtl`} />
                   <InfoItem label="Rate" value={`₹${todayPrice?.price || 0}/Qtl`} />
+                </div>
+              </div>
+
+              {/* Stock Impact Summary */}
+              <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-2xl p-5 border border-amber-200">
+                <div className="flex items-center gap-2 mb-3">
+                  <Activity className="h-5 w-5 text-amber-600" />
+                  <h4 className="font-semibold text-gray-800">Stock Impact</h4>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/70 rounded-xl p-3">
+                    <p className="text-xs text-gray-500 mb-1">User's Remaining</p>
+                    <p className="font-bold text-lg text-gray-900">{remainingQty} Qtl</p>
+                  </div>
+                  <div className="bg-white/70 rounded-xl p-3">
+                    <p className="text-xs text-gray-500 mb-1">Warehouse Remaining</p>
+                    <p className="font-bold text-lg text-gray-900">{warehouseRemainingQty} Qtl</p>
+                  </div>
                 </div>
               </div>
 
@@ -374,10 +576,10 @@ const WithdrawalPage = () => {
                 </div>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    {selectedReason && <selectedReason.icon className="h-5 w-5 text-orange-600" />}
+                    {selectedReasonObj && <selectedReasonObj.icon className="h-5 w-5 text-orange-600" />}
                     <div>
                       <p className="text-xs text-gray-500">Reason</p>
-                      <p className="font-semibold text-gray-900">{selectedReason?.label}</p>
+                      <p className="font-semibold text-gray-900">{selectedReasonObj?.label}</p>
                     </div>
                   </div>
                   {withdrawalNotes && (
@@ -391,13 +593,13 @@ const WithdrawalPage = () => {
 
               {/* Warning */}
               <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
-                <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
+                <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm text-red-800 font-medium">
                     Important: This action cannot be reversed
                   </p>
                   <p className="text-xs text-red-700 mt-1">
-                    {withdrawQuantity || 0} quintals (Value: ₹{calculateTotalAmount()}) will be permanently removed from the farmer's inventory.
+                    {withdrawQuantity || 0} quintals (Value: ₹{calculateTotalAmount()}) will be permanently removed from both the farmer's inventory and warehouse stock.
                   </p>
                 </div>
               </div>
@@ -442,6 +644,118 @@ const WithdrawalPage = () => {
       <p className={`font-semibold truncate ${highlight ? 'text-orange-600' : 'text-gray-900'}`}>
         {value || "-"}
       </p>
+    </div>
+  );
+
+  // Warehouse Selection Component
+  const WarehouseSelector = () => (
+    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-6 lg:p-8 mb-6">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-2.5 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl shadow-lg">
+          <Building2 className="h-5 w-5 text-white" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-800">Select Warehouse</h2>
+        {selectedWarehouse && (
+          <span className="ml-auto px-4 py-1.5 bg-slate-100 text-slate-700 rounded-full text-sm font-medium flex items-center gap-1.5">
+            <Check className="h-4 w-4" />
+            {selectedWarehouse.warehouseName}
+          </span>
+        )}
+      </div>
+
+      {isLoadingWarehouses ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-slate-500" />
+          <p className="text-gray-600 mt-3">Loading warehouses...</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {warehouseInventory.map((warehouse) => {
+            const isSelected = selectedWarehouse?.warehouseId === warehouse.warehouseId;
+            const isAssigned = warehouse.warehouseId === assignedWarehouseId;
+            const totalCategories = warehouse.categories?.length || 0;
+            const totalStock = warehouse.categories?.reduce((acc, cat) => {
+              const available = (cat.deposit?.completed?.qty || 0) - (cat.withdraw?.completed || 0) - (cat.sell?.completed?.qty || 0);
+              return acc + Math.max(0, available);
+            }, 0) || 0;
+
+            return (
+              <div
+                key={warehouse.warehouseId}
+                onClick={() => canSelectWarehouse && handleSelectWarehouse(warehouse)}
+                className={`group relative cursor-pointer transition-all duration-300 ${
+                  !canSelectWarehouse && !isAssigned ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
+              >
+                <div className={`absolute inset-0 bg-gradient-to-br rounded-2xl blur-md transition-all duration-300 ${
+                  isSelected 
+                    ? 'from-slate-400 to-gray-400 opacity-40' 
+                    : 'from-gray-200 to-gray-300 opacity-0 group-hover:opacity-30'
+                }`} />
+                <div className={`relative p-5 rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 ${
+                  isSelected 
+                    ? 'border-slate-500 bg-gradient-to-br from-slate-50 to-gray-50' 
+                    : 'border-gray-200 bg-white hover:border-slate-300'
+                }`}>
+                  {isSelected && (
+                    <div className="absolute top-3 right-3 animate-bounceIn">
+                      <div className="bg-gradient-to-br from-slate-600 to-gray-700 rounded-full p-1.5 shadow-lg">
+                        <Check className="h-4 w-4 text-white" />
+                      </div>
+                    </div>
+                  )}
+
+                  {isAssigned && (
+                    <div className="absolute top-3 left-3">
+                      <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-medium">
+                        Assigned
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex items-start gap-3 mb-4 mt-2">
+                    <div className={`p-3 rounded-xl transition-all duration-300 ${
+                      isSelected
+                        ? 'bg-gradient-to-br from-slate-600 to-gray-700 shadow-lg'
+                        : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    }`}>
+                      <Warehouse className={`h-6 w-6 ${isSelected ? 'text-white' : 'text-gray-600'}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-gray-900 truncate">{warehouse.warehouseName}</h3>
+                      <p className="text-sm text-gray-500 flex items-center gap-1 mt-0.5">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {warehouse.warehouseLocation}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <p className="text-xs text-gray-500">Categories</p>
+                      <p className="font-semibold text-gray-900">{totalCategories}</p>
+                    </div>
+                    <div className="bg-gray-50 rounded-lg p-2">
+                      <p className="text-xs text-gray-500">Total Stock</p>
+                      <p className="font-semibold text-gray-900">{totalStock} Qtl</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {!isLoadingWarehouses && warehouseInventory.length === 0 && (
+        <div className="text-center py-12 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl">
+          <div className="w-16 h-16 bg-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Building2 className="h-8 w-8 text-gray-400" />
+          </div>
+          <p className="text-gray-700 font-semibold">No warehouses available</p>
+          <p className="text-sm text-gray-500 mt-1">Please contact administrator</p>
+        </div>
+      )}
     </div>
   );
 
@@ -535,173 +849,182 @@ const WithdrawalPage = () => {
           </div>
         </div>
 
+        {/* Warehouse Selection Section */}
+        <WarehouseSelector />
+
         {/* Search Section */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-6 lg:p-8 mb-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
-              <Search className="h-5 w-5 text-white" />
+        {selectedWarehouse && (
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-6 lg:p-8 mb-6 animate-fadeIn">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+                <Search className="h-5 w-5 text-white" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800">Search Farmer</h2>
+              {selectedUser && (
+                <span className="ml-auto px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium flex items-center gap-1.5">
+                  <Check className="h-4 w-4" />
+                  Farmer Selected
+                </span>
+              )}
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Search Farmer</h2>
-            {selectedUser && (
-              <span className="ml-auto px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium flex items-center gap-1.5">
-                <Check className="h-4 w-4" />
-                Farmer Selected
-              </span>
+
+            {!selectedUser ? (
+              <div className="space-y-4">
+                <div className="relative">
+                  <div className="relative group">
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300" />
+                    <div className="relative">
+                      <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+                      <input
+                        type="text"
+                        className="w-full pl-12 pr-12 py-4 bg-white rounded-2xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-base lg:text-lg font-medium placeholder-gray-400"
+                        placeholder="Search by name, email, phone, or farmer ID..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onFocus={() => searchQuery && setShowSearchDropdown(true)}
+                      />
+                      {isSearching && (
+                        <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                          <Loader2 className="animate-spin h-5 w-5 text-blue-500" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Search Type Indicator */}
+                  {searchQuery && (
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <span className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1.5">
+                        {searchType === "email" && <Mail className="h-3.5 w-3.5" />}
+                        {searchType === "phone_number" && <Phone className="h-3.5 w-3.5" />}
+                        {searchType === "userId" && <Hash className="h-3.5 w-3.5" />}
+                        {searchType === "name" && <User className="h-3.5 w-3.5" />}
+                        Searching by {searchType.replace("_", " ")}
+                      </span>
+                      <Sparkles className="h-4 w-4 text-yellow-500 animate-pulse" />
+                    </div>
+                  )}
+
+                  {/* Search Results Dropdown */}
+                  {showSearchDropdown && searchResults.length > 0 && (
+                    <div className="absolute z-40 w-full mt-3 bg-white rounded-2xl shadow-2xl border border-gray-200 max-h-96 overflow-y-auto animate-slideDown">
+                      {searchResults.map((user, index) => (
+                        <div
+                          key={user._id || user.id || index}
+                          onClick={() => handleSelectUser(user)}
+                          className="group px-5 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 cursor-pointer flex items-center gap-4 transition-all duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                        >
+                          <div className="relative">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-xl transition-all duration-200">
+                              {user.name?.charAt(0).toUpperCase() || "F"}
+                            </div>
+                            {user.isActive && (
+                              <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
+                              {user.name || "Unknown Farmer"}
+                            </p>
+                            <p className="text-sm text-gray-600 truncate">{user.email || "No email"}</p>
+                            <div className="flex flex-wrap items-center gap-3 mt-1">
+                              {user.phone_number && (
+                                <span className="text-xs text-gray-500 flex items-center gap-1">
+                                  <Phone className="h-3 w-3" />
+                                  <span className="truncate">{user.phone_number}</span>
+                                </span>
+                              )}
+                              {user.userId && (
+                                <span className="text-xs text-blue-600 font-medium flex items-center gap-1">
+                                  <Hash className="h-3 w-3" />
+                                  {user.userId}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* No Results */}
+                  {showSearchDropdown && searchQuery && searchResults.length === 0 && !isSearching && (
+                    <div className="absolute z-40 w-full mt-3 bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 animate-slideDown">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                          <User className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <p className="text-gray-900 font-semibold">No farmers found</p>
+                        <p className="text-sm text-gray-500 mt-1">Try searching with different criteria</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              // Selected User Display
+              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200 p-6 animate-fadeIn">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        {selectedUser.name?.charAt(0).toUpperCase() || "F"}
+                      </div>
+                      <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1">
+                        <div className="bg-blue-500 rounded-full p-1">
+                          <Check className="h-3 w-3 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="font-bold text-xl text-gray-900">{selectedUser.name}</p>
+                      <p className="text-gray-600 text-sm lg:text-base">{selectedUser.email}</p>
+                      <div className="flex flex-wrap items-center gap-3 mt-1">
+                        {selectedUser.phone_number && (
+                          <span className="text-sm text-gray-500 flex items-center gap-1">
+                            <Phone className="h-4 w-4" />
+                            {selectedUser.phone_number}
+                          </span>
+                        )}
+                        {selectedUser.userId && (
+                          <span className="text-sm text-blue-600 font-medium flex items-center gap-1">
+                            <Hash className="h-4 w-4" />
+                            {selectedUser.userId}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedUser(null);
+                      setUserInventory([]);
+                      setSelectedInventoryItem(null);
+                      setCurrentStep(1);
+                    }}
+                    className="p-3 hover:bg-red-50 rounded-xl transition-all duration-200 group"
+                  >
+                    <X className="h-6 w-6 text-gray-500 group-hover:text-red-500 transition-colors" />
+                  </button>
+                </div>
+              </div>
             )}
           </div>
-
-          {!selectedUser ? (
-            <div className="space-y-4">
-              <div className="relative">
-                <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl blur opacity-20 group-hover:opacity-30 transition duration-300" />
-                  <div className="relative">
-                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-                    <input
-                      type="text"
-                      className="w-full pl-12 pr-12 py-4 bg-white rounded-2xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all duration-300 text-base lg:text-lg font-medium placeholder-gray-400"
-                      placeholder="Search by name, email, phone, or farmer ID..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => searchQuery && setShowSearchDropdown(true)}
-                    />
-                    {isSearching && (
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                        <Loader2 className="animate-spin h-5 w-5 text-blue-500" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Search Type Indicator */}
-                {searchQuery && (
-                  <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <span className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 rounded-full text-xs font-medium flex items-center gap-1.5">
-                      {searchType === "email" && <Mail className="h-3.5 w-3.5" />}
-                      {searchType === "phone_number" && <Phone className="h-3.5 w-3.5" />}
-                      {searchType === "userId" && <Hash className="h-3.5 w-3.5" />}
-                      {searchType === "name" && <User className="h-3.5 w-3.5" />}
-                      Searching by {searchType.replace("_", " ")}
-                    </span>
-                    <Sparkles className="h-4 w-4 text-yellow-500 animate-pulse" />
-                  </div>
-                )}
-
-                {/* Search Results Dropdown */}
-                {showSearchDropdown && searchResults.length > 0 && (
-                  <div className="absolute z-40 w-full mt-3 bg-white rounded-2xl shadow-2xl border border-gray-200 max-h-96 overflow-y-auto animate-slideDown">
-                    {searchResults.map((user, index) => (
-                      <div
-                        key={user._id || user.id || index}
-                        onClick={() => handleSelectUser(user)}
-                        className="group px-5 py-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 cursor-pointer flex items-center gap-4 transition-all duration-200 border-b border-gray-100 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
-                      >
-                        <div className="relative">
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-xl transition-all duration-200">
-                            {user.name?.charAt(0).toUpperCase() || "F"}
-                          </div>
-                          {user.isActive && (
-                            <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
-                          )}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors truncate">
-                            {user.name || "Unknown Farmer"}
-                          </p>
-                          <p className="text-sm text-gray-600 truncate">{user.email || "No email"}</p>
-                          <div className="flex flex-wrap items-center gap-3 mt-1">
-                            {user.phone_number && (
-                              <span className="text-xs text-gray-500 flex items-center gap-1">
-                                <Phone className="h-3 w-3" />
-                                <span className="truncate">{user.phone_number}</span>
-                              </span>
-                            )}
-                            {user.userId && (
-                              <span className="text-xs text-blue-600 font-medium flex items-center gap-1">
-                                <Hash className="h-3 w-3" />
-                                {user.userId}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-200 flex-shrink-0" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* No Results */}
-                {showSearchDropdown && searchQuery && searchResults.length === 0 && !isSearching && (
-                  <div className="absolute z-40 w-full mt-3 bg-white rounded-2xl shadow-2xl border border-gray-200 p-8 animate-slideDown">
-                    <div className="text-center">
-                      <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                        <User className="h-8 w-8 text-gray-400" />
-                      </div>
-                      <p className="text-gray-900 font-semibold">No farmers found</p>
-                      <p className="text-sm text-gray-500 mt-1">Try searching with different criteria</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            // Selected User Display
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border-2 border-blue-200 p-6 animate-fadeIn">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
-                      {selectedUser.name?.charAt(0).toUpperCase() || "F"}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1">
-                      <div className="bg-blue-500 rounded-full p-1">
-                        <Check className="h-3 w-3 text-white" />
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="font-bold text-xl text-gray-900">{selectedUser.name}</p>
-                    <p className="text-gray-600 text-sm lg:text-base">{selectedUser.email}</p>
-                    <div className="flex flex-wrap items-center gap-3 mt-1">
-                      {selectedUser.phone_number && (
-                        <span className="text-sm text-gray-500 flex items-center gap-1">
-                          <Phone className="h-4 w-4" />
-                          {selectedUser.phone_number}
-                        </span>
-                      )}
-                      {selectedUser.userId && (
-                        <span className="text-sm text-blue-600 font-medium flex items-center gap-1">
-                          <Hash className="h-4 w-4" />
-                          {selectedUser.userId}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => {
-                    setSelectedUser(null);
-                    setUserInventory([]);
-                    setSelectedInventoryItem(null);
-                    setCurrentStep(1);
-                  }}
-                  className="p-3 hover:bg-red-50 rounded-xl transition-all duration-200 group"
-                >
-                  <X className="h-6 w-6 text-gray-500 group-hover:text-red-500 transition-colors" />
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        )}
 
         {/* Inventory Section */}
-        {selectedUser && currentStep >= 2 && (
+        {selectedUser && currentStep >= 2 && selectedWarehouse && (
           <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-xl border border-white/50 p-6 lg:p-8 mb-6 animate-fadeIn">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2.5 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
                 <Package className="h-5 w-5 text-white" />
               </div>
               <h2 className="text-xl font-bold text-gray-800">Available Inventory</h2>
+              <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium flex items-center gap-1.5">
+                <Building2 className="h-4 w-4" />
+                {selectedWarehouse.warehouseName}
+              </span>
               {selectedInventoryItem && (
                 <span className="ml-auto px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-medium flex items-center gap-1.5">
                   <Check className="h-4 w-4" />
@@ -720,88 +1043,97 @@ const WithdrawalPage = () => {
               </div>
             ) : userInventory.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
-                {userInventory.map((item, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handleSelectInventory(item)}
-                    className={`group relative cursor-pointer transition-all duration-300 transform hover:scale-105 ${
-                      selectedInventoryItem === item ? 'scale-105' : ''
-                    }`}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-br rounded-2xl blur-md transition-all duration-300 ${
-                      selectedInventoryItem === item 
-                        ? 'from-purple-400 to-pink-400 opacity-40' 
-                        : 'from-gray-200 to-gray-300 opacity-0 group-hover:opacity-30'
-                    }`} />
-                    <div className={`relative p-6 rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 ${
-                      selectedInventoryItem === item 
-                        ? 'border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50' 
-                        : 'border-gray-200 bg-white hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50/50 hover:to-pink-50/50'
-                    }`}>
-                      {selectedInventoryItem === item && (
-                        <div className="absolute top-3 right-3 animate-bounceIn">
-                          <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-full p-1.5 shadow-lg">
-                            <Check className="h-4 w-4 text-white" />
+                {userInventory.map((item, index) => {
+                  const warehouseAvailable = getWarehouseAvailableQty(item.category_id);
+                  const effectiveAvailable = Math.min(item.quantity, warehouseAvailable);
+                  const isLowStock = warehouseAvailable < item.quantity;
+
+                  return (
+                    <div
+                      key={index}
+                      onClick={() => effectiveAvailable > 0 && handleSelectInventory(item)}
+                      className={`group relative cursor-pointer transition-all duration-300 transform hover:scale-105 ${
+                        selectedInventoryItem === item ? 'scale-105' : ''
+                      } ${effectiveAvailable <= 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br rounded-2xl blur-md transition-all duration-300 ${
+                        selectedInventoryItem === item 
+                          ? 'from-purple-400 to-pink-400 opacity-40' 
+                          : 'from-gray-200 to-gray-300 opacity-0 group-hover:opacity-30'
+                      }`} />
+                      <div className={`relative p-6 rounded-2xl border-2 backdrop-blur-sm transition-all duration-300 ${
+                        selectedInventoryItem === item 
+                          ? 'border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50' 
+                          : 'border-gray-200 bg-white hover:border-purple-300 hover:bg-gradient-to-br hover:from-purple-50/50 hover:to-pink-50/50'
+                      }`}>
+                        {selectedInventoryItem === item && (
+                          <div className="absolute top-3 right-3 animate-bounceIn">
+                            <div className="bg-gradient-to-br from-purple-500 to-pink-600 rounded-full p-1.5 shadow-lg">
+                              <Check className="h-4 w-4 text-white" />
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-start gap-3 mb-4">
-                        <div className={`p-3 rounded-xl transition-all duration-300 ${
-                          selectedInventoryItem === item
-                            ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg'
-                            : 'bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-purple-100 group-hover:to-pink-100'
-                        }`}>
-                          <Wheat className={`h-6 w-6 transition-colors ${
-                            selectedInventoryItem === item ? 'text-white' : 'text-gray-600 group-hover:text-purple-600'
-                          }`} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 truncate">{item.grain_type}</h3>
-                          <div className="flex items-center gap-2 mt-1">
-                            <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium">
-                              {item.quality}
+                        )}
+
+                        {isLowStock && (
+                          <div className="absolute top-3 left-3">
+                            <span className="px-2 py-1 bg-amber-100 text-amber-700 rounded-lg text-xs font-medium flex items-center gap-1">
+                              <AlertCircle className="h-3 w-3" />
+                              Limited Stock
                             </span>
                           </div>
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex justify-between items-center pb-3 border-b border-gray-100">
-                          <span className="text-sm text-gray-600 flex items-center gap-1">
-                            <Scale className="h-4 w-4" />
-                            Available Stock
-                          </span>
-                          <span className="font-bold text-lg text-gray-900">{item.quantity} Qtl</span>
-                        </div>
-                        <div className="space-y-2">
-                          {item.deposited_date && (
-                            <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-500 flex items-center gap-1">
-                                <Calendar className="h-3.5 w-3.5" />
-                                Deposited
-                              </span>
-                              <span className="text-sm text-gray-700">
-                                {new Date(item.deposited_date).toLocaleDateString()}
+                        )}
+                        
+                        <div className="flex items-start gap-3 mb-4 mt-2">
+                          <div className={`p-3 rounded-xl transition-all duration-300 ${
+                            selectedInventoryItem === item
+                              ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg'
+                              : 'bg-gradient-to-br from-gray-100 to-gray-200 group-hover:from-purple-100 group-hover:to-pink-100'
+                          }`}>
+                            <Wheat className={`h-6 w-6 transition-colors ${
+                              selectedInventoryItem === item ? 'text-white' : 'text-gray-600 group-hover:text-purple-600'
+                            }`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-bold text-gray-900 truncate">{item.grain_type}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-medium">
+                                {item.quality}
                               </span>
                             </div>
-                          )}
-                          {item.last_transaction && (
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="space-y-2 pb-3 border-b border-gray-100">
                             <div className="flex justify-between items-center">
-                              <span className="text-xs text-gray-500 flex items-center gap-1">
-                                <Clock className="h-3.5 w-3.5" />
-                                Last Activity
+                              <span className="text-sm text-gray-600 flex items-center gap-1">
+                                <User className="h-4 w-4" />
+                                User's Stock
                               </span>
-                              <span className="text-sm text-gray-700">
-                                {new Date(item.last_transaction).toLocaleDateString()}
+                              <span className="font-bold text-gray-900">{item.quantity} Qtl</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm text-gray-600 flex items-center gap-1">
+                                <Building2 className="h-4 w-4" />
+                                Warehouse Stock
+                              </span>
+                              <span className={`font-bold ${warehouseAvailable < item.quantity ? 'text-amber-600' : 'text-gray-900'}`}>
+                                {warehouseAvailable} Qtl
                               </span>
                             </div>
-                          )}
+                          </div>
+                          <div className="flex justify-between items-center pt-1">
+                            <span className="text-sm text-gray-600 flex items-center gap-1">
+                              <Scale className="h-4 w-4" />
+                              Can Withdraw
+                            </span>
+                            <span className="font-bold text-lg text-purple-600">{effectiveAvailable} Qtl</span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : (
               <div className="text-center py-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl">
@@ -809,7 +1141,7 @@ const WithdrawalPage = () => {
                   <Package className="h-12 w-12 text-gray-400" />
                 </div>
                 <p className="text-gray-700 font-semibold text-lg">No inventory found</p>
-                <p className="text-sm text-gray-500 mt-2">This farmer has no grain in storage</p>
+                <p className="text-sm text-gray-500 mt-2">This farmer has no grain available in this warehouse</p>
               </div>
             )}
           </div>
@@ -844,8 +1176,18 @@ const WithdrawalPage = () => {
                       <span className="font-semibold text-gray-900">{selectedInventoryItem.quality}</span>
                     </div>
                     <div className="flex justify-between items-center py-2 border-t border-blue-200/50 pt-3">
-                      <span className="text-gray-600">Available Stock</span>
-                      <span className="font-bold text-blue-600 text-lg">{selectedInventoryItem.quantity} Qtl</span>
+                      <span className="text-gray-600">User's Stock</span>
+                      <span className="font-bold text-blue-600">{selectedInventoryItem.quantity} Qtl</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-gray-600">Warehouse Stock</span>
+                      <span className="font-bold text-gray-700">
+                        {getWarehouseAvailableQty(selectedInventoryItem.category_id)} Qtl
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 bg-purple-100 rounded-xl px-3">
+                      <span className="text-purple-700 font-medium">Max Withdrawal</span>
+                      <span className="font-bold text-purple-700 text-lg">{getMaxWithdrawalQty()} Qtl</span>
                     </div>
                   </div>
                 </div>
@@ -886,8 +1228,10 @@ const WithdrawalPage = () => {
                   <div className="space-y-4">
                     <div className="relative">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm text-gray-600">Current Level</span>
-                        <span className="text-sm font-semibold text-gray-900">{selectedInventoryItem.quantity} Qtl</span>
+                        <span className="text-sm text-gray-600">Warehouse Level</span>
+                        <span className="text-sm font-semibold text-gray-900">
+                          {getWarehouseAvailableQty(selectedInventoryItem.category_id)} Qtl
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                         <div 
@@ -900,14 +1244,14 @@ const WithdrawalPage = () => {
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-sm text-gray-600">After Withdrawal</span>
                             <span className="text-sm font-semibold text-orange-600">
-                              {(parseFloat(selectedInventoryItem.quantity) - parseFloat(withdrawQuantity)).toFixed(2)} Qtl
+                              {(getWarehouseAvailableQty(selectedInventoryItem.category_id) - parseFloat(withdrawQuantity)).toFixed(2)} Qtl
                             </span>
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
                             <div 
                               className="bg-gradient-to-r from-red-500 to-orange-500 h-3 rounded-full transition-all duration-500"
                               style={{ 
-                                width: `${((parseFloat(selectedInventoryItem.quantity) - parseFloat(withdrawQuantity)) / parseFloat(selectedInventoryItem.quantity)) * 100}%` 
+                                width: `${((getWarehouseAvailableQty(selectedInventoryItem.category_id) - parseFloat(withdrawQuantity)) / getWarehouseAvailableQty(selectedInventoryItem.category_id)) * 100}%` 
                               }}
                             />
                           </div>
@@ -929,14 +1273,15 @@ const WithdrawalPage = () => {
                     <input
                       type="number"
                       min="0"
-                      max={selectedInventoryItem.quantity}
+                      max={getMaxWithdrawalQty()}
                       step="0.01"
                       className="w-full px-4 py-3.5 pr-16 bg-white border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 transition-all duration-200 text-lg font-medium"
-                      placeholder="Enter quantity to withdraw"
+                      placeholder={`Max: ${getMaxWithdrawalQty()} Qtl`}
                       value={withdrawQuantity}
                       onChange={(e) => {
                         const value = e.target.value;
-                        if (value === "" || (parseFloat(value) >= 0 && parseFloat(value) <= parseFloat(selectedInventoryItem.quantity))) {
+                        const maxQty = getMaxWithdrawalQty();
+                        if (value === "" || (parseFloat(value) >= 0 && parseFloat(value) <= maxQty)) {
                           setWithdrawQuantity(value);
                         }
                       }}
@@ -951,9 +1296,9 @@ const WithdrawalPage = () => {
                         <Info className="h-4 w-4 text-orange-600 mt-0.5" />
                         <div className="flex-1 text-sm">
                           <p className="text-orange-800 font-medium">
-                            Remaining after withdrawal: {(parseFloat(selectedInventoryItem.quantity) - parseFloat(withdrawQuantity)).toFixed(2)} Qtl
+                            Remaining after withdrawal: {(getMaxWithdrawalQty() - parseFloat(withdrawQuantity)).toFixed(2)} Qtl (from warehouse)
                           </p>
-                          {parseFloat(withdrawQuantity) > parseFloat(selectedInventoryItem.quantity) * 0.8 && (
+                          {parseFloat(withdrawQuantity) > getMaxWithdrawalQty() * 0.8 && (
                             <p className="text-orange-600 text-xs mt-1">
                               You're withdrawing more than 80% of available stock
                             </p>
@@ -962,6 +1307,9 @@ const WithdrawalPage = () => {
                       </div>
                     </div>
                   )}
+                  <p className="text-xs text-gray-500 mt-1">
+                    Maximum withdrawal limited by: Min(User Stock: {selectedInventoryItem.quantity} Qtl, Warehouse Stock: {getWarehouseAvailableQty(selectedInventoryItem.category_id)} Qtl)
+                  </p>
                 </div>
 
                 {/* Withdrawal Reason */}
@@ -1060,7 +1408,7 @@ const WithdrawalPage = () => {
                   </button>
                   <button
                     onClick={() => setShowConfirmModal(true)}
-                    disabled={!withdrawQuantity || !withdrawalReason || isProcessing}
+                    disabled={!withdrawQuantity || !withdrawalReason || isProcessing || parseFloat(withdrawQuantity) > getMaxWithdrawalQty()}
                     className="flex-1 relative overflow-hidden group rounded-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-red-600 to-orange-600 transition-transform group-hover:scale-105" />
@@ -1086,8 +1434,8 @@ const WithdrawalPage = () => {
                   <Shield className="h-5 w-5 text-gray-600 flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <p className="text-xs text-gray-600 leading-relaxed">
-                      This withdrawal will be permanently recorded with today's market value of ₹{calculateTotalAmount()}. 
-                      The grain will be removed from the farmer's inventory immediately.
+                      This withdrawal will be permanently recorded from <strong>{selectedWarehouse?.warehouseName}</strong> with today's market value of ₹{calculateTotalAmount()}. 
+                      The grain will be removed from both the farmer's inventory and warehouse stock immediately.
                     </p>
                   </div>
                 </div>
