@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/app/page.js"],"sourcesContent":["import React from \"react\";\n\nconst page = () => {\n  return (\n    <>\n      <div> Grain storage bank</div>\n    </>\n  );\n};\n\nexport default page;\n"],"names":[],"mappings":"oVAAA,EAAA,CAAA,CAAA,sBAEa,IAET,CAAA,EAAA,EAAA,GAAA,EAAA,EAAA,QAAA,CAAA,UACE,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI"}

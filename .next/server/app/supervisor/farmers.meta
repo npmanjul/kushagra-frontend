@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/supervisor/layout,_N_T_/supervisor/farmers/layout,_N_T_/supervisor/farmers/page,_N_T_/supervisor/farmers"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/supervisor/farmers/__PAGE__",
+    "/supervisor/farmers",
+    "/supervisor",
+    "/_index",
+    "/_head"
+  ]
+}

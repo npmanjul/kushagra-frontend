@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/supervisor/layout,_N_T_/supervisor/sell/layout,_N_T_/supervisor/sell/page,_N_T_/supervisor/sell"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/supervisor/sell/__PAGE__",
+    "/supervisor/sell",
+    "/supervisor",
+    "/_index",
+    "/_head"
+  ]
+}

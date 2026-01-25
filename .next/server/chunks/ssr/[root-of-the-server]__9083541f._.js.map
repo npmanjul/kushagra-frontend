@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../../src/app/admin/approval/page.jsx"],"sourcesContent":["import React from 'react'\n\nconst page = () => {\n  return (\n    <div>page</div>\n  )\n}\n\nexport default page"],"names":[],"mappings":"8WAAA,EAAA,CAAA,CAAA,sBAEa,IAET,CAAA,EAAA,EAAA,GAAA,EAAC,MAAA,UAAI"}
