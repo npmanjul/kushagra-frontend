@@ -1,1 +1,8 @@
-[00:00:00.783] Server  LOG      ✓ Ready in 528ms
+[00:00:01.081] Server  LOG      ✓ Ready in 718ms
+[00:00:30.766] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:00:31.728] Browser LOG     Profile details: {"profile":{"_id":"694ad8101a43c3733e58f7c3","email":"anjulsingh462@gmail.com","employeeId":"EMP2025000001","is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
+[00:00:31.728] Browser ERROR   Error fetching profile: {}
+[00:00:31.728] Browser LOG     Profile details: {"profile":{"_id":"694ad8101a43c3733e58f7c3","email":"anjulsingh462@gmail.com","employeeId":"EMP2025000001","is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
+[00:00:31.728] Browser ERROR   Error fetching profile: {}
+[00:00:32.387] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:00:32.501] Browser LOG     {"message":"Token is valid","role":"admin","success":true}

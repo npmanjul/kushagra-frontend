@@ -6,7 +6,7 @@ __turbopack_context__.s([
     "default",
     ()=>__TURBOPACK__default__export__
 ]);
-const API_BASE_URL = ("TURBOPACK compile-time truthy", 1) ? "http://localhost:8000/api/v1" : "TURBOPACK unreachable";
+const API_BASE_URL = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1");
 const __TURBOPACK__default__export__ = API_BASE_URL;
 }),
 "[externals]/next/dist/server/app-render/action-async-storage.external.js [external] (next/dist/server/app-render/action-async-storage.external.js, cjs)", ((__turbopack_context__, module, exports) => {
