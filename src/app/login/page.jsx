@@ -35,6 +35,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       // ✅ Send email if email, phone_number if phone
+      console.log("API_BASE_URL used in browser:", API_BASE_URL);
       const bodyData =
         inputType === "email"
           ? { email: emailOrPhone.trim(), password }
