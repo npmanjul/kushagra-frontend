@@ -104,7 +104,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "/Users/anjulsachan/Documents/grain_bank/storage-frontend",
+    "outputFileTracingRoot": "/Users/anjulsachan/Documents/grain_bank/Frontend",
     "cacheComponents": false,
     "cacheLife": {
       "default": {
@@ -294,11 +294,11 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.mjs",
     "turbopack": {
-      "root": "/Users/anjulsachan/Documents/grain_bank/storage-frontend"
+      "root": "/Users/anjulsachan/Documents/grain_bank/Frontend"
     },
     "distDirRoot": ".next"
   },
-  "appDir": "/Users/anjulsachan/Documents/grain_bank/storage-frontend",
+  "appDir": "/Users/anjulsachan/Documents/grain_bank/Frontend",
   "relativeAppDir": "",
   "files": [
     ".next/routes-manifest.json",

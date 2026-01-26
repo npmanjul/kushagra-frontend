@@ -1,8 +1,73 @@
-[00:00:01.081] Server  LOG      ✓ Ready in 718ms
-[00:00:30.766] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[00:00:31.728] Browser LOG     Profile details: {"profile":{"_id":"694ad8101a43c3733e58f7c3","email":"anjulsingh462@gmail.com","employeeId":"EMP2025000001","is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[00:00:31.728] Browser ERROR   Error fetching profile: {}
-[00:00:31.728] Browser LOG     Profile details: {"profile":{"_id":"694ad8101a43c3733e58f7c3","email":"anjulsingh462@gmail.com","employeeId":"EMP2025000001","is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[00:00:31.728] Browser ERROR   Error fetching profile: {}
-[00:00:32.387] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[00:00:32.501] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:00:01.451] Server  LOG      ✓ Ready in 1044ms
+[00:06:52.623] Server  LOG      ✓ Compiled in 571ms
+[00:12:17.233] Server  LOG      ✓ Compiled in 746ms
+[00:21:04.003] Server  LOG      ✓ Compiled in 533ms
+[00:26:29.346] Server  LOG      ✓ Compiled in 459ms
+[00:26:43.099] Server  LOG      ✓ Compiled in 253ms
+[00:27:59.912] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:00.151] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:00.898] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:01.817] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:03.433] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:03.659] Server  ERROR    ⨯ Error: The default export is not a React Component in "/page"
+[00:28:03.911] Browser ERROR   uncaughtError: Error: The default export is not a React Component in "/page"
+[00:28:05.124] Server  LOG      ✓ Compiled in 313ms
+[00:28:10.503] Server  LOG      ✓ Compiled in 352ms
+[00:30:57.492] Server  LOG      ✓ Compiled in 945ms
+[00:34:01.165] Server  LOG      ✓ Compiled in 780ms
+[00:34:57.125] Server  LOG      ✓ Compiled in 253ms
+[00:35:16.758] Server  LOG      ✓ Compiled in 371ms
+[00:37:31.199] Server  LOG      ✓ Compiled in 253ms
+[00:42:43.619] Server  LOG      ✓ Compiled in 1060ms
+[00:43:49.911] Server  LOG      ✓ Compiled in 887ms
+[00:43:50.146] Browser ERROR   uncaughtError: Error: Failed prop type: The prop `href` expects a `string` or `object` in `<Link>`, but got `undefined` instead.
+Open your browser's console to view the Component stack trace.
+[00:44:09.330] Server  LOG      ✓ Compiled in 286ms
+[00:44:09.361] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:44:19.061] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
+[00:44:19.155] Browser ERROR   Error occurred while checking token: {}
+[00:44:19.156] Browser LOG     null
+[00:44:19.156] Browser ERROR   Error occurred while checking token: {}
+[00:44:19.156] Browser LOG     null
+[00:44:33.756] Server  LOG      ✓ Compiled in 244ms
+[00:44:35.740] Browser ERROR   Error occurred while checking token: {}
+[00:44:35.740] Browser LOG     null
+[00:44:35.740] Browser ERROR   Error occurred while checking token: {}
+[00:44:35.740] Browser LOG     null
+[00:45:04.260] Server  LOG      ✓ Compiled in 267ms
+[00:45:16.824] Server  LOG      ✓ Compiled in 261ms
+[00:45:34.725] Server  LOG      ✓ Compiled in 237ms
+[00:46:36.842] Server  LOG      ✓ Compiled in 168ms
+[00:46:53.891] Server  LOG      ✓ Compiled in 153ms
+[00:47:44.767] Server  LOG      ✓ Compiled in 180ms
+[00:48:45.971] Server  LOG      ✓ Compiled in 232ms
+[00:48:48.190] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
+[00:48:48.190] Browser ERROR   Error occurred while checking token: {}
+[00:48:48.190] Browser LOG     null
+[00:48:48.190] Browser ERROR   Error occurred while checking token: {}
+[00:48:48.190] Browser LOG     null
+[00:49:18.255] Server  LOG      ✓ Compiled in 291ms
+[00:49:28.335] Server  LOG      ✓ Compiled in 397ms
+[00:50:13.279] Server  LOG      ✓ Compiled in 159ms
+[00:51:17.709] Server  LOG      ✓ Compiled in 327ms
+[00:51:25.650] Server  LOG      ✓ Compiled in 264ms
+[00:51:29.842] Server  LOG      ✓ Compiled in 144ms
+[00:51:58.265] Server  LOG      ✓ Compiled in 440ms
+[00:52:04.141] Server  LOG      ✓ Compiled in 288ms
+[00:52:11.252] Server  LOG      ✓ Compiled in 166ms
+[00:52:27.421] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
+[00:52:27.421] Browser ERROR   Error occurred while checking token: {}
+[00:52:27.421] Browser LOG     null
+[00:52:27.421] Browser ERROR   Error occurred while checking token: {}
+[00:52:27.421] Browser LOG     null
+[00:53:51.106] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
+[00:53:51.106] Browser ERROR   Error occurred while checking token: {}
+[00:53:51.106] Browser LOG     null
+[00:53:51.106] Browser ERROR   Error occurred while checking token: {}
+[00:53:51.106] Browser LOG     null
+[00:53:54.005] Browser ERROR   Error fetching current step: {}
+[00:53:54.005] Browser ERROR   Error fetching current step: {}
+[00:54:02.255] Browser ERROR   Error occurred while checking token: {}
+[00:54:02.257] Browser LOG     null
+[00:54:02.257] Browser ERROR   Error occurred while checking token: {}
+[00:54:02.257] Browser LOG     null
