@@ -24,7 +24,6 @@ __turbopack_context__.s([
     "default",
     ()=>__TURBOPACK__default__export__
 ]);
-console.log("NEXT_PUBLIC_API_URL =", ("TURBOPACK compile-time value", "http://localhost:8000/api/v1"));
 const API_BASE_URL = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "___MISSING_ENV___";
 const __TURBOPACK__default__export__ = API_BASE_URL;
 }),

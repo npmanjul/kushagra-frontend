@@ -1,366 +1,74 @@
-[00:00:00.793] Server  LOG      ✓ Ready in 541ms
-[00:00:04.014] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[00:00:05.254] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[00:00:06.062] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[00:00:06.621] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::34db:9c7e\",\"64:ff9b::305:d3a1\",\"64:ff9b::100c:241a\",\"64:ff9b::305:d3f2\",\"64:ff9b::34db:9cd6\",\"64:ff9b::305:d3a2\",\"64:ff9b::34db:a08e\",\"64:ff9b::305:d123\"]"
-[00:00:06.718] Browser WARN    Image with src "https://res.cloudinary.com/dhyrkd5pe/image/upload/v1766567882/pxhlsfvozu1a3ad7ocqx.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[00:00:06.718] Browser WARN    Image with src "https://res.cloudinary.com/dhyrkd5pe/image/upload/v1767463111/bh3ja6fahzwpbnp6pwmp.jpg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[00:00:13.551] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::34db:9c7e\",\"64:ff9b::305:d3a1\",\"64:ff9b::100c:241a\",\"64:ff9b::305:d3f2\",\"64:ff9b::34db:9cd6\",\"64:ff9b::305:d3a2\",\"64:ff9b::34db:a08e\",\"64:ff9b::305:d123\"]"
-[00:00:18.496] Browser LOG     Verification requested: {"_id":"69789e11990b9dd0a308f44b","farmerId":"SGB2026000006","is_active":true,"name":"anuj","overallStatus":"pending","phone_number":"2131231424","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg"}
-[00:00:33.464] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::100c:282e\",\"64:ff9b::100c:2846\",\"64:ff9b::305:d5f5\",\"64:ff9b::305:d32a\",\"64:ff9b::305:d308\",\"64:ff9b::34db:9e72\",\"64:ff9b::305:d335\",\"64:ff9b::305:d33f\"]"
-[00:00:35.459] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::100c:282e\",\"64:ff9b::100c:2846\",\"64:ff9b::305:d5f5\",\"64:ff9b::305:d32a\",\"64:ff9b::305:d308\",\"64:ff9b::34db:9e72\",\"64:ff9b::305:d335\",\"64:ff9b::305:d33f\"]"
-[00:00:46.496] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::100c:282e\",\"64:ff9b::100c:2846\",\"64:ff9b::305:d5f5\",\"64:ff9b::305:d32a\",\"64:ff9b::305:d308\",\"64:ff9b::34db:9e72\",\"64:ff9b::305:d335\",\"64:ff9b::305:d33f\"]"
-[00:05:51.272] Server  LOG     It looks like you're trying to use TypeScript but do not have the required package(s) installed.
-Installing dependencies
-
-If you are not trying to use TypeScript, please remove the tsconfig.json file from your package root (and any TypeScript files in your app and pages directories).
-
-[00:05:51.616] Server  LOG     
-[00:05:51.617] Server  LOG     Installing devDependencies (npm):
-[00:05:51.618] Server  LOG     - @types/react
-[00:05:51.618] Server  LOG     - @types/node
-[00:05:51.618] Server  LOG     
-[00:05:53.610] Server  LOG      ✓ Compiled in 2.9s
-[00:05:57.585] Server  LOG     
-[00:05:57.622] Server  LOG     
-[00:05:57.622] Server  LOG        We detected TypeScript in your project and reconfigured your tsconfig.json file for you. Strict-mode is set to false by default.
-[00:05:57.622] Server  LOG        The following suggested values were added to your tsconfig.json. These values can be changed to fit your project's needs:
-
-[00:05:57.622] Server  LOG        	- target was set to ES2017 (For top-level `await`. Note: Next.js only polyfills for the esmodules target.)
-[00:05:57.623] Server  LOG        	- include was updated to add '.next/dev/types/**/*.ts'
-[00:05:57.623] Server  LOG     
-[00:05:57.623] Server  LOG        The following mandatory changes were made to your tsconfig.json:
-
-[00:05:57.624] Server  LOG        	- jsx was set to react-jsx (next.js uses the React automatic runtime)
-[00:05:57.624] Server  LOG     
-[00:16:11.016] Server  LOG      ○ Compiling /admin/employee ...
-[00:20:19.987] Browser ERROR   Error fetching farmers: {}
-[00:20:19.987] Browser ERROR   Error fetching farmers: {}
-[00:20:24.208] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::305:d5ca\",\"64:ff9b::100c:2866\",\"64:ff9b::305:d32a\",\"64:ff9b::34db:9c42\",\"64:ff9b::305:d532\",\"64:ff9b::305:d3c2\",\"64:ff9b::34db:9e42\",\"64:ff9b::34db:a032\"]"
-[00:30:33.403] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::34db:9c62\",\"64:ff9b::34db:9e96\",\"64:ff9b::305:d30c\",\"64:ff9b::34db:9c7a\",\"64:ff9b::305:d53c\",\"64:ff9b::305:d384\",\"64:ff9b::305:d35a\",\"64:ff9b::100c:2442\"]"
-[00:31:04.317] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::305:d3f5\",\"64:ff9b::34db:a0c2\",\"64:ff9b::34db:9e46\",\"64:ff9b::100c:246a\",\"64:ff9b::305:d35a\",\"64:ff9b::305:d3ff\",\"64:ff9b::305:d172\",\"64:ff9b::305:d3f2\"]"
-[00:38:09.055] Server  LOG      ✓ Compiled in 1005ms
-[00:38:39.981] Server  LOG      ✓ Compiled in 505ms
-[00:39:04.040] Server  LOG      ✓ Compiled in 160ms
-[00:39:26.736] Server  LOG      ✓ Compiled in 236ms
-[00:40:01.563] Server  LOG      ✓ Compiled in 452ms
-[00:41:47.660] Server  LOG      ✓ Compiled in 960ms
-[00:43:01.732] Server  LOG      ✓ Compiled in 719ms
-[00:46:35.212] Server  LOG      ✓ Compiled in 173ms
-[00:46:57.929] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::305:d514\",\"64:ff9b::305:d30c\",\"64:ff9b::34db:9e82\",\"64:ff9b::305:d3fe\",\"64:ff9b::305:d512\",\"64:ff9b::305:d527\",\"64:ff9b::305:d3a2\",\"64:ff9b::34db:427f\"]"
-[00:47:01.147] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::305:d514\",\"64:ff9b::305:d30c\",\"64:ff9b::34db:9e82\",\"64:ff9b::305:d3fe\",\"64:ff9b::305:d512\",\"64:ff9b::305:d527\",\"64:ff9b::305:d3a2\",\"64:ff9b::34db:427f\"]"
-[00:49:09.912] Server  LOG      ✓ Compiled in 3.5s
-[00:49:32.008] Server  LOG      ✓ Compiled in 37ms
-[00:51:33.484] Server  LOG      ✓ Compiled in 1047ms
-[00:52:18.496] Server  ERROR    ⨯ "upstream image" "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/16a59b47-0a8d-4dbc-8b0e-bcf531a06ed1.jpeg" "resolved to private ip" "[\"64:ff9b::305:d5e9\",\"64:ff9b::34db:9cd6\",\"64:ff9b::34db:a0ca\",\"64:ff9b::305:d373\",\"64:ff9b::34db:a016\",\"64:ff9b::34db:9e66\",\"64:ff9b::305:d517\",\"64:ff9b::305:d179\"]"
-[01:22:15.928] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[01:22:16.422] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:22:16.703] Browser LOG     {"message":"Invalid token","success":false}
-[01:22:16.817] Browser ERROR   Error fetching profile: {}
-[01:22:17.784] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[01:22:18.067] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:22:18.296] Browser LOG     {"message":"Internal server error","success":false}
-[01:24:26.751] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:24:26.947] Browser LOG     {"message":"Internal server error","success":false}
-[01:24:30.467] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[01:24:30.635] Browser LOG     Login response: {"currentStep":7,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MTc4NTIsImV4cCI6MTc3MDEyMjY1Mn0.fEK3DmiIhpKGqoVo6oCG90_g3dqOMKTuaTqdXMXItmk"}
-[01:24:30.877] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:24:30.878] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:06.336] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:06.336] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:07.639] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:25:07.639] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:07.639] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:25:07.639] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:41.884] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:25:42.167] Browser LOG     {"message":"Internal server error","success":false}
-[01:25:42.867] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:25:43.111] Browser LOG     {"message":"Internal server error","success":false}
-[01:25:47.341] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[01:25:47.636] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MTc5MjksImV4cCI6MTc3MDEyMjcyOX0.0Yitusu3AkyBNVhQIif1nzyWjqpRrKFuGrYeUFgaNro"}
-[01:25:47.793] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:25:47.993] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:29:07.625] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:29:23.587] Browser ERROR   Error sending OTP: {}
-[01:32:53.508] Server  LOG      ✓ Compiled in 1495ms
-[01:33:24.531] Browser ERROR   Error sending OTP: {}
-[01:34:55.261] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:34:55.504] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:34:56.246] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:34:56.451] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:34:57.197] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:34:57.197] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:35:11.821] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[01:35:12.248] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:35:55.001] Server  LOG      ✓ Compiled in 853ms
-[01:36:16.481] Browser ERROR   Error sending OTP: {}
-[01:37:50.458] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:37:50.458] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:37:50.774] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:37:50.867] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:37:51.331] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:37:51.454] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:38:01.667] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[01:38:02.008] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:41:25.620] Browser ERROR   Error sending OTP: {}
-[01:42:02.640] Server  LOG      ✓ Compiled in 1548ms
-[01:42:13.865] Server  LOG      ✓ Compiled in 295ms
-[01:42:49.746] Browser ERROR   Error verifying OTP: {}
-[01:43:14.812] Server  LOG      ✓ Compiled in 370ms
-[01:43:35.516] Browser ERROR   Error resetting PIN: {}
-[01:43:58.096] Server  LOG      ✓ Compiled in 342ms
-[01:44:00.491] Browser ERROR   Error resetting PIN: {}
-[01:44:05.666] Browser ERROR   Error resetting PIN: {}
-[01:44:06.547] Browser ERROR   Error resetting PIN: {}
-[01:44:07.164] Browser ERROR   Error resetting PIN: {}
-[01:47:16.987] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[01:47:18.203] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[01:51:17.641] Server  LOG      ✓ Compiled in 1204ms
-[01:54:46.816] Browser ERROR   ./src/app/resetpin/page.js:247:16
-Parsing ecmascript source code failed
-  245 |         body: JSON.stringify({
-  246 |           token:
-> 247 |             pin: newPin,
-      |                ^
-  248 |           timestamp: new Date().toISOString(),
-  249 |         }),
-  250 |       });
-
-Expected ',', got ':'
-
-Import traces:
-  Client Component Browser:
-    ./src/app/resetpin/page.js [Client Component Browser]
-    ./src/app/resetpin/page.js [Server Component]
-
-  Client Component SSR:
-    ./src/app/resetpin/page.js [Client Component SSR]
-    ./src/app/resetpin/page.js [Server Component]
-[01:55:37.065] Server  LOG      ✓ Compiled in 599ms
-[01:55:55.497] Server  LOG      ✓ Compiled in 1273ms
-[01:56:18.552] Server  LOG      ✓ Compiled in 219ms
-[01:57:15.770] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:57:15.770] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:57:15.985] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:57:16.131] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[01:57:16.631] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:57:16.631] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[01:57:48.003] Server  LOG      ○ Compiling /dashboard/profile ...
-[02:00:17.799] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:00:18.064] Browser LOG     {"message":"Internal server error","success":false}
-[02:00:21.681] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:00:21.840] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjAwMDQsImV4cCI6MTc3MDEyNDgwNH0.2oMfGcbfq6Yq6ybmlIMs-xlFjB-lw8UnUyq3ESvV6dg"}
-[02:00:22.136] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:00:22.136] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:03:07.665] Server  LOG      ✓ Compiled in 1146ms
-[02:03:25.795] Server  LOG      ✓ Compiled in 668ms
-[02:03:46.222] Browser LOG     {"message":"Internal server error","success":false}
-[02:03:46.222] Browser LOG     {"message":"Internal server error","success":false}
-[02:03:48.520] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:03:48.714] Browser LOG     {"message":"Internal server error","success":false}
-[02:03:54.514] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:03:55.133] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjAyMTYsImV4cCI6MTc3MDEyNTAxNn0.b6n_1fDkClHX5huZ751umCmYpBhQaTlEz_IJ3jCM2-I"}
-[02:03:55.625] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:03:55.729] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:04:40.246] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:04:40.246] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:04:41.732] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:04:41.732] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:04:41.732] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:04:41.732] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:05:07.894] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[02:05:08.302] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:05:08.676] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:05:28.742] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:05:29.130] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:05:33.992] Browser LOG     {"message":"Internal server error","success":false}
-[02:05:33.992] Browser LOG     {"message":"Internal server error","success":false}
-[02:14:58.688] Server  LOG      ✓ Compiled in 1434ms
-[02:16:27.006] Server  LOG      ✓ Compiled in 800ms
-[02:23:44.671] Browser LOG     {"message":"Internal server error","success":false}
-[02:23:44.671] Browser LOG     {"message":"Internal server error","success":false}
-[02:23:48.385] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:23:48.612] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjE0MTAsImV4cCI6MTc3MDEyNjIxMH0.Bq0uAfJ0ZjXajweFRR-AmvG79b3AmlmgaKT8OZN73W0"}
-[02:23:49.435] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:23:50.242] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:24:00.145] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:24:00.685] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:03.154] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:03.159] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:05.879] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:25:06.311] Browser LOG     Login response: {"error":"Invalid password"}
-[02:25:10.729] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:25:11.507] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjE0OTMsImV4cCI6MTc3MDEyNjI5M30.0A4ryG0f1mUkKsvbbI7o5C-8Dqdq7iN3STJWedUuJ1s"}
-[02:25:11.807] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:25:12.126] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:25:16.067] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:16.068] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:19.777] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:25:19.988] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:24.876] Browser LOG     {"message":"Internal server error","success":false}
-[02:25:24.876] Browser LOG     {"message":"Internal server error","success":false}
-[02:26:33.965] Server  LOG      ✓ Compiled in 553ms
-[02:27:07.618] Browser LOG     {"message":"Internal server error","success":false}
-[02:27:07.618] Browser LOG     {"message":"Internal server error","success":false}
-[02:27:10.678] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:27:10.910] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjE2MTMsImV4cCI6MTc3MDEyNjQxM30._R4HpiTe2DHXBGJ3NpEVBN-AyfBwk9HUG8jP7KelLJc"}
-[02:27:11.190] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:27:11.190] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:27:52.304] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:27:52.455] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:27:52.688] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:27:52.688] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:27:52.688] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:27:52.688] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:37:24.992] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:37:25.650] Browser LOG     {"message":"Internal server error","success":false}
-[02:37:28.622] Browser LOG     {"message":"Internal server error","success":false}
-[02:37:28.622] Browser LOG     {"message":"Internal server error","success":false}
-[02:37:33.014] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[02:37:33.248] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjIyMzUsImV4cCI6MTc3MDEyNzAzNX0.QYV8r_oCMP3_rIIxBRGLJXQxO2IIPZBUdrr4PTcmJJ4"}
-[02:37:33.614] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:37:33.614] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:38:15.306] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:38:15.306] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:38:15.649] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:38:15.649] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:38:15.649] Browser LOG     Profile details: {"profile":{"_id":"6978b2c7a7a06048f6708ec7","email":"anjulsingh462@gmail.com","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anjul Singh","phone_number":"7523801921","role":"admin"}}
-[02:38:15.649] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:41:26.973] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:41:27.586] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:55:35.018] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[02:55:35.766] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[02:55:38.992] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[02:55:38.992] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[03:00:24.559] Server  LOG      ✓ Compiled in 1045ms
-[03:00:31.152] Server  LOG      ✓ Compiled in 554ms
-[03:00:52.137] Server  LOG      ✓ Compiled in 2.8s
-[03:01:07.190] Server  LOG      ✓ Compiled in 273ms
-[03:01:26.418] Server  LOG      ✓ Compiled in 2.2s
-[03:01:58.541] Server  LOG      ✓ Compiled in 1024ms
-[03:02:16.149] Server  LOG      ✓ Compiled in 205ms
-[03:02:47.852] Server  LOG      ✓ Compiled in 1174ms
-[03:03:19.071] Server  LOG      ✓ Compiled in 443ms
-[03:03:38.165] Server  LOG      ✓ Compiled in 748ms
-[03:04:03.281] Server  LOG      ✓ Compiled in 704ms
-[03:08:42.360] Server  LOG      ○ Compiling /admin/updateprice ...
-[03:08:53.304] Browser ERROR   Error fetching price history: {}
-[03:09:15.228] Browser LOG     [2500]
-[03:09:15.228] Browser LOG     [3000]
-[03:09:15.228] Browser LOG     [2000]
-[03:09:15.228] Browser LOG     [2;38;2;124;124;124m%s[0m [2500]
-[03:09:15.229] Browser LOG     [2;38;2;124;124;124m%s[0m [3000]
-[03:09:15.231] Browser LOG     [2;38;2;124;124;124m%s[0m [2000]
-[03:12:58.978] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:12:59.274] Browser LOG     {"message":"Internal server error","success":false}
-[03:13:04.835] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:19:52.396] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[03:19:52.867] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:19:53.415] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:20:00.161] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:20:00.324] Browser LOG     {"message":"Internal server error","success":false}
-[03:20:11.825] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[03:20:12.037] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1MjQ3OTQsImV4cCI6MTc3MDEyOTU5NH0.ntt6Pck_yMsGY__1F6OkZbO1p1CxSYk0CMRpX7xE-I4"}
-[03:20:12.280] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[03:20:12.280] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[03:20:19.695] Browser WARN    Image with src "https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
-[03:20:21.597] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[03:20:42.521] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[03:20:44.363] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:20:44.441] Browser LOG     {"message":"Internal server error","success":false}
-[03:20:44.441] Browser ERROR   Error fetching profile: {}
-[03:20:44.442] Browser ERROR   Failed to fetch RSC payload for http://localhost:3000/login. Falling back to browser navigation. {}
-[03:20:44.767] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:20:44.930] Browser LOG     {"message":"Internal server error","success":false}
-[03:20:47.573] Server  LOG      ○ Compiling /_not-found/page ...
-[03:20:56.126] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[03:20:56.342] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"farmer","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4Y2NkYjBjMTBhNThmY2IzYzJlMjEiLCJpYXQiOjE3Njk1MjQ4MzgsImV4cCI6MTc3MDEyOTYzOH0.ouwnfwFypEtlE6_Wmy_RLRn4J5XHLsVla_xG7MMAvnE"}
-[03:20:56.808] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:20:56.808] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:21:20.026] Browser LOG     Verification Response: {}
-[03:21:20.027] Browser LOG     Verification submitted: {"approvalId":"6978ce7e0c10a58fcb3c2ea6","message":"Farmer verification updated successfully","overallStatus":"rejected","success":true,"updatedFields":["aadhaar_image","aadhaar_number","pan_number","pan_image","khatauni_images"]}
-[03:21:27.724] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:21:28.031] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:21:43.779] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:21:43.779] Browser ERROR   Submission Error: {}
-[03:21:51.919] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:21:52.186] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:22:01.893] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:22:01.893] Browser ERROR   Submission Error: {}
-[03:22:51.214] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[03:22:51.214] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:22:51.305] Browser LOG     {"message":"Internal server error","success":false}
-[03:22:51.453] Browser ERROR   Error fetching profile: {}
-[03:22:51.602] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[03:22:51.603] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:22:51.715] Browser LOG     {"message":"Internal server error","success":false}
-[03:22:57.429] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[03:22:57.656] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"farmer","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4Y2NkYjBjMTBhNThmY2IzYzJlMjEiLCJpYXQiOjE3Njk1MjQ5NTksImV4cCI6MTc3MDEyOTc1OX0.Dpg_WKjxnzIDIcO4ckO7jViTVWDVZARVIMEwYzn7KhA"}
-[03:22:57.933] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:22:58.034] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:23:37.736] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:23:37.737] Browser ERROR   Submission Error: {}
-[03:23:57.554] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:23:57.555] Browser ERROR   Submission Error: {}
-[03:26:33.839] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:26:33.946] Browser ERROR   Submission Error: {}
-[03:28:12.991] Server  LOG      ✓ Compiled in 1656ms
-[03:28:46.170] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:28:46.560] Browser LOG     Uploaded aadhaar_image: https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/ff37d3e8-7457-453d-a049-71f823a75535.svg+xml
-[03:28:46.560] Browser LOG     Submitting processed data: {"aadhaar_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/ff37d3e8-7457-453d-a049-71f823a75535.svg+xml"}
-[03:28:59.041] Server  LOG      ✓ Compiled in 16ms
-[03:29:00.213] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[03:29:00.214] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:29:00.486] Browser LOG     {"message":"Internal server error","success":false}
-[03:29:04.794] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
-[03:29:04.996] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"farmer","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4Y2NkYjBjMTBhNThmY2IzYzJlMjEiLCJpYXQiOjE3Njk1MjUzMjcsImV4cCI6MTc3MDEzMDEyN30._HB8QCukgH8A5l7evdMxkcNtyaBGc0LpmPAyPdYxwW4"}
-[03:29:06.101] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:29:06.277] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:29:13.327] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[03:31:50.496] Browser LOG     Verification Response: {}
-[03:31:50.502] Browser LOG     Verification submitted: {"approvalId":"6978d0f40c10a58fcb3c2f28","message":"Farmer verification updated successfully","overallStatus":"rejected","success":true,"updatedFields":["aadhaar_image"]}
-[03:31:54.775] Server  LOG     NEXT_PUBLIC_API_URL = "http://localhost:8000/api/v1"
-[03:31:55.296] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[03:31:55.296] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:31:55.563] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:32:03.944] Browser LOG     Uploading file for aadhaar_image to S3...
-[03:32:05.706] Browser LOG     Uploaded aadhaar_image: https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/ae9c3de6-4d31-4c0d-a72b-ce643a2c3395.jpeg
-[03:32:05.706] Browser LOG     Submitting processed data: {"aadhaar_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/ae9c3de6-4d31-4c0d-a72b-ce643a2c3395.jpeg"}
-[03:32:10.894] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[03:32:59.313] Browser LOG     Verification Response: {}
-[03:32:59.313] Browser LOG     Verification submitted: {"approvalId":"6978d1390c10a58fcb3c2f5b","message":"Farmer verification updated successfully","overallStatus":"rejected","success":true,"updatedFields":["aadhaar_image","address","tehsil","district","state","landmark","pin_code"]}
-[03:33:04.095] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[03:33:04.095] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[03:33:04.511] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[03:33:10.666] Browser LOG     Submitting processed data: {"pin_code":"211015"}
-[03:33:29.300] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[03:33:41.325] Browser LOG     Verification Response: {}
-[03:33:41.325] Browser LOG     Verification submitted: {"approvalId":"6978d1630c10a58fcb3c2fa8","message":"Farmer verification updated successfully","overallStatus":"pending","success":true,"updatedFields":["pin_code"]}
-[03:34:04.426] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[04:44:20.926] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[04:44:21.221] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[04:44:23.326] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[04:49:12.673] Server  LOG      ✓ Compiled in 2.4s
-[04:50:31.069] Browser LOG     Verification Response: {}
-[04:50:31.071] Browser LOG     Verification submitted: {"approvalId":"6978e3630c10a58fcb3c2ff4","message":"Farmer verification updated successfully","overallStatus":"rejected","success":true,"updatedFields":["nominee_pan_image","nominee_name","nominee_dob","nominee_phone","nominee_email","nominee_aadhaar","nominee_pan","nominee_relation","nominee_gender","nominee_address"]}
-[04:50:51.612] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[04:50:51.709] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[04:50:51.972] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"rejected"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[04:51:32.493] Browser LOG     Uploading file for nominee_pan_image to S3...
-[04:51:33.957] Browser LOG     Uploaded nominee_pan_image: https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/cb29d07a-f3d0-4d52-8edb-5241d57732ee.jpeg
-[04:51:33.958] Browser LOG     Submitting processed data: {"nominee_email":"now@gmail.com","nominee_pan_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/cb29d07a-f3d0-4d52-8edb-5241d57732ee.jpeg"}
-[04:51:42.228] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[04:52:35.634] Browser LOG     Verification Response: {}
-[04:52:35.635] Browser LOG     Verification submitted: {"approvalId":"6978e3e10c10a58fcb3c3052","message":"Farmer verification updated successfully","overallStatus":"pending","success":true,"updatedFields":["land_size","bank_passbook_img","account_number","ifsc_code","account_holder","bank_name","branch_name","nominee_pan_image","nominee_aadhaar_image","nominee_image"]}
-[04:52:46.011] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[04:52:46.170] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[04:52:46.568] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"pending"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[04:52:49.170] Browser LOG     Verification requested: {"_id":"6978ccdb0c10a58fcb3c2e21","farmerId":"SGB2026000002","is_active":true,"name":"Anuj Singh","overallStatus":"pending","phone_number":"8009991569","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}
-[04:53:20.566] Browser LOG     Verification Response: {}
-[04:53:20.567] Browser LOG     Verification submitted: {"approvalId":"6978e40d0c10a58fcb3c30b7","message":"Farmer verification updated successfully","overallStatus":"approved","success":true,"updatedFields":["nominee_email"]}
-[04:53:28.969] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[04:53:28.982] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[04:53:29.825] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"approved"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
-[04:53:45.711] Server  LOG      ○ Compiling /dashboard/sell ...
-[04:56:40.759] Browser LOG     NEXT_PUBLIC_API_URL = http://localhost:8000/api/v1
-[04:56:41.304] Browser LOG     {"message":"Internal server error","success":false}
+[00:00:00.688] Server  LOG      ✓ Ready in 438ms
+[00:00:17.555] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:02:03.626] Server  LOG        Reload env: .env
+[00:02:21.490] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:04:30.398] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:31:51.655] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:40:56.103] Browser LOG     {"message":"Internal server error","success":false}
+[00:45:55.632] Browser LOG     {"message":"Internal server error","success":false}
+[00:45:55.633] Browser LOG     {"message":"Internal server error","success":false}
+[00:46:06.518] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:46:06.694] Browser LOG     Login response: {"currentStep":1,"message":"login successful","role":"supervisor","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc5MDQxMWViYjA1NmNjNTQ1YzBkNWQiLCJpYXQiOjE3Njk1NDIxOTksImV4cCI6MTc3MDE0Njk5OX0.4Bz1GUjtuwr4u8sRgES985ZFqQoGHTvl0f8PRgj5IVM"}
+[00:46:07.859] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:46:07.966] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:46:54.100] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:46:54.100] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:46:54.680] Browser LOG     Profile details: {"profile":{"_id":"69790411ebb056cc545c0d5d","email":"anjul.connect@gmail.com","employeeId":"EMP2026000002","is_active":true,"name":"Dignissimos quo nost","phone_number":"3982743289","role":"supervisor"}}
+[00:46:54.680] Browser ERROR   Error fetching profile: {}
+[00:46:54.798] Browser LOG     Profile details: {"profile":{"_id":"69790411ebb056cc545c0d5d","email":"anjul.connect@gmail.com","employeeId":"EMP2026000002","is_active":true,"name":"Dignissimos quo nost","phone_number":"3982743289","role":"supervisor"}}
+[00:46:54.798] Browser ERROR   Error fetching profile: {}
+[00:47:00.601] Browser LOG     Profile details: {"profile":{"_id":"69790411ebb056cc545c0d5d","email":"anjul.connect@gmail.com","employeeId":"EMP2026000002","is_active":true,"name":"Dignissimos quo nost","phone_number":"3982743289","role":"supervisor"}}
+[00:47:00.602] Browser ERROR   Error fetching profile: {}
+[00:47:04.410] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:47:04.410] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:47:04.410] Browser LOG     Profile details: {"profile":{"_id":"69790411ebb056cc545c0d5d","email":"anjul.connect@gmail.com","employeeId":"EMP2026000002","is_active":true,"name":"Dignissimos quo nost","phone_number":"3982743289","role":"supervisor"}}
+[00:47:04.410] Browser ERROR   Error fetching profile: {}
+[00:47:04.536] Browser LOG     Profile details: {"profile":{"_id":"69790411ebb056cc545c0d5d","email":"anjul.connect@gmail.com","employeeId":"EMP2026000002","is_active":true,"name":"Dignissimos quo nost","phone_number":"3982743289","role":"supervisor"}}
+[00:47:04.536] Browser ERROR   Error fetching profile: {}
+[00:47:07.692] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:47:10.870] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:47:25.411] Browser LOG     {"message":"Internal server error","success":false}
+[00:47:34.119] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:47:34.329] Browser LOG     Login response: {"currentStep":1,"message":"login successful","role":"supervisor","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc5MDQxMWViYjA1NmNjNTQ1YzBkNWQiLCJpYXQiOjE3Njk1NDIyODYsImV4cCI6MTc3MDE0NzA4Nn0.Auc5BtGfTWPJparonCV8KSlTGlQkRMxd_T8INcQgq7g"}
+[00:47:34.544] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:47:34.544] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:49:10.004] Browser LOG     {"message":"Internal server error","success":false}
+[00:52:47.802] Browser LOG     {"message":"Internal server error","success":false}
+[00:52:47.802] Browser LOG     {"message":"Internal server error","success":false}
+[00:52:58.953] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:52:59.109] Browser LOG     Login response: {"currentStep":1,"message":"login successful","role":"manager","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc5MDNmOGViYjA1NmNjNTQ1YzBkNTQiLCJpYXQiOjE3Njk1NDI2MTEsImV4cCI6MTc3MDE0NzQxMX0.-dXoQR8ouA4uMUOwWUv3jQSCcz3cGq7mXNL8N1ZgNY0"}
+[00:53:00.043] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:53:00.043] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:53:39.689] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:53:39.689] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:53:40.037] Browser LOG     Profile details: {"profile":{"_id":"697903f8ebb056cc545c0d54","email":"anjul.esaral@gmail.com","employeeId":"EMP2026000001","is_active":true,"name":"Velit rem omnis dolo","phone_number":"8932749847","role":"manager"}}
+[00:53:40.038] Browser ERROR   Error fetching profile: {}
+[00:53:40.038] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:53:40.038] Browser LOG     Profile details: {"profile":{"_id":"697903f8ebb056cc545c0d54","email":"anjul.esaral@gmail.com","employeeId":"EMP2026000001","is_active":true,"name":"Velit rem omnis dolo","phone_number":"8932749847","role":"manager"}}
+[00:53:40.038] Browser ERROR   Error fetching profile: {}
+[00:53:40.038] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:54:12.179] Browser LOG     {"message":"Internal server error","success":false}
+[00:54:15.146] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:54:15.375] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1NDI2ODgsImV4cCI6MTc3MDE0NzQ4OH0.d4DIPCgfayNFOUiFHmkPhwMbuIHiM2CZ892J45tdx1c"}
+[00:54:15.628] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:54:15.628] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:55:08.309] Browser LOG     {"message":"Internal server error","success":false}
+[00:55:15.817] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:55:16.024] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"farmer","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4Y2NkYjBjMTBhNThmY2IzYzJlMjEiLCJpYXQiOjE3Njk1NDI3NDgsImV4cCI6MTc3MDE0NzU0OH0.AiIXeH2sHhT-hNdUartMX9Zox6Y1E7YWVrMa4MWk-sE"}
+[00:55:16.227] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"approved"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
+[00:55:16.353] Browser LOG     Profile details: {"profile":{"_id":"6978ccdb0c10a58fcb3c2e41","email":"anjulsingh205@gmail.com","farmerId":"SGB2026000002","farmerVerification":{"overallStatus":"approved"},"is_active":true,"name":"Anuj Singh","phone_number":"8009991569","role":"farmer","user_image":"https://dev-bucket-7896.s3.ap-south-1.amazonaws.com/images/0f08a492-983a-4251-aea1-b272b9ce53f7.jpeg"}}
+[00:56:37.388] Browser LOG     {"message":"Internal server error","success":false}
+[00:56:47.700] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:56:47.867] Browser LOG     Login response: {"currentStep":1,"message":"login successful","role":"supervisor","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc5MDQxMWViYjA1NmNjNTQ1YzBkNWQiLCJpYXQiOjE3Njk1NDI4NDAsImV4cCI6MTc3MDE0NzY0MH0.yNAStM7eN4SmCFSkSMiVr3RZ-SAhByyDTxgAHAf5T6E"}
+[00:56:48.121] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:56:48.121] Browser LOG     {"message":"Token is valid","role":"supervisor","success":true}
+[00:57:22.763] Browser LOG     {"message":"Internal server error","success":false}
+[00:57:34.335] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:57:34.509] Browser LOG     Login response: {"currentStep":1,"message":"login successful","role":"manager","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc5MDNmOGViYjA1NmNjNTQ1YzBkNTQiLCJpYXQiOjE3Njk1NDI4ODcsImV4cCI6MTc3MDE0NzY4N30.NPJxXzfHIbwrksLZUC5yVQ9rvyJlqPL7Yt1JBh9W6DE"}
+[00:57:36.214] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:57:36.217] Browser LOG     {"message":"Token is valid","role":"manager","success":true}
+[00:58:01.389] Browser LOG     {"message":"Internal server error","success":false}
+[00:58:04.373] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:58:04.545] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3Njk1NDI5MTcsImV4cCI6MTc3MDE0NzcxN30.EGDBdcuL9ryaUpKy2FdvOaK73ECe154QjlaSKBJ-QlU"}
+[00:58:04.719] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:58:04.830] Browser LOG     {"message":"Token is valid","role":"admin","success":true}

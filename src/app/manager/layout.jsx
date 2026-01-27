@@ -310,13 +310,13 @@ export default function DashboardLayout({ children }) {
                 {/* Profile Avatar with Dropdown */}
                 <div className="relative" ref={dropdownRef}>
                   <button
-                    className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium text-sm focus:outline-none"
+                    className="w-10 h-10 bg-linear-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-medium text-sm focus:outline-none"
                     onClick={() => setDropdownOpen((open) => !open)}
                   >
                     <img
                       src={profile.user_image}
                       alt="Profile Avatar"
-                      className="w-10 h-10 rounded-full p-[2px]"
+                      className="w-10 h-10 rounded-full p-0.5"
                     />
                   </button>
                   {dropdownOpen && (

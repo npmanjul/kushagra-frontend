@@ -6,12 +6,12 @@ __turbopack_context__.s([
     "default",
     ()=>__TURBOPACK__default__export__
 ]);
-var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/constants.js [app-client] (ecmascript)");
-;
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
+const API_BASE_PDF_URL = ("TURBOPACK compile-time value", "http://localhost:4000") || "http://localhost:4000";
 const handlePrint = ({ data, service })=>{
     const form = document.createElement("form");
     form.method = "POST";
-    form.action = `${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]}/generatepdf/${service}`;
+    form.action = `${API_BASE_PDF_URL}/generatepdf/${service}`;
     form.target = "_self"; // 👈 download starts automatically
     const input = document.createElement("input");
     input.type = "hidden";
