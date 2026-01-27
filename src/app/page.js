@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Wheat,
   ShieldCheck,
@@ -39,223 +39,270 @@ import {
   BarChart3
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("farmer");
+  const [activeSection, setActiveSection] = useState("");
+  const [heroSlide, setHeroSlide] = useState(0);
+
+  const navItems = ["About", "How It Works", "Plans", "Team", "News", "Contact"];
+
+  // Hero carousel slides with images
+  const heroSlides = [
+    {
+      badge: "सुरक्षित अनाज, समृद्ध किसान",
+      title: "Digitizing",
+      highlight: "Grains",
+      subtitle: "for Farmers",
+      description: "Kushagra Bhumitra FPO enables farmers to store grains safely, access instant credit, and sell at the best market prices — all through a simple mobile app.",
+      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop"
+    },
+    {
+      badge: "तत्काल लोन, बिना झंझट",
+      title: "Instant",
+      highlight: "Credit",
+      subtitle: "for Your Harvest",
+      description: "Get up to 60% instant loan against your stored grains. No collateral needed — your grain is your guarantee. Money directly in your bank account.",
+      image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=600&fit=crop"
+    },
+    {
+      badge: "सही दाम, सही समय",
+      title: "Best Market",
+      highlight: "Prices",
+      subtitle: "When You Sell",
+      description: "No more distress selling! Store your grain, wait for the right price, and sell with one click. We connect you to buyers across India.",
+      image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&h=600&fit=crop"
+    }
+  ];
+
+  // Auto-rotate hero carousel
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Scroll spy effect to highlight active navigation
+  useEffect(() => {
+    const handleScroll = () => {
+      const sections = navItems.map(item =>
+        document.getElementById(item.toLowerCase().replace(/\s+/g, '-'))
+      );
+
+      const scrollPosition = window.scrollY + 100;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = sections[i];
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveSection(navItems[i].toLowerCase().replace(/\s+/g, '-'));
+          return;
+        }
+      }
+      setActiveSection("");
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Call once on mount
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   return (
     <div className="min-h-screen bg-white font-sans text-stone-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
-      {/* ========== NAVBAR ========== */}
-      <nav className="fixed w-full z-50 bg-white/95 backdrop-blur-md border-b border-stone-100 shadow-sm transition-all duration-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            {/* Logo */}
-            <a href="#" className="flex items-center space-x-3 group cursor-pointer">
-              <div className="bg-gradient-to-br from-emerald-600 to-emerald-500 p-2.5 rounded-xl shadow-lg shadow-emerald-100 transition-all duration-300 group-hover:scale-105 group-hover:shadow-emerald-200">
-                <Wheat className="h-7 w-7 text-white" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-2xl font-black text-stone-900 tracking-tight leading-none">
-                  Kushagra
-                </span>
-                <span className="text-[10px] font-bold text-emerald-600 tracking-[0.2em] uppercase mt-0.5">
-                  Bhumitra FPO
-                </span>
-              </div>
-            </a>
 
-            {/* Desktop Menu */}
-            <div className="hidden lg:flex space-x-8 items-center">
-              {["About", "How It Works", "Plans", "Team", "News", "Contact"].map((item) => (
-                <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} className="text-sm font-semibold text-stone-500 hover:text-emerald-600 transition-colors relative group">
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-emerald-500 group-hover:w-full transition-all duration-300"></span>
-                </a>
-              ))}
-              <Link href='/login' className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all duration-300 shadow-lg shadow-emerald-100 hover:shadow-xl hover:shadow-emerald-200 flex items-center group">
-                Login <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </div>
+      {/* ========== MODERN HEADER ========== */}
+      <header className="fixed top-0 left-0 right-0 w-full z-50 shadow-lg">
+        {/* Top Bar: Logo + Company Name + Login */}
+        <div className="bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-2.5">
+              {/* Logo */}
+              <a href="#" className="flex items-center gap-3 group cursor-pointer shrink-0">
+                <Image
+                  src="/logo_v2.png"
+                  alt="Kushagra Bhumitra FPO Logo"
+                  width={70}
+                  height={70}
+                  className="rounded-xl "
+                />
+                <div className="hidden sm:block">
+                  <div className="text-xl font-black/90 font-bold">
+                    Kushagra
+                  </div>
+                  <div className="text-[11px] font-bold font-black tracking-[0.15em] uppercase">
+                    Bhumitra FPO
+                  </div>
+                </div>
+              </a>
 
-            {/* Mobile Menu Button */}
-            <div className="lg:hidden">
-              <button onClick={toggleMenu} className="text-stone-900 hover:text-emerald-600 p-2 transition-colors rounded-lg hover:bg-stone-50">
-                {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
-              </button>
+              {/* Company Name (Center) */}
+              <div className="text-center flex-1 px-3 sm:px-6">
+                <p className="text-red-700 font-bold text-[11px] sm:text-base lg:text-lg leading-tight drop-shadow-sm">
+                  कुशाग्र भूमित्रा बायो एनर्जी किसान प्रोडक्शन कंपनी लिमिटेड
+                </p>
+                <p className="text-stone-700 font-extrabold text-[9px] sm:text-xs lg:text-sm tracking-wider uppercase leading-tight">
+                  Kushagra Bhumitra Bio Energy Farmer Producer Company Limited
+                </p>
+              </div>
+
+              {/* Login Button (Desktop) + Mobile Menu */}
+              <div className="flex items-center gap-2 shrink-0">
+                <Link href='/login' className="hidden sm:flex bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 items-center group border border-emerald-500">
+                  Login <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+                <button onClick={toggleMenu} className="lg:hidden text-stone-800 hover:text-emerald-700 p-1.5 transition-all rounded-lg hover:bg-stone-100">
+                  {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Slim Navigation Bar (Desktop) */}
+        <nav className="bg-emerald-600 hidden lg:block shadow-inner">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-center items-center h-9 gap-1">
+              {navItems.map((item) => {
+                const sectionId = item.toLowerCase().replace(/\s+/g, '-');
+                const isActive = activeSection === sectionId;
+                return (
+                  <a
+                    key={item}
+                    href={`#${sectionId}`}
+                    className={`text-xs font-semibold transition-all duration-200 px-4 py-1 rounded-full ${isActive
+                      ? 'text-emerald-900 bg-white/90 shadow-md'
+                      : 'text-white/90 hover:text-white hover:bg-white/20'
+                      }`}
+                  >
+                    {item}
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        </nav>
+
+        {/* Mobile Menu (Dropdown) */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-stone-100 absolute w-full shadow-2xl animate-fadeIn">
-            <div className="px-6 py-8 space-y-2">
-              {["About", "How It Works", "Plans", "Team", "News", "Contact"].map((item) => (
-                <a key={item} href={`#${item.toLowerCase().replace(/\s+/g, '-')}`} onClick={() => setIsMenuOpen(false)} className="block py-4 text-lg font-semibold text-stone-800 border-b border-stone-50 hover:text-emerald-600 transition-colors">
-                  {item}
-                </a>
-              ))}
-              <Link href="/login" className="w-full mt-6 bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg shadow-xl shadow-emerald-100">
+          <div className="lg:hidden bg-white/95 backdrop-blur-lg border-t border-stone-200 absolute w-full shadow-2xl">
+            <div className="px-5 py-4 space-y-1">
+              {navItems.map((item) => {
+                const sectionId = item.toLowerCase().replace(/\s+/g, '-');
+                const isActive = activeSection === sectionId;
+                return (
+                  <a
+                    key={item}
+                    href={`#${sectionId}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`block py-2.5 px-4 text-sm font-semibold rounded-lg transition-all ${isActive
+                      ? 'text-white bg-emerald-600 shadow-md'
+                      : 'text-stone-700 hover:text-emerald-600 hover:bg-emerald-50'
+                      }`}
+                  >
+                    {item}
+                  </a>
+                );
+              })}
+              {/* Login Button in Mobile Menu */}
+              <Link
+                href='/login'
+                onClick={() => setIsMenuOpen(false)}
+                className="block w-full text-center mt-3 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold text-sm shadow-lg"
+              >
                 Login
               </Link>
             </div>
           </div>
         )}
-      </nav>
+      </header>
 
-      {/* ========== HERO SECTION ========== */}
-      <section className="relative pt-32 pb-16 overflow-hidden bg-gradient-to-b from-stone-50 via-white to-white">
-        {/* Background Elements */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiM5Q0EzQUYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJ2LTRoMnY0em0wLTZoLTJ2LTRoMnY0em0tNiA2aC0ydi00aDJ2NHptMC02aC0ydi00aDJ2NHoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-40" />
-        <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-emerald-100 rounded-full blur-[120px] opacity-50 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-amber-100 rounded-full blur-[100px] opacity-40 pointer-events-none" />
+      {/* ========== HERO SECTION - FULL WIDTH IMAGE CAROUSEL ========== */}
+      <section className="relative h-[60vh] min-h-[600px] overflow-hidden mt-[70px] lg:mt-[100px]">
+        {/* Background Image Carousel */}
+        {heroSlides.map((slide, idx) => (
+          <div
+            key={idx}
+            className={`absolute inset-0 transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx
+              ? 'opacity-100 z-10'
+              : 'opacity-0 z-0'
+              }`}
+          >
+            <img
+              src={slide.image}
+              alt={`${slide.title} ${slide.highlight}`}
+              className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${heroSlide === idx ? 'scale-105' : 'scale-100'}`}
+            />
+            {/* Dark Overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-r from-stone-900/80 via-stone-900/60 to-stone-900/40" />
+          </div>
+        ))}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left: Text Content */}
-            <div className="text-center lg:text-left">
-              <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold tracking-wide mb-6">
-                <ShieldCheck className="w-3.5 h-3.5 mr-2" />
-                सुरक्षित अनाज, समृद्ध किसान
-              </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-stone-900 mb-6 tracking-tight leading-[1.1]">
-                Digitizing <span className="text-emerald-600 relative">
-                  Grains
-                  <svg className="absolute w-full h-3 -bottom-2 left-0 text-emerald-200" viewBox="0 0 100 15" preserveAspectRatio="none"><path d="M0 8 Q 25 0 50 8 T 100 8" stroke="currentColor" strokeWidth="4" fill="none" /></svg>
-                </span>
-                <br /> for Farmers
-              </h1>
-              <p className="text-lg sm:text-xl text-stone-500 leading-relaxed mb-8 max-w-xl mx-auto lg:mx-0">
-                Kushagra Bhumitra FPO enables farmers to store grains safely, access instant credit, and sell at the best market prices — all through a simple mobile app.
-              </p>
-              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-                <Link href="/register" className="px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold text-lg shadow-xl shadow-emerald-200 hover:shadow-2xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center group">
-                  Join Now <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+        {/* Content Overlay */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+            <div className="max-w-2xl">
+              {/* Carousel Text Content */}
+              {heroSlides.map((slide, idx) => (
+                <div
+                  key={idx}
+                  className={`transition-all duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx
+                    ? 'opacity-100 translate-y-0'
+                    : 'opacity-0 translate-y-4 absolute pointer-events-none'
+                    }`}
+                >
+                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-bold tracking-wide mb-4">
+                    <ShieldCheck className="w-3 h-3 mr-1.5 text-emerald-400" />
+                    {slide.badge}
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight leading-[1.1]">
+                    {slide.title} <span className="text-emerald-400">{slide.highlight}</span>
+                    <br /> {slide.subtitle}
+                  </h1>
+                  <p className="text-base sm:text-lg text-stone-300 leading-relaxed mb-6 max-w-xl">
+                    {slide.description}
+                  </p>
+                </div>
+              ))}
+
+              {/* CTAs - Always visible */}
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <Link href="/register" className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-bold text-sm shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center group">
+                  Join Now <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <button className="px-8 py-4 bg-white hover:bg-stone-50 text-stone-900 rounded-full font-bold text-lg border-2 border-stone-200 hover:border-stone-300 transition-all flex items-center justify-center">
+                <button className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full font-bold text-sm border border-white/30 hover:border-white/50 transition-all flex items-center justify-center">
                   Watch Video
                 </button>
               </div>
 
-              {/* Stats */}
-              <div className="mt-12 pt-8 border-t border-stone-100 flex flex-wrap justify-center lg:justify-start gap-x-10 gap-y-4">
-                {[
-                  { value: "1.5L+", label: "Farmers Registered" },
-                  { value: "50+", label: "Warehouses" },
-                  { value: "₹10Cr+", label: "Credit Disbursed" }
-                ].map((stat, idx) => (
-                  <div key={idx} className="text-center lg:text-left">
-                    <div className="text-3xl font-black text-stone-900">{stat.value}</div>
-                    <div className="text-xs font-semibold text-stone-400 uppercase tracking-wider">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: Visual - Phone Mockup with Transactions */}
-            <div className="relative flex justify-center lg:justify-end">
-              <div className="relative w-full max-w-xs sm:max-w-sm mx-auto">
-                {/* Phone Mockup */}
-                <div className="relative bg-gradient-to-b from-stone-800 to-stone-900 rounded-[2.5rem] p-2 shadow-2xl shadow-stone-400/30 border border-stone-700">
-                  {/* Notch */}
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-stone-900 rounded-b-xl z-20 flex items-center justify-center">
-                    <div className="w-8 h-1.5 bg-stone-700 rounded-full"></div>
-                  </div>
-
-                  {/* Screen */}
-                  <div className="bg-white rounded-[2rem] overflow-hidden">
-                    {/* Status Bar */}
-                    <div className="bg-emerald-600 px-5 pt-6 pb-3 text-white">
-                      <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-2">
-                          <div className="bg-white/20 p-1.5 rounded-lg backdrop-blur-sm"><Wheat className="w-4 h-4" /></div>
-                          <span className="font-bold text-sm">Kushagra FPO</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-1.5 h-1.5 bg-yellow-400 rounded-full animate-pulse"></div>
-                          <span className="text-[10px] font-semibold text-emerald-100">Online</span>
-                        </div>
-                      </div>
-                      <div className="text-xs text-emerald-200">Welcome back, Karan Singh</div>
-                      <div className="text-2xl font-black mt-1">₹1,25,480</div>
-                    </div>
-
-                    {/* Quick Actions */}
-                    <div className="bg-emerald-600 px-4 pb-4">
-                      <div className="bg-white rounded-2xl p-3 shadow-lg grid grid-cols-4 gap-1">
-                        {[
-                          { icon: Package, label: "Deposit", color: "text-blue-600", bg: "bg-blue-50" },
-                          { icon: ArrowRight, label: "Withdraw", color: "text-orange-600", bg: "bg-orange-50" },
-                          { icon: IndianRupee, label: "Loan", color: "text-purple-600", bg: "bg-purple-50" },
-                          { icon: ShoppingCart, label: "Sell", color: "text-pink-600", bg: "bg-pink-50" }
-                        ].map((action, idx) => (
-                          <div key={idx} className="flex flex-col items-center p-1.5 rounded-xl hover:bg-stone-50 transition-colors cursor-pointer">
-                            <div className={`${action.bg} p-2 rounded-xl mb-1`}>
-                              <action.icon className={`w-4 h-4 ${action.color}`} />
-                            </div>
-                            <span className="text-[9px] font-bold text-stone-600">{action.label}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Transactions List */}
-                    <div className="px-4 py-3 bg-stone-50">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-bold text-stone-900">Transaction History</span>
-                        <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">View All →</span>
-                      </div>
-                      <div className="space-y-2">
-                        {[
-                          { type: "Grain Deposit", desc: "Wheat • Grade A", amount: "+80 Qtl", time: "Today, 10:30 AM", icon: Package, color: "text-blue-600", bg: "bg-blue-100", amountColor: "text-blue-600" },
-                          { type: "Instant Loan", desc: "Against 50 Qtl", amount: "+₹32,500", time: "Today, 9:15 AM", icon: IndianRupee, color: "text-purple-600", bg: "bg-purple-100", amountColor: "text-purple-600" },
-                          { type: "Sell Order", desc: "Sold to Buyer #42", amount: "-25 Qtl", time: "Yesterday", icon: ShoppingCart, color: "text-pink-600", bg: "bg-pink-100", amountColor: "text-pink-600" },
-                          { type: "Payment Received", desc: "For Sell Order", amount: "+₹48,750", time: "Yesterday", icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-100", amountColor: "text-emerald-600" },
-                          { type: "Cash Withdraw", desc: "To Bank Account", amount: "-₹15,000", time: "Jan 24", icon: ArrowRight, color: "text-orange-600", bg: "bg-orange-100", amountColor: "text-orange-600" },
-                          { type: "Loan Repayment", desc: "EMI Payment", amount: "-₹5,200", time: "Jan 22", icon: Banknote, color: "text-red-600", bg: "bg-red-100", amountColor: "text-red-500" },
-                          { type: "Grain Deposit", desc: "Rice • Grade B", amount: "+120 Qtl", time: "Jan 20", icon: Package, color: "text-blue-600", bg: "bg-blue-100", amountColor: "text-blue-600" },
-                          { type: "Quality Bonus", desc: "For Grade A wheat", amount: "+₹2,400", time: "Jan 18", icon: Star, color: "text-yellow-600", bg: "bg-yellow-100", amountColor: "text-yellow-600" },
-                        ].map((tx, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-2 bg-white rounded-xl border border-stone-100 hover:border-emerald-200 hover:shadow-sm transition-all">
-                            <div className="flex items-center gap-2.5">
-                              <div className={`p-1.5 rounded-lg ${tx.bg}`}><tx.icon className={`w-3.5 h-3.5 ${tx.color}`} /></div>
-                              <div>
-                                <div className="text-[11px] font-bold text-stone-800 leading-tight">{tx.type}</div>
-                                <div className="text-[9px] text-stone-400">{tx.desc} • {tx.time}</div>
-                              </div>
-                            </div>
-                            <div className={`text-xs font-bold ${tx.amountColor}`}>{tx.amount}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+              {/* Slide Indicators + Stats Row */}
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/20">
+                {/* Slide Indicators */}
+                <div className="flex gap-2">
+                  {heroSlides.map((_, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setHeroSlide(idx)}
+                      className={`h-1.5 rounded-full transition-all duration-500 ${heroSlide === idx ? 'w-8 bg-emerald-500' : 'w-1.5 bg-white/40 hover:bg-white/60'}`}
+                    />
+                  ))}
                 </div>
 
-                {/* Floating Notification Cards */}
-                <div className="absolute -left-12 top-16 bg-white p-2.5 rounded-xl shadow-xl border border-stone-100 hidden lg:flex items-center gap-2 animate-bounce">
-                  <div className="bg-blue-500 p-1.5 rounded-lg"><Package className="w-3 h-3 text-white" /></div>
-                  <div>
-                    <div className="text-[10px] font-bold text-stone-900">New Deposit!</div>
-                    <div className="text-[8px] text-stone-400">+80 Qtl Wheat</div>
-                  </div>
-                </div>
-                <div className="absolute -right-8 top-1/3 bg-white p-2.5 rounded-xl shadow-xl border border-stone-100 hidden lg:flex items-center gap-2">
-                  <div className="bg-purple-500 p-1.5 rounded-lg"><IndianRupee className="w-3 h-3 text-white" /></div>
-                  <div>
-                    <div className="text-[10px] font-bold text-stone-900">Loan Approved!</div>
-                    <div className="text-[8px] text-stone-400">₹32,500 credited</div>
-                  </div>
-                </div>
-                <div className="absolute -left-6 bottom-24 bg-white p-2.5 rounded-xl shadow-xl border border-stone-100 hidden lg:flex items-center gap-2">
-                  <div className="bg-emerald-500 p-1.5 rounded-lg"><CheckCircle2 className="w-3 h-3 text-white" /></div>
-                  <div>
-                    <div className="text-[10px] font-bold text-stone-900">Sold!</div>
-                    <div className="text-[8px] text-stone-400">₹48,750 received</div>
-                  </div>
+                {/* Stats */}
+                <div className="hidden sm:flex gap-6">
+                  {[
+                    { value: "1.5L+", label: "Farmers" },
+                    { value: "50+", label: "Warehouses" },
+                    { value: "₹10Cr+", label: "Credit" }
+                  ].map((stat, idx) => (
+                    <div key={idx} className="text-right">
+                      <div className="text-lg font-black text-white">{stat.value}</div>
+                      <div className="text-[10px] font-semibold text-stone-400 uppercase tracking-wider">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -264,7 +311,7 @@ export default function LandingPage() {
       </section>
 
       {/* ========== ABOUT US SECTION ========== */}
-      <section id="about" className="py-20 lg:py-28 bg-white">
+      < section id="about" className="py-15  bg-white" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left: Visual */}
@@ -288,7 +335,7 @@ export default function LandingPage() {
               </div>
               <div className="absolute -bottom-6 -right-6 bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hidden lg:block">
                 <div className="text-3xl font-black">5+ Yrs</div>
-                <div className="text-sm text-emerald-200">Of Trust</div>
+                <div className="text-sm text-emerald-200">of Trust</div>
               </div>
             </div>
 
@@ -299,10 +346,10 @@ export default function LandingPage() {
                 Your Grain, <br /><span className="text-emerald-600">Your Bank.</span>
               </h2>
               <div className="space-y-5 text-base lg:text-lg text-stone-600 leading-relaxed">
-                <p>
-                  <strong className="text-stone-900">Kushagra Bhumitra Bio Energy Farmer Producer Company Limited</strong> is a revolutionary Agri-FinTech platform that empowers farmers by digitizing their grain assets. We provide scientifically managed warehouses at the village level, eliminating the need for farmers to travel to distant mandis.
+                <p className="text-justify">
+                  <strong className="text-stone-900 text-justify">Kushagra Bhumitra Bio Energy Farmer Producer Company Limited</strong> is a revolutionary Agri-FinTech platform that empowers farmers by digitizing their grain assets. We provide scientifically managed warehouses at the village level, eliminating the need for farmers to travel to distant mandis.
                 </p>
-                <p>
+                <p className="text-justify">
                   किसान अब अपने अनाज को सुरक्षित गोदाम में जमा कर सकते हैं और उसके बदले <span className="bg-amber-100 px-1 font-semibold text-stone-800">60% तक तत्काल लोन</span> प्राप्त कर सकते हैं। जब भी चाहें, अपनी मर्ज़ी से, सही दाम पर बेच सकते हैं।
                 </p>
                 <p>
@@ -312,13 +359,13 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== CHALLENGES VS SOLUTIONS ========== */}
-      <section className="py-20 lg:py-28 bg-stone-50">
+      < section className="py-15  bg-stone-50" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <div className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-3">The Gap We Bridge</div>
+            <div className="text-emerald-600 font-bold text-sm tracking-widest mb-3">The Gap We Bridge</div>
             <h3 className="text-3xl lg:text-5xl font-bold text-stone-900">Farmer Challenges <span className="text-emerald-600">Solved</span></h3>
           </div>
 
@@ -381,10 +428,10 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== HOW IT WORKS (DETAILED PROCESS) ========== */}
-      <section id="how-it-works" className="py-20 lg:py-28 bg-white">
+      < section id="how-it-works" className="py-15 bg-white" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-3">The Process</div>
@@ -465,10 +512,10 @@ export default function LandingPage() {
             </div>
           )}
         </div>
-      </section>
+      </section >
 
       {/* ========== PLANS SECTION ========== */}
-      <section id="plans" className="py-20 lg:py-28 bg-stone-50">
+      < section id="plans" className="py-15 bg-stone-50" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-3">Pricing & Terms</div>
@@ -523,10 +570,10 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== TEAM SECTION ========== */}
-      <section id="team" className="py-20 lg:py-28 bg-white">
+      < section id="team" className="py-15 bg-white" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-3">Leadership</div>
@@ -553,10 +600,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== NEWS / PRESS SECTION ========== */}
-      <section id="news" className="py-20 lg:py-28 bg-stone-50">
+      < section id="news" className="py-15 bg-stone-50" >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="text-stone-400 font-bold text-sm tracking-widest uppercase mb-3">Press Talk</div>
@@ -580,10 +627,10 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== CONTACT SECTION ========== */}
-      <section id="contact" className="py-20 lg:py-28 bg-white">
+      < section id="contact" className="py-15 bg-white" >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 mb-6">
@@ -613,45 +660,85 @@ export default function LandingPage() {
                 Send Message <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </button>
             </form>
-
-            <div className="mt-10 pt-8 border-t border-stone-200 grid md:grid-cols-3 gap-6 text-center">
-              <div><Phone className="w-6 h-6 text-emerald-500 mx-auto mb-2" /><span className="text-sm font-bold text-stone-800">+91 987 654 3210</span></div>
-              <div><Mail className="w-6 h-6 text-emerald-500 mx-auto mb-2" /><span className="text-sm font-bold text-stone-800">info@anajbank.com</span></div>
-              <div><MapPin className="w-6 h-6 text-emerald-500 mx-auto mb-2" /><span className="text-sm font-bold text-stone-800">Gurugram, India</span></div>
-            </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* ========== FOOTER ========== */}
-      <footer className="bg-stone-900 text-stone-400 py-16">
+      <footer className="bg-stone-900 text-stone-400 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 mb-12">
-            <div className="md:col-span-2">
-              <a href="#" className="flex items-center space-x-3 mb-6">
-                <div className="bg-emerald-500 p-2 rounded-lg"><Wheat className="h-6 w-6 text-white" /></div>
-                <span className="text-xl sm:text-2xl font-black text-white">Kushagra Bhumitra FPO</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Company Info */}
+            <div className="lg:col-span-1">
+              <a href="#" className="flex items-center gap-3 group mb-4">
+                <Image
+                  src="/logo_v2.png"
+                  alt="Kushagra Bhumitra FPO"
+                  width={80}
+                  height={80}
+                  className="rounded-xl transition-transform duration-300 group-hover:scale-105 bg-white p-2"
+                />
+                <div>
+                  <div className="text-xl font-black text-white leading-none">Kushagra</div>
+                  <div className="text-[10px] font-bold text-emerald-400 tracking-[0.2em] uppercase mt-0.5">Bhumitra FPO</div>
+                </div>
               </a>
-              <p className="text-stone-500 leading-relaxed max-w-md">Kushagra Bhumitra Bio Energy Farmer Producer Company Limited — Empowering farmers through technology. Safe storage, instant credit, and best market prices.</p>
+              <p className="text-stone-500 text-sm leading-relaxed">Empowering farmers through technology. Safe storage, instant credit, and best market prices.</p>
             </div>
-            <div>
+
+            {/* Quick Links */}
+            <div className="lg:flex lg:justify-center lg:tems-center flex-col ">
               <h5 className="text-white font-bold mb-4">Quick Links</h5>
               <ul className="space-y-3 text-sm">
-                {["About Us", "How It Works", "Plans", "Team", "Contact"].map(link => (<li key={link}><a href={`#${link.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-emerald-400 transition-colors">{link}</a></li>))}
+                {["About Us", "How It Works", "Plans", "Team", "Contact"].map(link => (
+                  <li key={link}>
+                    <a href={`#${link.toLowerCase().replace(/\s+/g, '-')}`} className="hover:text-emerald-400 transition-colors">{link}</a>
+                  </li>
+                ))}
               </ul>
             </div>
-            <div>
+
+            {/* Legal */}
+            <div >
               <h5 className="text-white font-bold mb-4">Legal</h5>
               <ul className="space-y-3 text-sm">
-                {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(link => (<li key={link}><a href="#" className="hover:text-emerald-400 transition-colors">{link}</a></li>))}
+                {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(link => (
+                  <li key={link}>
+                    <a href="#" className="hover:text-emerald-400 transition-colors">{link}</a>
+                  </li>
+                ))}
               </ul>
             </div>
+
+            {/* Contact Info */}
+            <div>
+              <h5 className="text-white font-bold mb-4">Contact Us</h5>
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-start gap-3">
+                  <Phone className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="hover:text-emerald-400 transition-colors">+91 98765 43210</p>
+                    <p className="hover:text-emerald-400 transition-colors">+91 12345 67890</p>
+                  </div>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <a href="mailto:info@kushagrafpo.com" className="hover:text-emerald-400 transition-colors">info@kushagrafpo.com</a>
+                </li>
+                <li className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <p>Jangal Subhan Ali (Tameshwar Chowk) Unaula, Road/Street - Pipraich Road, Gorakhpur, 273152 (U.P), INDIA</p>
+                </li>
+              </ul>
+            </div>
+
           </div>
-          <div className="border-t border-stone-800 pt-8 text-center text-sm">
+
+          <div className="border-t border-stone-800 pt-4 text-center text-sm">
             © {new Date().getFullYear()} Kushagra Bhumitra Bio Energy Farmer Producer Company Limited. All rights reserved.
           </div>
         </div>
       </footer>
-    </div>
+    </div >
   );
 }
