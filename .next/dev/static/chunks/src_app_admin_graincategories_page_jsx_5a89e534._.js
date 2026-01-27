@@ -84,27 +84,62 @@ const GrainCategories = ()=>{
             ring: 'ring-amber-500'
         }
     };
-    // Grain icons based on type
+    // Grain icons based on type (Hindi and English)
     const getGrainIcon = (grainType)=>{
         const type = grainType.toLowerCase();
-        if (type.includes('wheat')) return '🌾';
-        if (type.includes('rice')) return '🍚';
-        if (type.includes('moong') || type.includes('bean')) return '🫘';
-        if (type.includes('corn') || type.includes('maize')) return '🌽';
-        if (type.includes('barley')) return '🌿';
-        if (type.includes('pulse') || type.includes('pluse') || type.includes('dal')) return '🥣';
-        if (type.includes('soybean')) return '🫛';
-        if (type.includes('oat')) return '🥣';
+        // Wheat - गेहूं
+        if (type.includes('wheat') || type.includes('गेहूं') || type.includes('गेहुं') || type.includes('gehun')) return '🌾';
+        // Rice - चावल
+        if (type.includes('rice') || type.includes('चावल') || type.includes('chawal') || type.includes('बासमती')) return '🍚';
+        // Moong - मूंग
+        if (type.includes('moong') || type.includes('मूंग') || type.includes('मूँग') || type.includes('bean')) return '🫘';
+        // Corn/Maize - मक्का
+        if (type.includes('corn') || type.includes('maize') || type.includes('मक्का') || type.includes('makka')) return '🌽';
+        // Barley - जौ
+        if (type.includes('barley') || type.includes('जौ') || type.includes('jau')) return '🌿';
+        // Pulses/Dal - दाल
+        if (type.includes('pulse') || type.includes('pluse') || type.includes('dal') || type.includes('दाल') || type.includes('अरहर') || type.includes('चना') || type.includes('उड़द') || type.includes('मसूर')) return '🥣';
+        // Soybean - सोयाबीन
+        if (type.includes('soybean') || type.includes('सोयाबीन') || type.includes('सोया')) return '🫛';
+        // Oat - जई
+        if (type.includes('oat') || type.includes('जई') || type.includes('jai')) return '🥣';
+        // Mustard - सरसों
+        if (type.includes('mustard') || type.includes('सरसों') || type.includes('sarson')) return '🌻';
+        // Bajra - बाजरा
+        if (type.includes('bajra') || type.includes('बाजरा') || type.includes('pearl millet')) return '🌾';
+        // Jowar - ज्वार
+        if (type.includes('jowar') || type.includes('ज्वार') || type.includes('sorghum')) return '🌾';
+        // Ragi - रागी
+        if (type.includes('ragi') || type.includes('रागी') || type.includes('finger millet')) return '�';
+        // Groundnut - मूंगफली
+        if (type.includes('groundnut') || type.includes('मूंगफली') || type.includes('peanut') || type.includes('moongfali')) return '🥜';
+        // Sesame - तिल
+        if (type.includes('sesame') || type.includes('तिल') || type.includes('til')) return '�🌱';
         return '🌱';
     };
-    // Get gradient based on grain type
+    // Get gradient based on grain type (Hindi and English)
     const getGrainGradient = (grainType)=>{
         const type = grainType.toLowerCase();
-        if (type.includes('wheat')) return 'from-amber-400 to-yellow-500';
-        if (type.includes('rice')) return 'from-slate-300 to-gray-400';
-        if (type.includes('moong') || type.includes('bean')) return 'from-green-400 to-emerald-500';
-        if (type.includes('corn') || type.includes('maize')) return 'from-yellow-400 to-orange-500';
-        if (type.includes('pulse') || type.includes('pluse')) return 'from-orange-400 to-red-500';
+        // Wheat - गेहूं
+        if (type.includes('wheat') || type.includes('गेहूं') || type.includes('गेहुं') || type.includes('gehun')) return 'from-amber-400 to-yellow-500';
+        // Rice - चावल
+        if (type.includes('rice') || type.includes('चावल') || type.includes('chawal') || type.includes('बासमती')) return 'from-slate-300 to-gray-400';
+        // Moong - मूंग
+        if (type.includes('moong') || type.includes('मूंग') || type.includes('मूँग') || type.includes('bean')) return 'from-green-400 to-emerald-500';
+        // Corn/Maize - मक्का
+        if (type.includes('corn') || type.includes('maize') || type.includes('मक्का') || type.includes('makka')) return 'from-yellow-400 to-orange-500';
+        // Pulses/Dal - दाल
+        if (type.includes('pulse') || type.includes('pluse') || type.includes('dal') || type.includes('दाल')) return 'from-orange-400 to-red-500';
+        // Mustard - सरसों
+        if (type.includes('mustard') || type.includes('सरसों') || type.includes('sarson')) return 'from-yellow-500 to-amber-600';
+        // Bajra - बाजरा
+        if (type.includes('bajra') || type.includes('बाजरा')) return 'from-stone-400 to-zinc-500';
+        // Jowar - ज्वार
+        if (type.includes('jowar') || type.includes('ज्वार')) return 'from-orange-300 to-amber-400';
+        // Ragi - रागी
+        if (type.includes('ragi') || type.includes('रागी')) return 'from-red-400 to-rose-500';
+        // Groundnut - मूंगफली
+        if (type.includes('groundnut') || type.includes('मूंगफली') || type.includes('peanut')) return 'from-amber-500 to-orange-600';
         return 'from-emerald-400 to-teal-500';
     };
     // Fetch all categories
@@ -153,7 +188,7 @@ const GrainCategories = ()=>{
                         children: getGrainIcon(formData.grain_type)
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 148,
+                        lineNumber: 183,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -166,7 +201,7 @@ const GrainCategories = ()=>{
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 150,
+                                lineNumber: 185,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -174,19 +209,19 @@ const GrainCategories = ()=>{
                                 children: "All 3 quality grades added"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 151,
+                                lineNumber: 186,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 149,
+                        lineNumber: 184,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 147,
+                lineNumber: 182,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)));
             setIsModalOpen(false);
@@ -294,7 +329,7 @@ const GrainCategories = ()=>{
                                                     className: "absolute inset-0 bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl blur-lg opacity-40"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 267,
+                                                    lineNumber: 302,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -303,18 +338,18 @@ const GrainCategories = ()=>{
                                                         className: "w-7 h-7 text-white"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 269,
+                                                        lineNumber: 304,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 268,
+                                                    lineNumber: 303,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 266,
+                                            lineNumber: 301,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -324,7 +359,7 @@ const GrainCategories = ()=>{
                                                     children: "Grain Categories"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 273,
+                                                    lineNumber: 308,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -332,19 +367,19 @@ const GrainCategories = ()=>{
                                                     children: "Manage your grain inventory categories"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 276,
+                                                    lineNumber: 311,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 272,
+                                            lineNumber: 307,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 265,
+                                    lineNumber: 300,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -357,7 +392,7 @@ const GrainCategories = ()=>{
                                                     className: "absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400  group-focus-within:text-emerald-500 transition-colors"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 286,
+                                                    lineNumber: 321,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -368,13 +403,13 @@ const GrainCategories = ()=>{
                                                     className: "pl-11 pr-4 py-2.5 w-64 bg-gray-50/80 border border-gray-200/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all duration-200 placeholder:text-gray-400"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 288,
+                                                    lineNumber: 323,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 285,
+                                            lineNumber: 320,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -387,12 +422,12 @@ const GrainCategories = ()=>{
                                                         className: "w-5 h-5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 309,
+                                                        lineNumber: 343,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 301,
+                                                    lineNumber: 336,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -402,18 +437,18 @@ const GrainCategories = ()=>{
                                                         className: "w-5 h-5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 319,
+                                                        lineNumber: 352,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 311,
+                                                    lineNumber: 345,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 300,
+                                            lineNumber: 335,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -424,47 +459,47 @@ const GrainCategories = ()=>{
                                                     className: "w-5 h-5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 331,
+                                                    lineNumber: 364,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     children: "Add Category"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 332,
+                                                    lineNumber: 365,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 324,
+                                            lineNumber: 357,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 283,
+                                    lineNumber: 318,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 263,
+                            lineNumber: 298,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 262,
+                        lineNumber: 297,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                    lineNumber: 261,
+                    lineNumber: 296,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 260,
+                lineNumber: 295,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -485,7 +520,7 @@ const GrainCategories = ()=>{
                                                     children: "Total Entries"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 348,
+                                                    lineNumber: 381,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -493,13 +528,13 @@ const GrainCategories = ()=>{
                                                     children: categories.length
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 349,
+                                                    lineNumber: 382,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 347,
+                                            lineNumber: 380,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -508,18 +543,18 @@ const GrainCategories = ()=>{
                                                 className: "w-6 h-6 text-purple-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 353,
+                                                lineNumber: 386,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 351,
+                                            lineNumber: 384,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 346,
+                                    lineNumber: 379,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -529,26 +564,26 @@ const GrainCategories = ()=>{
                                             className: "w-3.5 h-3.5 text-emerald-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 357,
+                                            lineNumber: 390,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             children: "3 grades per type"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 358,
+                                            lineNumber: 391,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 356,
+                                    lineNumber: 389,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 344,
+                            lineNumber: 377,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -564,7 +599,7 @@ const GrainCategories = ()=>{
                                                     children: "Grain Types"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 367,
+                                                    lineNumber: 400,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -572,13 +607,13 @@ const GrainCategories = ()=>{
                                                     children: uniqueGrainTypes.length
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 368,
+                                                    lineNumber: 401,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 366,
+                                            lineNumber: 399,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -587,18 +622,18 @@ const GrainCategories = ()=>{
                                                 className: "w-6 h-6 text-emerald-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 372,
+                                                lineNumber: 405,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 370,
+                                            lineNumber: 403,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 365,
+                                    lineNumber: 398,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -608,26 +643,26 @@ const GrainCategories = ()=>{
                                             className: "w-3.5 h-3.5 text-blue-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 376,
+                                            lineNumber: 409,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             children: "Unique categories"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 377,
+                                            lineNumber: 410,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 375,
+                                    lineNumber: 408,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 363,
+                            lineNumber: 396,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -643,7 +678,7 @@ const GrainCategories = ()=>{
                                                     children: "Premium (A)"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 386,
+                                                    lineNumber: 419,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -651,13 +686,13 @@ const GrainCategories = ()=>{
                                                     children: categories.filter((c)=>c.quality === 'A').length
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 387,
+                                                    lineNumber: 420,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 385,
+                                            lineNumber: 418,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -666,18 +701,18 @@ const GrainCategories = ()=>{
                                                 className: "w-6 h-6 text-emerald-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 393,
+                                                lineNumber: 426,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 391,
+                                            lineNumber: 424,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 384,
+                                    lineNumber: 417,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -687,26 +722,26 @@ const GrainCategories = ()=>{
                                             className: "w-3.5 h-3.5"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 397,
+                                            lineNumber: 430,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                             children: "Top quality"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 398,
+                                            lineNumber: 431,
                                             columnNumber: 15
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 396,
+                                    lineNumber: 429,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 382,
+                            lineNumber: 415,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -721,7 +756,7 @@ const GrainCategories = ()=>{
                                                 children: "System Status"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 407,
+                                                lineNumber: 440,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -734,33 +769,33 @@ const GrainCategories = ()=>{
                                                                 className: "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 410,
+                                                                lineNumber: 443,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 411,
+                                                                lineNumber: 444,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 409,
+                                                        lineNumber: 442,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     "All Active"
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 408,
+                                                lineNumber: 441,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 406,
+                                        lineNumber: 439,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -769,34 +804,34 @@ const GrainCategories = ()=>{
                                             className: "w-6 h-6 text-green-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 418,
+                                            lineNumber: 451,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 416,
+                                        lineNumber: 449,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 405,
+                                lineNumber: 438,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 403,
+                            lineNumber: 436,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                    lineNumber: 342,
+                    lineNumber: 375,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 341,
+                lineNumber: 374,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -812,20 +847,20 @@ const GrainCategories = ()=>{
                                         className: "absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 430,
+                                        lineNumber: 463,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                         className: "relative w-12 h-12 text-emerald-500 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 431,
+                                        lineNumber: 464,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 429,
+                                lineNumber: 462,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -833,13 +868,13 @@ const GrainCategories = ()=>{
                                 children: "Loading categories..."
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 433,
+                                lineNumber: 466,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 428,
+                        lineNumber: 461,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)) : grainTypeEntries.length === 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex flex-col items-center justify-center py-20 bg-white/60 backdrop-blur-sm  rounded-3xl border border-gray-100/80",
@@ -850,12 +885,12 @@ const GrainCategories = ()=>{
                                     className: "w-12 h-12 text-gray-400"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 439,
+                                    lineNumber: 472,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 438,
+                                lineNumber: 471,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -863,7 +898,7 @@ const GrainCategories = ()=>{
                                 children: "No categories found"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 441,
+                                lineNumber: 474,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -871,7 +906,7 @@ const GrainCategories = ()=>{
                                 children: searchTerm ? `No results for "${searchTerm}". Try a different search term.` : 'Start by adding your first grain category. All quality grades will be created automatically.'
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 442,
+                                lineNumber: 475,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             !searchTerm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -882,20 +917,20 @@ const GrainCategories = ()=>{
                                         className: "w-5 h-5"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 454,
+                                        lineNumber: 487,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add First Category"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 448,
+                                lineNumber: 481,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 436,
+                        lineNumber: 469,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)) : viewMode === 'grid' ? /* Grid View */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5",
@@ -909,7 +944,7 @@ const GrainCategories = ()=>{
                                                 className: "absolute inset-0 bg-black/10"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 471,
+                                                lineNumber: 504,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -917,7 +952,7 @@ const GrainCategories = ()=>{
                                                 children: getGrainIcon(grainType)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 472,
+                                                lineNumber: 505,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -932,7 +967,7 @@ const GrainCategories = ()=>{
                                                                 children: getGrainIcon(grainType)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 478,
+                                                                lineNumber: 511,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -942,7 +977,7 @@ const GrainCategories = ()=>{
                                                                         children: grainType
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                        lineNumber: 480,
+                                                                        lineNumber: 513,
                                                                         columnNumber: 27
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -953,35 +988,35 @@ const GrainCategories = ()=>{
                                                                         ]
                                                                     }, void 0, true, {
                                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                        lineNumber: 483,
+                                                                        lineNumber: 516,
                                                                         columnNumber: 27
                                                                     }, ("TURBOPACK compile-time value", void 0))
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 479,
+                                                                lineNumber: 512,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 477,
+                                                        lineNumber: 510,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 476,
+                                                    lineNumber: 509,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 475,
+                                                lineNumber: 508,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 470,
+                                        lineNumber: 503,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -998,18 +1033,18 @@ const GrainCategories = ()=>{
                                                             children: item.quality
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 504,
+                                                            lineNumber: 537,
                                                             columnNumber: 29
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, item._id, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 500,
+                                                        lineNumber: 533,
                                                         columnNumber: 27
                                                     }, ("TURBOPACK compile-time value", void 0));
                                                 })
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 494,
+                                                lineNumber: 527,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1022,14 +1057,14 @@ const GrainCategories = ()=>{
                                                                 className: "w-2 h-2 rounded-full bg-emerald-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 515,
+                                                                lineNumber: 548,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             "Premium"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 514,
+                                                        lineNumber: 547,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1039,14 +1074,14 @@ const GrainCategories = ()=>{
                                                                 className: "w-2 h-2 rounded-full bg-blue-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 519,
+                                                                lineNumber: 552,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             "Standard"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 518,
+                                                        lineNumber: 551,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1056,96 +1091,37 @@ const GrainCategories = ()=>{
                                                                 className: "w-2 h-2 rounded-full bg-amber-500"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 523,
+                                                                lineNumber: 556,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             "Economy"
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 522,
+                                                        lineNumber: 555,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 513,
-                                                columnNumber: 19
-                                            }, ("TURBOPACK compile-time value", void 0)),
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                className: "flex items-center gap-2 pt-3 border-t border-gray-100",
-                                                children: [
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                        onClick: ()=>openEditModal(grainType),
-                                                        className: "flex-1 flex items-center justify-center gap-2 py-2.5 px-4  bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl  transition-colors duration-200 group/btn",
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pen$2d$line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Edit3$3e$__["Edit3"], {
-                                                                className: "w-4 h-4 group-hover/btn:text-blue-600 transition-colors"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 536,
-                                                                columnNumber: 23
-                                                            }, ("TURBOPACK compile-time value", void 0)),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                className: "text-sm font-medium",
-                                                                children: "Edit"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 537,
-                                                                columnNumber: 23
-                                                            }, ("TURBOPACK compile-time value", void 0))
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 530,
-                                                        columnNumber: 21
-                                                    }, ("TURBOPACK compile-time value", void 0)),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                        onClick: ()=>openDeleteModal(grainType),
-                                                        className: "flex-1 flex items-center justify-center gap-2 py-2.5 px-4  bg-red-50 hover:bg-red-100 text-red-600 rounded-xl  transition-colors duration-200 group/btn",
-                                                        children: [
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__["Trash2"], {
-                                                                className: "w-4 h-4"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 545,
-                                                                columnNumber: 23
-                                                            }, ("TURBOPACK compile-time value", void 0)),
-                                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                                                                className: "text-sm font-medium",
-                                                                children: "Delete"
-                                                            }, void 0, false, {
-                                                                fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 546,
-                                                                columnNumber: 23
-                                                            }, ("TURBOPACK compile-time value", void 0))
-                                                        ]
-                                                    }, void 0, true, {
-                                                        fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 539,
-                                                        columnNumber: 21
-                                                    }, ("TURBOPACK compile-time value", void 0))
-                                                ]
-                                            }, void 0, true, {
-                                                fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 529,
+                                                lineNumber: 546,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 493,
+                                        lineNumber: 526,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, grainType, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 463,
+                                lineNumber: 496,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 461,
+                        lineNumber: 494,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)) : /* List View */ /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100/80 overflow-hidden",
@@ -1163,7 +1139,7 @@ const GrainCategories = ()=>{
                                                     children: "Grain Type"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 560,
+                                                    lineNumber: 571,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1171,7 +1147,7 @@ const GrainCategories = ()=>{
                                                     children: "Grade A"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 561,
+                                                    lineNumber: 572,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1179,7 +1155,7 @@ const GrainCategories = ()=>{
                                                     children: "Grade B"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 562,
+                                                    lineNumber: 573,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -1187,26 +1163,18 @@ const GrainCategories = ()=>{
                                                     children: "Grade C"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 563,
-                                                    columnNumber: 21
-                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
-                                                    className: "text-right px-6 py-4 text-sm font-semibold text-gray-600",
-                                                    children: "Actions"
-                                                }, void 0, false, {
-                                                    fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 564,
+                                                    lineNumber: 574,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 559,
+                                            lineNumber: 570,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 558,
+                                        lineNumber: 569,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -1224,7 +1192,7 @@ const GrainCategories = ()=>{
                                                                     children: getGrainIcon(grainType)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                    lineNumber: 575,
+                                                                    lineNumber: 585,
                                                                     columnNumber: 27
                                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1234,7 +1202,7 @@ const GrainCategories = ()=>{
                                                                             children: grainType
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                            lineNumber: 577,
+                                                                            lineNumber: 587,
                                                                             columnNumber: 29
                                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1245,24 +1213,24 @@ const GrainCategories = ()=>{
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                            lineNumber: 578,
+                                                                            lineNumber: 588,
                                                                             columnNumber: 29
                                                                         }, ("TURBOPACK compile-time value", void 0))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                    lineNumber: 576,
+                                                                    lineNumber: 586,
                                                                     columnNumber: 27
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 574,
+                                                            lineNumber: 584,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 573,
+                                                        lineNumber: 583,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     [
@@ -1282,100 +1250,54 @@ const GrainCategories = ()=>{
                                                                         className: "w-3.5 h-3.5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                        lineNumber: 590,
+                                                                        lineNumber: 600,
                                                                         columnNumber: 33
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     config.label
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 588,
+                                                                lineNumber: 598,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                 className: "text-gray-400",
                                                                 children: "-"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 594,
+                                                                lineNumber: 604,
                                                                 columnNumber: 31
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, quality, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 586,
+                                                            lineNumber: 596,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0));
-                                                    }),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
-                                                        className: "px-6 py-4",
-                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                            className: "flex items-center justify-end gap-2",
-                                                            children: [
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                    onClick: ()=>openEditModal(grainType),
-                                                                    className: "p-2 hover:bg-blue-100 text-gray-500 hover:text-blue-600  rounded-lg transition-colors",
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$pen$2d$line$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Edit3$3e$__["Edit3"], {
-                                                                        className: "w-5 h-5"
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                        lineNumber: 606,
-                                                                        columnNumber: 29
-                                                                    }, ("TURBOPACK compile-time value", void 0))
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                    lineNumber: 601,
-                                                                    columnNumber: 27
-                                                                }, ("TURBOPACK compile-time value", void 0)),
-                                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                                    onClick: ()=>openDeleteModal(grainType),
-                                                                    className: "p-2 hover:bg-red-100 text-gray-500 hover:text-red-600  rounded-lg transition-colors",
-                                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$trash$2d$2$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Trash2$3e$__["Trash2"], {
-                                                                        className: "w-5 h-5"
-                                                                    }, void 0, false, {
-                                                                        fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                        lineNumber: 613,
-                                                                        columnNumber: 29
-                                                                    }, ("TURBOPACK compile-time value", void 0))
-                                                                }, void 0, false, {
-                                                                    fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                    lineNumber: 608,
-                                                                    columnNumber: 27
-                                                                }, ("TURBOPACK compile-time value", void 0))
-                                                            ]
-                                                        }, void 0, true, {
-                                                            fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 600,
-                                                            columnNumber: 25
-                                                        }, ("TURBOPACK compile-time value", void 0))
-                                                    }, void 0, false, {
-                                                        fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 599,
-                                                        columnNumber: 23
-                                                    }, ("TURBOPACK compile-time value", void 0))
+                                                    })
                                                 ]
                                             }, grainType, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 569,
+                                                lineNumber: 579,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 567,
+                                        lineNumber: 577,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 557,
+                                lineNumber: 568,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 556,
+                            lineNumber: 567,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 555,
+                        lineNumber: 566,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     !loading && grainTypeEntries.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1389,7 +1311,7 @@ const GrainCategories = ()=>{
                                     children: grainTypeEntries.length
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 629,
+                                    lineNumber: 621,
                                     columnNumber: 23
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 " grain types with ",
@@ -1398,25 +1320,25 @@ const GrainCategories = ()=>{
                                     children: filteredCategories.length
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 630,
+                                    lineNumber: 622,
                                     columnNumber: 20
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 " total entries"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 628,
+                            lineNumber: 620,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 627,
+                        lineNumber: 619,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 426,
+                lineNumber: 459,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             isModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1427,7 +1349,7 @@ const GrainCategories = ()=>{
                         onClick: ()=>!submitting && setIsModalOpen(false)
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 640,
+                        lineNumber: 632,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1445,12 +1367,12 @@ const GrainCategories = ()=>{
                                                     className: "w-5 h-5 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 652,
+                                                    lineNumber: 644,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 651,
+                                                lineNumber: 643,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1460,7 +1382,7 @@ const GrainCategories = ()=>{
                                                         children: "New Category"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 655,
+                                                        lineNumber: 647,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1468,19 +1390,19 @@ const GrainCategories = ()=>{
                                                         children: "All 3 quality grades will be created"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 656,
+                                                        lineNumber: 648,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 654,
+                                                lineNumber: 646,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 650,
+                                        lineNumber: 642,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1491,18 +1413,18 @@ const GrainCategories = ()=>{
                                             className: "w-5 h-5 text-gray-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 664,
+                                            lineNumber: 656,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 659,
+                                        lineNumber: 651,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 649,
+                                lineNumber: 641,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1516,7 +1438,7 @@ const GrainCategories = ()=>{
                                                 children: "Grain Type Name"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 672,
+                                                lineNumber: 664,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1526,7 +1448,7 @@ const GrainCategories = ()=>{
                                                         className: "absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 676,
+                                                        lineNumber: 668,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1536,24 +1458,24 @@ const GrainCategories = ()=>{
                                                                 ...formData,
                                                                 grain_type: e.target.value
                                                             }),
-                                                        placeholder: "e.g., Basmati Rice, Wheat, Moong Dal...",
+                                                        placeholder: "जैसे: गेहूं, चावल, मूंग दाल, मक्का, बाजरा, ज्वार...",
                                                         className: "w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 focus:bg-white transition-all duration-200",
                                                         autoFocus: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 677,
+                                                        lineNumber: 669,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 675,
+                                                lineNumber: 667,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 671,
+                                        lineNumber: 663,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1565,7 +1487,7 @@ const GrainCategories = ()=>{
                                                     className: "w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 693,
+                                                    lineNumber: 685,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1575,7 +1497,7 @@ const GrainCategories = ()=>{
                                                             children: "Auto Quality Grades"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 695,
+                                                            lineNumber: 687,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1583,24 +1505,24 @@ const GrainCategories = ()=>{
                                                             children: "Three quality grades (A, B, C) will be automatically created for this grain type."
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 696,
+                                                            lineNumber: 688,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 694,
+                                                    lineNumber: 686,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 692,
+                                            lineNumber: 684,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 691,
+                                        lineNumber: 683,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1614,7 +1536,7 @@ const GrainCategories = ()=>{
                                                         children: grade
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 710,
+                                                        lineNumber: 702,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1622,25 +1544,25 @@ const GrainCategories = ()=>{
                                                         children: config.label
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 714,
+                                                        lineNumber: 706,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2d$big$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle$3e$__["CheckCircle"], {
                                                         className: `w-4 h-4 mx-auto mt-2 ${config.text}`
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 715,
+                                                        lineNumber: 707,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, grade, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 706,
+                                                lineNumber: 698,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 704,
+                                        lineNumber: 696,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     formData.grain_type && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1651,7 +1573,7 @@ const GrainCategories = ()=>{
                                                 children: "Preview"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 723,
+                                                lineNumber: 715,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1662,7 +1584,7 @@ const GrainCategories = ()=>{
                                                         children: getGrainIcon(formData.grain_type)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 725,
+                                                        lineNumber: 717,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1672,7 +1594,7 @@ const GrainCategories = ()=>{
                                                                 children: formData.grain_type
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 727,
+                                                                lineNumber: 719,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1680,25 +1602,25 @@ const GrainCategories = ()=>{
                                                                 children: "Grade A, B, C variants"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                                lineNumber: 728,
+                                                                lineNumber: 720,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 726,
+                                                        lineNumber: 718,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 724,
+                                                lineNumber: 716,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 722,
+                                        lineNumber: 714,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1712,7 +1634,7 @@ const GrainCategories = ()=>{
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 736,
+                                                lineNumber: 728,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1725,7 +1647,7 @@ const GrainCategories = ()=>{
                                                             className: "w-5 h-5 animate-spin"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 756,
+                                                            lineNumber: 748,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Creating..."
@@ -1736,7 +1658,7 @@ const GrainCategories = ()=>{
                                                             className: "w-5 h-5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 761,
+                                                            lineNumber: 753,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Create Category"
@@ -1744,31 +1666,31 @@ const GrainCategories = ()=>{
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 745,
+                                                lineNumber: 737,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 735,
+                                        lineNumber: 727,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 669,
+                                lineNumber: 661,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 646,
+                        lineNumber: 638,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 638,
+                lineNumber: 630,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             isEditModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1779,7 +1701,7 @@ const GrainCategories = ()=>{
                         onClick: ()=>!submitting && setIsEditModalOpen(false)
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 775,
+                        lineNumber: 767,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1797,12 +1719,12 @@ const GrainCategories = ()=>{
                                                     className: "w-5 h-5 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                    lineNumber: 785,
+                                                    lineNumber: 777,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 784,
+                                                lineNumber: 776,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1812,7 +1734,7 @@ const GrainCategories = ()=>{
                                                         children: "Edit Category"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 788,
+                                                        lineNumber: 780,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1820,19 +1742,19 @@ const GrainCategories = ()=>{
                                                         children: "Update grain type name"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 789,
+                                                        lineNumber: 781,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 787,
+                                                lineNumber: 779,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 783,
+                                        lineNumber: 775,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1843,18 +1765,18 @@ const GrainCategories = ()=>{
                                             className: "w-5 h-5 text-gray-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 797,
+                                            lineNumber: 789,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 792,
+                                        lineNumber: 784,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 782,
+                                lineNumber: 774,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -1869,7 +1791,7 @@ const GrainCategories = ()=>{
                                                 children: "Current Name"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 804,
+                                                lineNumber: 796,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1880,7 +1802,7 @@ const GrainCategories = ()=>{
                                                         children: getGrainIcon(editData.oldGrainType)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 806,
+                                                        lineNumber: 798,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1888,19 +1810,19 @@ const GrainCategories = ()=>{
                                                         children: editData.oldGrainType
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 807,
+                                                        lineNumber: 799,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 805,
+                                                lineNumber: 797,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 803,
+                                        lineNumber: 795,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1910,7 +1832,7 @@ const GrainCategories = ()=>{
                                                 children: "New Grain Type Name"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 813,
+                                                lineNumber: 805,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1920,7 +1842,7 @@ const GrainCategories = ()=>{
                                                         className: "absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 817,
+                                                        lineNumber: 809,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1935,13 +1857,13 @@ const GrainCategories = ()=>{
                                                         autoFocus: true
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 818,
+                                                        lineNumber: 810,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 816,
+                                                lineNumber: 808,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1949,13 +1871,13 @@ const GrainCategories = ()=>{
                                                 children: "This will update the name for all quality grades (A, B, C)"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 829,
+                                                lineNumber: 821,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 812,
+                                        lineNumber: 804,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1969,7 +1891,7 @@ const GrainCategories = ()=>{
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 835,
+                                                lineNumber: 827,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1982,7 +1904,7 @@ const GrainCategories = ()=>{
                                                             className: "w-5 h-5 animate-spin"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 854,
+                                                            lineNumber: 846,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Updating..."
@@ -1993,7 +1915,7 @@ const GrainCategories = ()=>{
                                                             className: "w-5 h-5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                            lineNumber: 859,
+                                                            lineNumber: 851,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Update Category"
@@ -2001,31 +1923,31 @@ const GrainCategories = ()=>{
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 844,
+                                                lineNumber: 836,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 834,
+                                        lineNumber: 826,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                lineNumber: 801,
+                                lineNumber: 793,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 780,
+                        lineNumber: 772,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 774,
+                lineNumber: 766,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             isDeleteModalOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2036,7 +1958,7 @@ const GrainCategories = ()=>{
                         onClick: ()=>!submitting && setIsDeleteModalOpen(false)
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 873,
+                        lineNumber: 865,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2050,12 +1972,12 @@ const GrainCategories = ()=>{
                                         className: "w-8 h-8 text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 883,
+                                        lineNumber: 875,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 882,
+                                    lineNumber: 874,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -2063,7 +1985,7 @@ const GrainCategories = ()=>{
                                     children: "Delete Category?"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 886,
+                                    lineNumber: 878,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2079,14 +2001,14 @@ const GrainCategories = ()=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 888,
+                                            lineNumber: 880,
                                             columnNumber: 46
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         " and all its quality grades (A, B, C). This action cannot be undone."
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 887,
+                                    lineNumber: 879,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2099,7 +2021,7 @@ const GrainCategories = ()=>{
                                                 children: getGrainIcon(deleteTarget)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 895,
+                                                lineNumber: 887,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2110,7 +2032,7 @@ const GrainCategories = ()=>{
                                                         children: deleteTarget
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 897,
+                                                        lineNumber: 889,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2118,24 +2040,24 @@ const GrainCategories = ()=>{
                                                         children: "3 grades will be deleted"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 898,
+                                                        lineNumber: 890,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                lineNumber: 896,
+                                                lineNumber: 888,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                        lineNumber: 894,
+                                        lineNumber: 886,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 893,
+                                    lineNumber: 885,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2149,7 +2071,7 @@ const GrainCategories = ()=>{
                                             children: "Cancel"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 904,
+                                            lineNumber: 896,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2162,7 +2084,7 @@ const GrainCategories = ()=>{
                                                         className: "w-5 h-5 animate-spin"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 923,
+                                                        lineNumber: 915,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     "Deleting..."
@@ -2173,7 +2095,7 @@ const GrainCategories = ()=>{
                                                         className: "w-5 h-5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                                        lineNumber: 928,
+                                                        lineNumber: 920,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     "Delete"
@@ -2181,36 +2103,36 @@ const GrainCategories = ()=>{
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                            lineNumber: 913,
+                                            lineNumber: 905,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                                    lineNumber: 903,
+                                    lineNumber: 895,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                            lineNumber: 880,
+                            lineNumber: 872,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                        lineNumber: 878,
+                        lineNumber: 870,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/graincategories/page.jsx",
-                lineNumber: 872,
+                lineNumber: 864,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/graincategories/page.jsx",
-        lineNumber: 258,
+        lineNumber: 293,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

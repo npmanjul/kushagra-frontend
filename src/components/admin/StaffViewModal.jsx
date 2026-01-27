@@ -3,7 +3,6 @@ import {
   X,
   User,
   Briefcase,
-  Users,
   FileText,
   Image as ImageIcon,
   CheckCircle2,
@@ -115,7 +114,7 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
         month: "long",
         day: "numeric",
       });
-    } catch {
+    } catch (_error) {
       return dateString;
     }
   };
@@ -154,7 +153,7 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch (_error) {
       window.open(imageUrl, "_blank");
     }
   };
@@ -624,16 +623,14 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 px-4 py-2 flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-300 ${
-                    activeTab === tab.id
-                      ? `bg-white text-gray-800 shadow-md scale-[1.02] border border-gray-200`
-                      : "text-gray-500 hover:bg-white/50 hover:text-gray-700"
-                  }`}
+                  className={`flex-shrink-0 px-4 py-2 flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-300 ${activeTab === tab.id
+                    ? `bg-white text-gray-800 shadow-md scale-[1.02] border border-gray-200`
+                    : "text-gray-500 hover:bg-white/50 hover:text-gray-700"
+                    }`}
                 >
                   <div
-                    className={`p-1.5 rounded-lg bg-gradient-to-br ${
-                      activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
-                    } shadow-sm`}
+                    className={`p-1.5 rounded-lg bg-gradient-to-br ${activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
+                      } shadow-sm`}
                   >
                     <Icon className="w-3.5 h-3.5 text-white" />
                   </div>
@@ -903,11 +900,10 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
                   )}
 
                   {/* Onboarding Status */}
-                  <div className={`p-4 rounded-xl border ${
-                    staff.onboarding_completed 
-                      ? "bg-green-50 border-green-200" 
-                      : "bg-amber-50 border-amber-200"
-                  }`}>
+                  <div className={`p-4 rounded-xl border ${staff.onboarding_completed
+                    ? "bg-green-50 border-green-200"
+                    : "bg-amber-50 border-amber-200"
+                    }`}>
                     <div className="flex items-center gap-3">
                       {staff.onboarding_completed ? (
                         <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -915,14 +911,12 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
                         <Clock className="w-5 h-5 text-amber-600" />
                       )}
                       <div>
-                        <p className={`text-sm font-semibold ${
-                          staff.onboarding_completed ? "text-green-800" : "text-amber-800"
-                        }`}>
+                        <p className={`text-sm font-semibold ${staff.onboarding_completed ? "text-green-800" : "text-amber-800"
+                          }`}>
                           Onboarding {staff.onboarding_completed ? "Completed" : "In Progress"}
                         </p>
-                        <p className={`text-xs ${
-                          staff.onboarding_completed ? "text-green-700" : "text-amber-700"
-                        }`}>
+                        <p className={`text-xs ${staff.onboarding_completed ? "text-green-700" : "text-amber-700"
+                          }`}>
                           Step {staff.step_completed} of 7 completed
                         </p>
                       </div>
@@ -979,16 +973,16 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
                   </div>
 
                   {/* No Documents Message */}
-                  {(!staff.govt_ids?.pan_number && 
-                    !staff.govt_ids?.aadhaar_number && 
+                  {(!staff.govt_ids?.pan_number &&
+                    !staff.govt_ids?.aadhaar_number &&
                     !staff.govt_ids?.passport_number) && (
-                    <div className="p-4 rounded-xl border border-amber-200 bg-amber-50">
-                      <p className="text-sm text-amber-700 flex items-center gap-2">
-                        <AlertCircle className="w-4 h-4" />
-                        No government ID documents have been added yet.
-                      </p>
-                    </div>
-                  )}
+                      <div className="p-4 rounded-xl border border-amber-200 bg-amber-50">
+                        <p className="text-sm text-amber-700 flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4" />
+                          No government ID documents have been added yet.
+                        </p>
+                      </div>
+                    )}
 
                   {/* Education */}
                   <SectionHeader icon={GraduationCap} title="Education" color="from-blue-500 to-indigo-600" />
@@ -1219,13 +1213,12 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
 
                   {/* Background Check */}
                   <SectionHeader icon={Shield} title="Background Verification" color="from-indigo-500 to-purple-600" />
-                  <div className={`p-4 rounded-xl border ${
-                    staff.background_check_status === "Passed" 
-                      ? "bg-green-50 border-green-200" 
-                      : staff.background_check_status === "Failed"
+                  <div className={`p-4 rounded-xl border ${staff.background_check_status === "Passed"
+                    ? "bg-green-50 border-green-200"
+                    : staff.background_check_status === "Failed"
                       ? "bg-red-50 border-red-200"
                       : "bg-amber-50 border-amber-200"
-                  }`}>
+                    }`}>
                     <div className="flex items-center gap-3">
                       {staff.background_check_status === "Passed" ? (
                         <CheckCircle2 className="w-5 h-5 text-green-600" />
@@ -1235,13 +1228,12 @@ const StaffViewModal = ({ isOpen, onClose, staffId }) => {
                         <Clock className="w-5 h-5 text-amber-600" />
                       )}
                       <div>
-                        <p className={`text-sm font-semibold ${
-                          staff.background_check_status === "Passed" 
-                            ? "text-green-800" 
-                            : staff.background_check_status === "Failed"
+                        <p className={`text-sm font-semibold ${staff.background_check_status === "Passed"
+                          ? "text-green-800"
+                          : staff.background_check_status === "Failed"
                             ? "text-red-800"
                             : "text-amber-800"
-                        }`}>
+                          }`}>
                           Background Check: {staff.background_check_status || "Pending"}
                         </p>
                       </div>

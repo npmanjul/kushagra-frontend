@@ -241,9 +241,8 @@ const StatusBadge = ({ status }) => {
       className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${style.bg} ${style.text} shadow-sm`}
     >
       <span
-        className={`w-2 h-2 rounded-full ${style.dot} ${
-          status === "rejected" ? "animate-pulse" : ""
-        }`}
+        className={`w-2 h-2 rounded-full ${style.dot} ${status === "rejected" ? "animate-pulse" : ""
+          }`}
       />
       <Icon className="w-3.5 h-3.5" />
       <span className="capitalize">{status}</span>
@@ -279,9 +278,8 @@ const ImagePreview = ({ url, label }) => {
           <img
             src={url}
             alt={label}
-            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${
-              isLoading ? "opacity-0" : "opacity-100"
-            }`}
+            className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${isLoading ? "opacity-0" : "opacity-100"
+              }`}
             onLoad={() => setIsLoading(false)}
             onError={() => {
               setImageError(true);
@@ -372,20 +370,20 @@ const FileUploadField = ({
     }
   };
 
-const handleRemove = (e) => {
-  e.stopPropagation();
-  setPreview(null);
-  setPreviews([]);
-  setSelectedFile(null);
-  setSelectedFiles([]);
-  
-  // Pass null so handleChange updates state to null (signaling deletion/reset)
-  onChange(field, null); 
-  
-  if (inputRef.current) {
-    inputRef.current.value = "";
-  }
-};
+  const handleRemove = (e) => {
+    e.stopPropagation();
+    setPreview(null);
+    setPreviews([]);
+    setSelectedFile(null);
+    setSelectedFiles([]);
+
+    // Pass null so handleChange updates state to null (signaling deletion/reset)
+    onChange(field, null);
+
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -434,13 +432,12 @@ const handleRemove = (e) => {
       )}
 
       <div
-        className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer ${
-          dragActive
-            ? "border-blue-500 bg-blue-50 scale-[1.02] shadow-lg shadow-blue-100"
-            : disabled
+        className={`relative border-2 border-dashed rounded-2xl p-8 text-center transition-all duration-300 cursor-pointer ${dragActive
+          ? "border-blue-500 bg-blue-50 scale-[1.02] shadow-lg shadow-blue-100"
+          : disabled
             ? "border-gray-200 bg-gray-50 cursor-not-allowed"
             : "border-gray-300 hover:border-blue-400 hover:bg-gradient-to-br hover:from-blue-50 hover:to-indigo-50"
-        }`}
+          }`}
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
@@ -507,29 +504,25 @@ const handleRemove = (e) => {
         ) : (
           <div className="flex flex-col items-center gap-3">
             <div
-              className={`p-4 rounded-2xl ${
-                disabled
-                  ? "bg-gray-100"
-                  : "bg-gradient-to-br from-blue-100 to-indigo-100"
-              } transition-all`}
+              className={`p-4 rounded-2xl ${disabled
+                ? "bg-gray-100"
+                : "bg-gradient-to-br from-blue-100 to-indigo-100"
+                } transition-all`}
             >
               <Upload
-                className={`w-8 h-8 ${
-                  disabled ? "text-gray-400" : "text-blue-600"
-                }`}
+                className={`w-8 h-8 ${disabled ? "text-gray-400" : "text-blue-600"
+                  }`}
               />
             </div>
             <div>
               <p
-                className={`text-base font-semibold ${
-                  disabled ? "text-gray-400" : "text-gray-700"
-                }`}
+                className={`text-base font-semibold ${disabled ? "text-gray-400" : "text-gray-700"
+                  }`}
               >
                 {disabled
                   ? "Upload disabled"
-                  : `Drop your file${
-                      multiple ? "s" : ""
-                    } here or click to browse`}
+                  : `Drop your file${multiple ? "s" : ""
+                  } here or click to browse`}
               </p>
               <p className="text-xs text-gray-400 mt-1">
                 Supports: PNG, JPG, JPEG (max 5MB)
@@ -545,11 +538,10 @@ const handleRemove = (e) => {
 // Text Field Component
 const TextField = ({ field, value, onChange, disabled, type = "text" }) => {
   const config = fieldConfig[field];
-  const baseClass = `w-full px-5 py-4 rounded-2xl border-2 transition-all duration-300 outline-none text-sm font-medium ${
-    disabled
-      ? "bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed"
-      : "bg-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 hover:border-gray-300 hover:shadow-sm"
-  }`;
+  const baseClass = `w-full px-5 py-4 rounded-2xl border-2 transition-all duration-300 outline-none text-sm font-medium ${disabled
+    ? "bg-gray-50 border-gray-200 text-gray-500 cursor-not-allowed"
+    : "bg-white border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-50 hover:border-gray-300 hover:shadow-sm"
+    }`;
 
   if (config?.type === "select" && field === "nominee_relation") {
     return (
@@ -640,9 +632,8 @@ const FieldCard = ({ fieldData, formData, onChange }) => {
 
   return (
     <div
-      className={`group relative p-6 rounded-3xl border-2 transition-all duration-500 ${
-        cardStyles[status] || cardStyles.pending
-      }`}
+      className={`group relative p-6 rounded-3xl border-2 transition-all duration-500 ${cardStyles[status] || cardStyles.pending
+        }`}
     >
       {/* Glow effect for rejected */}
       {status === "rejected" && (
@@ -651,26 +642,24 @@ const FieldCard = ({ fieldData, formData, onChange }) => {
 
       {/* Status Line */}
       <div
-        className={`absolute top-0 left-6 right-6 h-1 rounded-full ${
-          status === "rejected"
-            ? "bg-gradient-to-r from-red-400 via-rose-400 to-pink-400"
-            : status === "approved"
+        className={`absolute top-0 left-6 right-6 h-1 rounded-full ${status === "rejected"
+          ? "bg-gradient-to-r from-red-400 via-rose-400 to-pink-400"
+          : status === "approved"
             ? "bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400"
             : "bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400"
-        }`}
+          }`}
       />
 
       {/* Header */}
       <div className="flex items-start justify-between mb-5 pt-2">
         <div className="flex items-center gap-4">
           <div
-            className={`p-3 rounded-2xl transition-all duration-300 ${
-              status === "rejected"
-                ? "bg-red-100 text-red-600 shadow-lg shadow-red-100"
-                : status === "approved"
+            className={`p-3 rounded-2xl transition-all duration-300 ${status === "rejected"
+              ? "bg-red-100 text-red-600 shadow-lg shadow-red-100"
+              : status === "approved"
                 ? "bg-emerald-100 text-emerald-600"
                 : "bg-gray-100 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-600"
-            }`}
+              }`}
           >
             <Icon className="w-5 h-5" />
           </div>
@@ -769,8 +758,8 @@ const FieldCard = ({ fieldData, formData, onChange }) => {
                   config?.type === "date"
                     ? "date"
                     : config?.type === "email"
-                    ? "email"
-                    : "text"
+                      ? "email"
+                      : "text"
                 }
               />
             )}
@@ -802,9 +791,8 @@ const GroupSection = ({
 
   return (
     <div
-      className={`bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm border ${
-        config?.border || "border-gray-200"
-      } overflow-hidden hover:shadow-lg transition-all duration-500`}
+      className={`bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm border ${config?.border || "border-gray-200"
+        } overflow-hidden hover:shadow-lg transition-all duration-500`}
     >
       {/* Group Header */}
       <button
@@ -813,9 +801,8 @@ const GroupSection = ({
       >
         <div className="flex items-center gap-5">
           <div
-            className={`p-4 rounded-2xl bg-gradient-to-br ${
-              config?.gradient || "from-gray-500 to-gray-600"
-            } shadow-xl`}
+            className={`p-4 rounded-2xl bg-gradient-to-br ${config?.gradient || "from-gray-500 to-gray-600"
+              } shadow-xl`}
           >
             <Icon className="w-6 h-6 text-white" />
           </div>
@@ -844,23 +831,20 @@ const GroupSection = ({
           </div>
         </div>
         <div
-          className={`p-3 rounded-2xl transition-all duration-500 ${
-            isExpanded ? "bg-blue-100 rotate-180" : "bg-gray-100"
-          }`}
+          className={`p-3 rounded-2xl transition-all duration-500 ${isExpanded ? "bg-blue-100 rotate-180" : "bg-gray-100"
+            }`}
         >
           <ChevronDown
-            className={`w-5 h-5 transition-colors ${
-              isExpanded ? "text-blue-600" : "text-gray-500"
-            }`}
+            className={`w-5 h-5 transition-colors ${isExpanded ? "text-blue-600" : "text-gray-500"
+              }`}
           />
         </div>
       </button>
 
       {/* Group Content */}
       <div
-        className={`transition-all duration-700 ease-in-out ${
-          isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
-        } overflow-hidden`}
+        className={`transition-all duration-700 ease-in-out ${isExpanded ? "max-h-[5000px] opacity-100" : "max-h-0 opacity-0"
+          } overflow-hidden`}
       >
         <div className={`p-8 pt-4 ${config?.bg || "bg-gray-50"}/30`}>
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
@@ -932,17 +916,17 @@ const FarmerVerificationModal = ({ isOpen, onClose }) => {
   };
 
   // REPLACE YOUR EXISTING handleChange WITH THIS
-const handleChange = (field, value) => {
-  setFormData((prev) => {
-    // We strictly define what we want to keep.
-    // We keep the field even if it is null or empty string "" 
-    // so that the backend knows we are changing/clearing it.
-    return {
-      ...prev,
-      [field]: value,
-    };
-  });
-};
+  const handleChange = (field, value) => {
+    setFormData((prev) => {
+      // We strictly define what we want to keep.
+      // We keep the field even if it is null or empty string "" 
+      // so that the backend knows we are changing/clearing it.
+      return {
+        ...prev,
+        [field]: value,
+      };
+    });
+  };
 
   const toggleGroup = (group) => {
     setExpandedGroups((prev) => ({ ...prev, [group]: !prev[group] }));
@@ -954,95 +938,164 @@ const handleChange = (field, value) => {
     window.location.href = "/login";
   };
 
-
-  // REPLACE YOUR EXISTING handleSubmit WITH THIS
-const handleSubmit = async () => {
-  setError(null);
-
-  // 1. Get all keys that have actually been touched
-  const entries = Object.entries(formData);
-
-  // 2. Validation: Ensure there is data to send
-  if (entries.length === 0) {
-    setError("No changes detected. Please update a field.");
-    return;
-  }
-
-  setSubmitting(true);
-
-  try {
-    const submitFormData = new FormData();
-
-    entries.forEach(([key, value]) => {
-      // Skip undefined, but allow null/empty strings (in case backend needs to clear fields)
-      if (value === undefined) return;
-
-      // CASE 1: Handle Multiple Files (Array of Files)
-      if (Array.isArray(value)) {
-        value.forEach((item) => {
-          if (item instanceof File) {
-            // Append the file directly. 
-            // Note: Standard multer setup uses the same key name (e.g., 'khatauni_images')
-            submitFormData.append(key, item);
-          } else {
-             // If it's an existing image URL string inside an array, 
-             // usually we don't send it back unless the backend specifically asks for it.
-             // If you need to send text arrays, un-comment below:
-             // submitFormData.append(key, String(item));
-          }
-        });
-      } 
-      // CASE 2: Handle Single File
-      else if (value instanceof File) {
-        submitFormData.append(key, value);
-      } 
-      // CASE 3: Handle Dates (Convert to ISO string if it's a Date object)
-      else if (value instanceof Date) {
-        submitFormData.append(key, value.toISOString());
-      }
-      // CASE 4: Handle Text/Numbers/Null
-      else {
-        // Convert null to empty string or string "null" depending on backend requirement.
-        // Usually sending an empty string is safer for "clearing" a value.
-        const stringValue = value === null ? "" : String(value);
-        submitFormData.append(key, stringValue);
-      }
+  // S3 Upload Helper Functions
+  const getPresignedUrls = async (files, folder) => {
+    const filesData = files.map((file, index) => {
+      const fileExtension = file.name.split('.').pop();
+      const fileName = `farmer_${folder}_${Date.now()}_${index}.${fileExtension}`;
+      return {
+        fileName,
+        fileType: file.type,
+        folder: folder
+      };
     });
 
-    // --- DEBUGGING: Check Console to see exactly what is being sent ---
-    console.log("Submitting FormData:");
-    for (let pair of submitFormData.entries()) {
-      console.log(`${pair[0]}:`, pair[1]);
-    }
-
-    const response = await fetch(
-      `${API_BASE_URL}/user/updateprofileverification`,
-      {
-        method: "PUT",
-        headers: {
-          // DO NOT ADD 'Content-Type': 'multipart/form-data'
-          // The browser adds this automatically with the boundary
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: submitFormData,
-      }
-    );
-
-    const result = await response.json();
+    const response = await fetch(`${API_BASE_URL}/aws/getpresigneduploadurls`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+      body: JSON.stringify({ files: filesData }),
+    });
 
     if (!response.ok) {
-      throw new Error(result.message || "Failed to update fields");
+      throw new Error("Failed to get presigned URLs");
     }
 
-    setSuccess(true);
-    setFormData({}); // Clear dirty state
-  } catch (err) {
-    console.error("Submission Error:", err);
-    setError(err.message || "Failed to submit updates");
-  } finally {
-    setSubmitting(false);
-  }
-};
+    const result = await response.json();
+    // The backend response structure is { success: true, message: "...", data: [...] }
+    if (!result.success || !result.data || result.data.length === 0) {
+      throw new Error("Failed to get presigned URLs");
+    }
+
+    return result.data; // Return the array of objects { uploadUrl, publicUrl, key }
+  };
+
+  const uploadToS3 = async (file, urlData) => {
+    // urlData contains { uploadUrl, publicUrl, key }
+    const response = await fetch(urlData.uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": file.type, // This must match exactly what was signed
+      },
+      body: file,
+    });
+
+    if (!response.ok) {
+      console.error("S3 Upload Failed:", response.statusText);
+      throw new Error(`Failed to upload file to S3: ${response.statusText}`);
+    }
+
+    // Return the public URL provided by the backend
+    return urlData.publicUrl;
+  };
+
+  // Upload a single file to S3
+  const uploadSingleFileToS3 = async (file, fieldName) => {
+    // getPresignedUrls returns array of objects
+    const urls = await getPresignedUrls([file], fieldName);
+    // urls[0] is the object for the first file
+    const publicUrl = await uploadToS3(file, urls[0]);
+    return publicUrl;
+  };
+
+  // Upload multiple files to S3
+  const uploadMultipleFilesToS3 = async (files, fieldName) => {
+    const urls = await getPresignedUrls(files, fieldName);
+    const publicUrls = await Promise.all(
+      files.map((file, index) => uploadToS3(file, urls[index]))
+    );
+    return publicUrls;
+  };
+
+  // UPDATED handleSubmit WITH S3 PRESIGNED URL UPLOADS
+  const handleSubmit = async () => {
+    setError(null);
+
+    // 1. Get all keys that have actually been touched
+    const entries = Object.entries(formData);
+
+    // 2. Validation: Ensure there is data to send
+    if (entries.length === 0) {
+      setError("No changes detected. Please update a field.");
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      // Create a new object to hold the processed data (with S3 URLs instead of files)
+      const processedData = {};
+
+      // Process each field
+      for (const [key, value] of entries) {
+        // Skip undefined
+        if (value === undefined) continue;
+
+        // CASE 1: Handle Multiple Files (Array of Files)
+        if (Array.isArray(value)) {
+          const fileItems = value.filter((item) => item instanceof File);
+          if (fileItems.length > 0) {
+            // Upload all files to S3 and get public URLs
+            console.log(`Uploading ${fileItems.length} files for ${key} to S3...`);
+            const publicUrls = await uploadMultipleFilesToS3(fileItems, key);
+            // For khatauni_images, send as array of URLs
+            processedData[key] = publicUrls;
+            console.log(`Uploaded ${key}:`, publicUrls);
+          }
+        }
+        // CASE 2: Handle Single File
+        else if (value instanceof File) {
+          // Upload file to S3 and get public URL
+          console.log(`Uploading file for ${key} to S3...`);
+          const publicUrl = await uploadSingleFileToS3(value, key);
+          processedData[key] = publicUrl;
+          console.log(`Uploaded ${key}:`, publicUrl);
+        }
+        // CASE 3: Handle Dates (Convert to ISO string if it's a Date object)
+        else if (value instanceof Date) {
+          processedData[key] = value.toISOString();
+        }
+        // CASE 4: Handle Text/Numbers/Null
+        else {
+          // Convert null to empty string or keep as is
+          const stringValue = value === null ? "" : String(value);
+          processedData[key] = stringValue;
+        }
+      }
+
+      // --- DEBUGGING: Check Console to see exactly what is being sent ---
+      console.log("Submitting processed data:", processedData);
+
+      // Send JSON data (with S3 URLs) to backend
+      const response = await fetch(
+        `${API_BASE_URL}/user/updateprofileverification`,
+        {
+          method: "PUT",
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify(processedData),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to update fields");
+      }
+
+      setSuccess(true);
+      setFormData({}); // Clear dirty state
+    } catch (err) {
+      console.error("Submission Error:", err);
+      setError(err.message || "Failed to submit updates");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const groupedFields =
     data?.fields?.reduce((acc, field) => {
@@ -1300,11 +1353,10 @@ const handleSubmit = async () => {
           <div className="relative z-10 px-8 py-5 bg-white/80 backdrop-blur-md border-t border-gray-200 flex items-center justify-between">
             <div className="flex items-center gap-4 text-gray-600">
               <div
-                className={`w-3 h-3 rounded-full ${
-                  Object.keys(formData).length > 0
-                    ? "bg-indigo-500 animate-pulse"
-                    : "bg-gray-300"
-                }`}
+                className={`w-3 h-3 rounded-full ${Object.keys(formData).length > 0
+                  ? "bg-indigo-500 animate-pulse"
+                  : "bg-gray-300"
+                  }`}
               />
               <div className="flex flex-col">
                 <span className="font-bold text-gray-800 text-lg">
@@ -1328,11 +1380,10 @@ const handleSubmit = async () => {
               <button
                 onClick={handleSubmit}
                 disabled={submitting || Object.keys(formData).length === 0}
-                className={`px-10 py-3 font-black rounded-2xl transition-all duration-300 flex items-center gap-3 ${
-                  submitting || Object.keys(formData).length === 0
-                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                    : "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white hover:shadow-2xl hover:shadow-purple-300 hover:scale-105 active:scale-100"
-                }`}
+                className={`px-10 py-3 font-black rounded-2xl transition-all duration-300 flex items-center gap-3 ${submitting || Object.keys(formData).length === 0
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  : "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white hover:shadow-2xl hover:shadow-purple-300 hover:scale-105 active:scale-100"
+                  }`}
               >
                 {submitting ? (
                   <>

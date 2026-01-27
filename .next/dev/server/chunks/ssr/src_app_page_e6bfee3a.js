@@ -151,7 +151,7 @@ function LandingPage() {
                                                         columnNumber: 19
                                                     }, this),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "text-[11px] font-bold font-black tracking-[0.15em] uppercase",
+                                                        className: "text-[11px] font-bold tracking-[0.15em] uppercase",
                                                         children: "Bhumitra FPO"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/app/page.js",
@@ -343,19 +343,19 @@ function LandingPage() {
                 className: "relative h-[60vh] min-h-[600px] overflow-hidden mt-[70px] lg:mt-[100px]",
                 children: [
                     heroSlides.map((slide, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: `absolute inset-0 transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`,
+                            className: `absolute inset-0 transition-all duration-800 ease-in-out ${heroSlide === idx ? 'opacity-100 z-10' : 'opacity-0 z-0'}`,
                             children: [
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                     src: slide.image,
                                     alt: `${slide.title} ${slide.highlight}`,
-                                    className: `w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${heroSlide === idx ? 'scale-105' : 'scale-100'}`
+                                    className: `w-full h-full object-cover transition-transform duration-6000 ease-out ${heroSlide === idx ? 'scale-105' : 'scale-100'}`
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.js",
                                     lineNumber: 234,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                    className: "absolute inset-0 bg-gradient-to-r from-stone-900/80 via-stone-900/60 to-stone-900/40"
+                                    className: "absolute inset-0 bg-linear-to-r from-stone-900/80 via-stone-900/60 to-stone-900/40"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/page.js",
                                     lineNumber: 240,
@@ -375,7 +375,7 @@ function LandingPage() {
                                 className: "max-w-2xl",
                                 children: [
                                     heroSlides.map((slide, idx)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: `transition-all duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 absolute pointer-events-none'}`,
+                                            className: `transition-all duration-600 ease-in-out ${heroSlide === idx ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 absolute pointer-events-none'}`,
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "inline-flex items-center px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-xs font-bold tracking-wide mb-4",
@@ -574,7 +574,7 @@ function LandingPage() {
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "aspect-square bg-stone-100 rounded-3xl lg:rounded-[3rem] overflow-hidden shadow-xl",
                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "h-full w-full bg-gradient-to-tr from-amber-100 to-emerald-50 flex items-center justify-center p-10",
+                                            className: "h-full w-full bg-linear-to-tr from-amber-100 to-emerald-50 flex items-center justify-center p-10",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-sm",
                                                 children: [
@@ -1842,7 +1842,7 @@ function LandingPage() {
                                     className: "flex flex-col items-center text-center group",
                                     children: [
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                            className: "w-40 h-40 rounded-full bg-gradient-to-br from-stone-100 to-stone-200 mb-6 overflow-hidden relative shadow-lg group-hover:shadow-xl transition-shadow",
+                                            className: "w-40 h-40 rounded-full bg-linear-to-br from-stone-100 to-stone-200 mb-6 overflow-hidden relative shadow-lg group-hover:shadow-xl transition-shadow",
                                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "absolute inset-0 flex items-center justify-center text-stone-400",
                                                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$users$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Users$3e$__["Users"], {

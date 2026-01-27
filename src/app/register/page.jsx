@@ -21,7 +21,7 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [openMultiStepForm, setOpenMultiStepForm] = useState(false);
-  const { getCurrentStep, setCurrStep ,currStep} = useStore();
+  const { getCurrentStep, setCurrStep, currStep } = useStore();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,7 +87,7 @@ export default function SignupForm() {
 
       if (validationErrors.length > 0) {
         newErrors.password = `Password must contain ${validationErrors.join(
-          ", "
+          ", ",
         )}`;
       }
     }
@@ -155,7 +155,7 @@ export default function SignupForm() {
   useEffect(() => {
     const fetchStep = async () => {
       try {
-        const data = await getCurrentStep(); 
+        const data = await getCurrentStep();
 
         if (data?.currentStep !== undefined) {
           setCurrStep(data.currentStep);
@@ -175,10 +175,10 @@ export default function SignupForm() {
   return (
     <div>
       {openMultiStepForm ? (
-        <MultiStepRegistration moveStep={currStep+1} />
+        <MultiStepRegistration moveStep={currStep + 1} />
       ) : (
         <>
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
+          <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4">
             <div className="w-full max-w-2xl">
               {/* Header */}
               <div className="text-center mb-10">

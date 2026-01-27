@@ -1,5 +1,24 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/deposit/page": "app/admin/deposit/page.js",
+  "/admin/employee/page": "app/admin/employee/page.js",
+  "/admin/farmers/page": "app/admin/farmers/page.js",
+  "/admin/graincategories/page": "app/admin/graincategories/page.js",
+  "/admin/managers/page": "app/admin/managers/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/admin/profile/page": "app/admin/profile/page.js",
+  "/admin/requests/page": "app/admin/requests/page.js",
+  "/admin/staff/page": "app/admin/staff/page.js",
+  "/admin/supervisors/page": "app/admin/supervisors/page.js",
+  "/admin/transactions/page": "app/admin/transactions/page.js",
+  "/admin/updateprice/page": "app/admin/updateprice/page.js",
+  "/admin/warehouses/page": "app/admin/warehouses/page.js",
+  "/admin/withdraw/page": "app/admin/withdraw/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/dashboard/profile/page": "app/dashboard/profile/page.js",
+  "/dashboard/sell/page": "app/dashboard/sell/page.js",
+  "/forget-password/page": "app/forget-password/page.js",
   "/login/page": "app/login/page.js",
-  "/page": "app/page.js",
-  "/register/page": "app/register/page.js"
+  "/register/page": "app/register/page.js",
+  "/resetpin/page": "app/resetpin/page.js"
 }

@@ -44,6 +44,76 @@ var _s = __turbopack_context__.k.signature();
 ;
 ;
 ;
+// --- S3 Upload Helper Functions ---
+/**
+ * Fetches presigned upload URLs from the backend
+ * @param {Array<{fileName: string, fileType: string}>} fileDetails - Array of file details
+ * @returns {Promise<{success: boolean, data: Array<{uploadUrl: string, publicUrl: string, key: string}>}>}
+ */ const getPresignedUploadUrls = async (fileDetails)=>{
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]}/aws/getpresigneduploadurls`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            files: fileDetails
+        })
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(()=>null);
+        throw new Error(errorData?.message || "Failed to get presigned URLs");
+    }
+    return response.json();
+};
+/**
+ * Uploads a single file to S3 using the presigned URL
+ * @param {File} file - The file to upload
+ * @param {string} uploadUrl - The presigned upload URL
+ * @returns {Promise<void>}
+ */ const uploadFileToS3 = async (file, uploadUrl)=>{
+    // Note: Do NOT send custom headers - S3 presigned URLs are signed without them
+    const response = await fetch(uploadUrl, {
+        method: "PUT",
+        body: file
+    });
+    if (!response.ok) {
+        throw new Error(`Failed to upload file: ${file.name}`);
+    }
+};
+/**
+ * Uploads a single file to S3 and returns the public URL
+ * @param {File} file - The file to upload
+ * @param {string} keyPrefix - Prefix for the file key (e.g., 'employee')
+ * @returns {Promise<string>} - The public URL of the uploaded file
+ */ const uploadSingleFileToS3 = async (file, keyPrefix = 'employee')=>{
+    if (!file) {
+        return '';
+    }
+    // Prepare file details for the presigned URL request
+    const fileDetails = [
+        {
+            fileName: `${keyPrefix}_${Date.now()}_${file.name}`,
+            fileType: file.type || "image/jpeg"
+        }
+    ];
+    // Get presigned URLs from the backend
+    const presignedResponse = await getPresignedUploadUrls(fileDetails);
+    // Handle the API response format: { success, message, data: [...] }
+    const urls = presignedResponse.data || presignedResponse.urls || presignedResponse;
+    if (!Array.isArray(urls) || urls.length === 0) {
+        console.error("Presigned URL response:", presignedResponse);
+        throw new Error("Invalid presigned URL response from server");
+    }
+    const urlData = urls[0];
+    if (!urlData.uploadUrl) {
+        throw new Error("Missing uploadUrl from server response");
+    }
+    // Upload the file to S3
+    await uploadFileToS3(file, urlData.uploadUrl);
+    return urlData.publicUrl;
+};
 const EmployeeOnboarding = ()=>{
     _s();
     const [currentStep, setCurrentStep] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(1);
@@ -147,6 +217,7 @@ const EmployeeOnboarding = ()=>{
     });
     const [newSkill, setNewSkill] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
     const [imagePreview, setImagePreview] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
+    const [employeeImageFile, setEmployeeImageFile] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null); // Store file for S3 upload
     // FIX 3: Add useEffect to handle empId persistence
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useEffect"])({
         "EmployeeOnboarding.useEffect": ()=>{
@@ -249,13 +320,12 @@ const EmployeeOnboarding = ()=>{
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].error("Image size should be less than 5MB");
                 return;
             }
+            // Store the actual file for S3 upload
+            setEmployeeImageFile(file);
+            // Create preview for UI display
             const reader = new FileReader();
             reader.onloadend = ()=>{
                 setImagePreview(reader.result);
-                setFormData((prev)=>({
-                        ...prev,
-                        employeeImage: reader.result
-                    }));
             };
             reader.readAsDataURL(file);
         }
@@ -446,6 +516,24 @@ const EmployeeOnboarding = ()=>{
         }
         setIsSubmitting(true);
         try {
+            let employeeImageUrl = formData.employeeImage || "";
+            // Upload employee image to S3 if a file is selected
+            if (employeeImageFile) {
+                __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].loading("Uploading employee image...", {
+                    id: "upload-image"
+                });
+                try {
+                    employeeImageUrl = await uploadSingleFileToS3(employeeImageFile, 'employee-profile');
+                    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].success("Image uploaded successfully!", {
+                        id: "upload-image"
+                    });
+                } catch (uploadError) {
+                    __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].error(`Failed to upload image: ${uploadError.message}`, {
+                        id: "upload-image"
+                    });
+                    throw uploadError;
+                }
+            }
             const token = getAuthToken();
             const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]}/employee/onboarding/step2`, {
                 method: "POST",
@@ -457,7 +545,7 @@ const EmployeeOnboarding = ()=>{
                 },
                 body: JSON.stringify({
                     id: empId,
-                    employeeImage: formData.employeeImage,
+                    employeeImage: employeeImageUrl,
                     maritalStatus: formData.maritalStatus,
                     nationality: formData.nationality,
                     bloodGroup: formData.bloodGroup
@@ -469,6 +557,8 @@ const EmployeeOnboarding = ()=>{
                         2
                     ]));
                 setCurrentStep(3);
+                // Clear the file after successful upload
+                setEmployeeImageFile(null);
             } else {
                 const errorData = await response.json();
                 __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].error(`Failed to save Step 2: ${errorData.message || 'Unknown error'}`);
@@ -760,7 +850,7 @@ const EmployeeOnboarding = ()=>{
                     handleInputChange: handleInputChange
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 701,
+                    lineNumber: 805,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 2:
@@ -771,7 +861,7 @@ const EmployeeOnboarding = ()=>{
                     handleImageUpload: handleImageUpload
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 703,
+                    lineNumber: 807,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 3:
@@ -781,7 +871,7 @@ const EmployeeOnboarding = ()=>{
                     handleSameAsPermanent: handleSameAsPermanent
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 705,
+                    lineNumber: 809,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 4:
@@ -790,7 +880,7 @@ const EmployeeOnboarding = ()=>{
                     handleInputChange: handleInputChange
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 707,
+                    lineNumber: 811,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 5:
@@ -803,7 +893,7 @@ const EmployeeOnboarding = ()=>{
                     removeCertification: removeCertification
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 709,
+                    lineNumber: 813,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 6:
@@ -814,7 +904,7 @@ const EmployeeOnboarding = ()=>{
                     removeExperience: removeExperience
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 718,
+                    lineNumber: 822,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 7:
@@ -829,13 +919,13 @@ const EmployeeOnboarding = ()=>{
                     removeSkill: removeSkill
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 725,
+                    lineNumber: 829,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             case 8:
                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(CompleteOnBoarding, {}, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 736,
+                    lineNumber: 840,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             default:
@@ -857,12 +947,12 @@ const EmployeeOnboarding = ()=>{
                                 className: "w-10 h-10 text-white"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 750,
+                                lineNumber: 854,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 749,
+                            lineNumber: 853,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -870,7 +960,7 @@ const EmployeeOnboarding = ()=>{
                             children: "Employee Onboarding"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 752,
+                            lineNumber: 856,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -878,13 +968,13 @@ const EmployeeOnboarding = ()=>{
                             children: "Welcome aboard! Let's get you set up"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 755,
+                            lineNumber: 859,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 748,
+                    lineNumber: 852,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -898,7 +988,7 @@ const EmployeeOnboarding = ()=>{
                                     className: "absolute top-8 left-0 w-full h-2 bg-gray-200 rounded-full"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 763,
+                                    lineNumber: 867,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -908,7 +998,7 @@ const EmployeeOnboarding = ()=>{
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 766,
+                                    lineNumber: 870,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -929,31 +1019,31 @@ const EmployeeOnboarding = ()=>{
                                                                 className: "w-6 h-6 text-white"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                                lineNumber: 791,
+                                                                lineNumber: 894,
                                                                 columnNumber: 29
                                                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(Icon, {
                                                                 className: `w-6 h-6 ${isActive || isCompleted ? "text-white" : "text-gray-500"}`
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                                lineNumber: 793,
+                                                                lineNumber: 896,
                                                                 columnNumber: 29
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 781,
+                                                            lineNumber: 885,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         isActive && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                             className: `absolute -inset-1 bg-gradient-to-br ${step.color} rounded-full blur-lg opacity-50 animate-pulse`
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 801,
+                                                            lineNumber: 903,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 780,
+                                                    lineNumber: 884,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -961,35 +1051,35 @@ const EmployeeOnboarding = ()=>{
                                                     children: step.title
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 806,
+                                                    lineNumber: 908,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, step.id, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 779,
+                                            lineNumber: 883,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0));
                                     })
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 772,
+                                    lineNumber: 876,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 761,
+                            lineNumber: 865,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 760,
+                        lineNumber: 864,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 759,
+                    lineNumber: 863,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -999,12 +1089,12 @@ const EmployeeOnboarding = ()=>{
                         children: renderStepContent()
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 827,
+                        lineNumber: 928,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 826,
+                    lineNumber: 927,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1022,14 +1112,14 @@ const EmployeeOnboarding = ()=>{
                                     className: `w-5 h-5 mr-2 transition-transform ${currentStep !== 1 && !isSubmitting ? "group-hover:-translate-x-1" : ""}`
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 845,
+                                    lineNumber: 946,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 "Previous"
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 834,
+                            lineNumber: 935,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1043,12 +1133,12 @@ const EmployeeOnboarding = ()=>{
                 `
                                 }, i, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 855,
+                                    lineNumber: 955,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)))
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 853,
+                            lineNumber: 953,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1066,7 +1156,7 @@ const EmployeeOnboarding = ()=>{
                                         className: "w-5 h-5 mr-2 animate-spin"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 883,
+                                        lineNumber: 983,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Saving..."
@@ -1077,7 +1167,7 @@ const EmployeeOnboarding = ()=>{
                                         className: "w-5 h-5 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 888,
+                                        lineNumber: 988,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Complete Onboarding",
@@ -1085,7 +1175,7 @@ const EmployeeOnboarding = ()=>{
                                         className: "w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 890,
+                                        lineNumber: 990,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
@@ -1096,35 +1186,35 @@ const EmployeeOnboarding = ()=>{
                                         className: "w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 895,
+                                        lineNumber: 995,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true)
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 868,
+                            lineNumber: 968,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 833,
+                    lineNumber: 934,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/admin/employee/page.jsx",
-            lineNumber: 746,
+            lineNumber: 850,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 744,
+        lineNumber: 848,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
-_s(EmployeeOnboarding, "PQB61KfgkMhUjePxneMTYPKb5yI=");
+_s(EmployeeOnboarding, "/YidkNBTZAHmTi8vvmcPcG5SxFo=");
 _c = EmployeeOnboarding;
 // Keep all your existing step components exactly as they are
 const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing AccountSetupStep component code
@@ -1140,12 +1230,12 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 911,
+                            lineNumber: 1011,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 910,
+                        lineNumber: 1010,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1155,7 +1245,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                 children: "Account Setup"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 914,
+                                lineNumber: 1014,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1163,19 +1253,19 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                 children: "Basic profile and account information"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 915,
+                                lineNumber: 1015,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 913,
+                        lineNumber: 1013,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 909,
+                lineNumber: 1009,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1186,7 +1276,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                         children: "Basic Profile"
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 920,
+                        lineNumber: 1020,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1202,7 +1292,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 925,
+                                                lineNumber: 1025,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Role ",
@@ -1211,13 +1301,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 926,
+                                                lineNumber: 1026,
                                                 columnNumber: 18
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 924,
+                                        lineNumber: 1024,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1230,7 +1320,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Select Role"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 933,
+                                                lineNumber: 1033,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1238,7 +1328,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Staff"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 934,
+                                                lineNumber: 1034,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1246,7 +1336,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Supervisor"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 935,
+                                                lineNumber: 1035,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1254,7 +1344,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Manager"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 936,
+                                                lineNumber: 1036,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1262,19 +1352,19 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Admin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 937,
+                                                lineNumber: 1037,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 928,
+                                        lineNumber: 1028,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 923,
+                                lineNumber: 1023,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1287,7 +1377,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 943,
+                                                lineNumber: 1043,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Full Name ",
@@ -1296,13 +1386,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 944,
+                                                lineNumber: 1044,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 942,
+                                        lineNumber: 1042,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1313,13 +1403,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                         placeholder: "John Doe"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 946,
+                                        lineNumber: 1046,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 941,
+                                lineNumber: 1041,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1332,7 +1422,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 957,
+                                                lineNumber: 1057,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Primary Phone ",
@@ -1341,13 +1431,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 958,
+                                                lineNumber: 1058,
                                                 columnNumber: 27
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 956,
+                                        lineNumber: 1056,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1358,13 +1448,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                         placeholder: "+91 98765 43210"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 960,
+                                        lineNumber: 1060,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 955,
+                                lineNumber: 1055,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1377,14 +1467,14 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 971,
+                                                lineNumber: 1071,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Secondary Phone"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 970,
+                                        lineNumber: 1070,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1395,13 +1485,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                         placeholder: "+91 98765 43210"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 974,
+                                        lineNumber: 1074,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 969,
+                                lineNumber: 1069,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1414,7 +1504,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 985,
+                                                lineNumber: 1085,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Email Address ",
@@ -1423,13 +1513,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 986,
+                                                lineNumber: 1086,
                                                 columnNumber: 27
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 984,
+                                        lineNumber: 1084,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1440,13 +1530,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                         placeholder: "john.doe@example.com"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 988,
+                                        lineNumber: 1088,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 983,
+                                lineNumber: 1083,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1459,7 +1549,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 999,
+                                                lineNumber: 1099,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Gender ",
@@ -1468,13 +1558,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1000,
+                                                lineNumber: 1100,
                                                 columnNumber: 20
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 998,
+                                        lineNumber: 1098,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1487,7 +1577,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Select Gender"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1007,
+                                                lineNumber: 1107,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1495,7 +1585,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Male"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1008,
+                                                lineNumber: 1108,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1503,7 +1593,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Female"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1009,
+                                                lineNumber: 1109,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1511,19 +1601,19 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "Other"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1010,
+                                                lineNumber: 1110,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1002,
+                                        lineNumber: 1102,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 997,
+                                lineNumber: 1097,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1536,7 +1626,7 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1016,
+                                                lineNumber: 1116,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Date of Birth ",
@@ -1545,13 +1635,13 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1017,
+                                                lineNumber: 1117,
                                                 columnNumber: 27
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1015,
+                                        lineNumber: 1115,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1561,31 +1651,31 @@ const AccountSetupStep = ({ formData, handleInputChange })=>// Your existing Acc
                                         className: "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1019,
+                                        lineNumber: 1119,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1014,
+                                lineNumber: 1114,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 922,
+                        lineNumber: 1022,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 919,
+                lineNumber: 1019,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 908,
+        lineNumber: 1008,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c1 = AccountSetupStep;
@@ -1602,12 +1692,12 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1036,
+                            lineNumber: 1136,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1035,
+                        lineNumber: 1135,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1617,7 +1707,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                 children: "Personal Information"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1039,
+                                lineNumber: 1139,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1625,19 +1715,19 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                 children: "Employee profile details"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1040,
+                                lineNumber: 1140,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1038,
+                        lineNumber: 1138,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1034,
+                lineNumber: 1134,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1654,7 +1744,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                     className: "w-32 h-32 rounded-2xl object-cover border-4 border-white shadow-lg"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1049,
+                                    lineNumber: 1149,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "w-32 h-32 bg-gradient-to-br from-blue-400 to-cyan-400 rounded-2xl flex items-center justify-center",
@@ -1662,12 +1752,12 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         className: "w-16 h-16 text-white"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1056,
+                                        lineNumber: 1156,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1055,
+                                    lineNumber: 1155,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1678,7 +1768,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                     id: "profile-upload"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1059,
+                                    lineNumber: 1159,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -1688,18 +1778,18 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         className: "w-5 h-5 text-gray-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1070,
+                                        lineNumber: 1170,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1066,
+                                    lineNumber: 1166,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1047,
+                            lineNumber: 1147,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1710,7 +1800,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                     children: "Upload Profile Photo"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1074,
+                                    lineNumber: 1174,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1718,7 +1808,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                     children: "Upload a professional photo for your profile."
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1075,
+                                    lineNumber: 1175,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1726,24 +1816,24 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                     children: "Accepted formats: JPG, PNG (Max 5MB)"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1076,
+                                    lineNumber: 1176,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1073,
+                            lineNumber: 1173,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 1046,
+                    lineNumber: 1146,
                     columnNumber: 7
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1045,
+                lineNumber: 1145,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1759,14 +1849,14 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         className: "w-4 h-4 mr-2 text-gray-400"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1085,
+                                        lineNumber: 1185,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Marital Status"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1084,
+                                lineNumber: 1184,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1779,7 +1869,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Select Status"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1093,
+                                        lineNumber: 1193,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1787,7 +1877,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Single"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1094,
+                                        lineNumber: 1194,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1795,7 +1885,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Married"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1095,
+                                        lineNumber: 1195,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1803,7 +1893,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Divorced"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1096,
+                                        lineNumber: 1196,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1811,7 +1901,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Widowed"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1097,
+                                        lineNumber: 1197,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1819,19 +1909,19 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Separated"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1098,
+                                        lineNumber: 1198,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1088,
+                                lineNumber: 1188,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1083,
+                        lineNumber: 1183,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1844,14 +1934,14 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         className: "w-4 h-4 mr-2 text-gray-400"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1104,
+                                        lineNumber: 1204,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Nationality"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1103,
+                                lineNumber: 1203,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1862,13 +1952,13 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                 placeholder: "Indian"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1107,
+                                lineNumber: 1207,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1102,
+                        lineNumber: 1202,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1881,14 +1971,14 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         className: "w-4 h-4 mr-2 text-gray-400"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1118,
+                                        lineNumber: 1218,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Blood Group"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1117,
+                                lineNumber: 1217,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -1901,7 +1991,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "Unknown"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1126,
+                                        lineNumber: 1226,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1909,7 +1999,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "A+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1127,
+                                        lineNumber: 1227,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1917,7 +2007,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "A-"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1128,
+                                        lineNumber: 1228,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1925,7 +2015,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "B+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1129,
+                                        lineNumber: 1229,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1933,7 +2023,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "B-"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1130,
+                                        lineNumber: 1230,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1941,7 +2031,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "AB+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1131,
+                                        lineNumber: 1231,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1949,7 +2039,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "AB-"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1132,
+                                        lineNumber: 1232,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1957,7 +2047,7 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "O+"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1133,
+                                        lineNumber: 1233,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -1965,31 +2055,31 @@ const PersonalInfoStep = ({ formData, handleInputChange, imagePreview, handleIma
                                         children: "O-"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1134,
+                                        lineNumber: 1234,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1121,
+                                lineNumber: 1221,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1116,
+                        lineNumber: 1216,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1082,
+                lineNumber: 1182,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1033,
+        lineNumber: 1133,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c2 = PersonalInfoStep;
@@ -2006,12 +2096,12 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1146,
+                            lineNumber: 1246,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1145,
+                        lineNumber: 1245,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2021,7 +2111,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                 children: "Address Information"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1149,
+                                lineNumber: 1249,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2029,19 +2119,19 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                 children: "Where can we find you?"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1150,
+                                lineNumber: 1250,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1148,
+                        lineNumber: 1248,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1144,
+                lineNumber: 1244,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2054,14 +2144,14 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1157,
+                                lineNumber: 1257,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Permanent Address"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1156,
+                        lineNumber: 1256,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2079,13 +2169,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1164,
+                                                lineNumber: 1264,
                                                 columnNumber: 28
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1163,
+                                        lineNumber: 1263,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2096,13 +2186,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "House/Flat No, Building Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1166,
+                                        lineNumber: 1266,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1162,
+                                lineNumber: 1262,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2113,7 +2203,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         children: "Address Line 2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1176,
+                                        lineNumber: 1276,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2124,13 +2214,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "Street, Landmark"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1177,
+                                        lineNumber: 1277,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1175,
+                                lineNumber: 1275,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2145,13 +2235,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1188,
+                                                lineNumber: 1288,
                                                 columnNumber: 18
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1187,
+                                        lineNumber: 1287,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2162,13 +2252,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "City"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1190,
+                                        lineNumber: 1290,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1186,
+                                lineNumber: 1286,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2183,13 +2273,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1201,
+                                                lineNumber: 1301,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1200,
+                                        lineNumber: 1300,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2200,13 +2290,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "State"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1203,
+                                        lineNumber: 1303,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1199,
+                                lineNumber: 1299,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2217,7 +2307,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         children: "Country"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1213,
+                                        lineNumber: 1313,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2228,13 +2318,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "Country"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1214,
+                                        lineNumber: 1314,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1212,
+                                lineNumber: 1312,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2249,13 +2339,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1225,
+                                                lineNumber: 1325,
                                                 columnNumber: 25
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1224,
+                                        lineNumber: 1324,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2266,25 +2356,25 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "PIN Code"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1227,
+                                        lineNumber: 1327,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1223,
+                                lineNumber: 1323,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1161,
+                        lineNumber: 1261,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1155,
+                lineNumber: 1255,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2300,14 +2390,14 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         className: "w-5 h-5 mr-2 text-gray-400"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1242,
+                                        lineNumber: 1342,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Current Address"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1241,
+                                lineNumber: 1341,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
@@ -2320,7 +2410,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         className: "w-5 h-5 text-orange-600 rounded focus:ring-orange-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1246,
+                                        lineNumber: 1346,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2328,19 +2418,19 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         children: "Same as permanent"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1252,
+                                        lineNumber: 1352,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1245,
+                                lineNumber: 1345,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1240,
+                        lineNumber: 1340,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     !formData.sameAsPermanent && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2358,13 +2448,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1260,
+                                                lineNumber: 1360,
                                                 columnNumber: 30
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1259,
+                                        lineNumber: 1359,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2375,13 +2465,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "House/Flat No, Building Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1262,
+                                        lineNumber: 1362,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1258,
+                                lineNumber: 1358,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2392,7 +2482,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         children: "Address Line 2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1272,
+                                        lineNumber: 1372,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2403,13 +2493,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "Street, Landmark"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1273,
+                                        lineNumber: 1373,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1271,
+                                lineNumber: 1371,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2424,13 +2514,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1284,
+                                                lineNumber: 1384,
                                                 columnNumber: 20
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1283,
+                                        lineNumber: 1383,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2441,13 +2531,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "City"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1286,
+                                        lineNumber: 1386,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1282,
+                                lineNumber: 1382,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2462,13 +2552,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1297,
+                                                lineNumber: 1397,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1296,
+                                        lineNumber: 1396,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2479,13 +2569,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "State"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1299,
+                                        lineNumber: 1399,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1295,
+                                lineNumber: 1395,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2496,7 +2586,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         children: "Country"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1309,
+                                        lineNumber: 1409,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2507,13 +2597,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "Country"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1310,
+                                        lineNumber: 1410,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1308,
+                                lineNumber: 1408,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2528,13 +2618,13 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1321,
+                                                lineNumber: 1421,
                                                 columnNumber: 27
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1320,
+                                        lineNumber: 1420,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2545,31 +2635,31 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent })=>/*
                                         placeholder: "PIN Code"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1323,
+                                        lineNumber: 1423,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1319,
+                                lineNumber: 1419,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1257,
+                        lineNumber: 1357,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1239,
+                lineNumber: 1339,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1143,
+        lineNumber: 1243,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c3 = AddressStep;
@@ -2585,12 +2675,12 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1341,
+                            lineNumber: 1441,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1340,
+                        lineNumber: 1440,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2600,7 +2690,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 children: "Employment & Banking"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1344,
+                                lineNumber: 1444,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2608,19 +2698,19 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 children: "Work details and payment information"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1345,
+                                lineNumber: 1445,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1343,
+                        lineNumber: 1443,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1339,
+                lineNumber: 1439,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2633,14 +2723,14 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1352,
+                                lineNumber: 1452,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Banking Details"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1351,
+                        lineNumber: 1451,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2656,14 +2746,14 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                                 className: "w-4 h-4 mr-2 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1359,
+                                                lineNumber: 1459,
                                                 columnNumber: 13
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Salary"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1358,
+                                        lineNumber: 1458,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2674,13 +2764,13 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         placeholder: "Monthly Salary"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1362,
+                                        lineNumber: 1462,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1357,
+                                lineNumber: 1457,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2691,7 +2781,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         children: "Account Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1372,
+                                        lineNumber: 1472,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2702,13 +2792,13 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         placeholder: "Bank Account Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1373,
+                                        lineNumber: 1473,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1371,
+                                lineNumber: 1471,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2719,7 +2809,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         children: "IFSC Code"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1383,
+                                        lineNumber: 1483,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2730,13 +2820,13 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         placeholder: "IFSC Code"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1384,
+                                        lineNumber: 1484,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1382,
+                                lineNumber: 1482,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2747,7 +2837,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         children: "Account Holder Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1394,
+                                        lineNumber: 1494,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2756,273 +2846,6 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                         onChange: (e)=>handleInputChange('account_holder', e.target.value),
                                         className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
                                         placeholder: "As per bank records"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1395,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1393,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "Bank Name"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1405,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.bank_name,
-                                        onChange: (e)=>handleInputChange('bank_name', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "Bank Name"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1406,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1404,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "Branch Name"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1416,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.branch_name,
-                                        onChange: (e)=>handleInputChange('branch_name', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "Branch Name"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1417,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1415,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700 flex items-center",
-                                        children: [
-                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$wallet$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Wallet$3e$__["Wallet"], {
-                                                className: "w-4 h-4 mr-2 text-gray-400"
-                                            }, void 0, false, {
-                                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1428,
-                                                columnNumber: 13
-                                            }, ("TURBOPACK compile-time value", void 0)),
-                                            "UPI ID"
-                                        ]
-                                    }, void 0, true, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1427,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.upiId,
-                                        onChange: (e)=>handleInputChange('upiId', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "username@upi"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1431,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1426,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0))
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1356,
-                        columnNumber: 7
-                    }, ("TURBOPACK compile-time value", void 0))
-                ]
-            }, void 0, true, {
-                fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1350,
-                columnNumber: 5
-            }, ("TURBOPACK compile-time value", void 0)),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "space-y-6",
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                        className: "text-lg font-semibold text-gray-800 flex items-center",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
-                                className: "w-5 h-5 mr-2 text-gray-400"
-                            }, void 0, false, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1445,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            "Government IDs"
-                        ]
-                    }, void 0, true, {
-                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1444,
-                        columnNumber: 7
-                    }, ("TURBOPACK compile-time value", void 0)),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                        className: "grid grid-cols-1 md:grid-cols-2 gap-6",
-                        children: [
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "PAN Number"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1451,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.panNumber,
-                                        onChange: (e)=>handleInputChange('panNumber', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "ABCDE1234F"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1452,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1450,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "Aadhaar Number"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1462,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.aadhaarNumber,
-                                        onChange: (e)=>handleInputChange('aadhaarNumber', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "XXXX-XXXX-XXXX"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1463,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1461,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "Passport Number"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1473,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.passportNumber,
-                                        onChange: (e)=>handleInputChange('passportNumber', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "Passport Number"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1474,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1472,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "Passport Expiry"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1484,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "date",
-                                        value: formData.passportExpiry,
-                                        onChange: (e)=>handleInputChange('passportExpiry', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1485,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0))
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1483,
-                                columnNumber: 9
-                            }, ("TURBOPACK compile-time value", void 0)),
-                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "space-y-2",
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
-                                        className: "text-sm font-semibold text-gray-700",
-                                        children: "PF Number"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1494,
-                                        columnNumber: 11
-                                    }, ("TURBOPACK compile-time value", void 0)),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        value: formData.pfNumber,
-                                        onChange: (e)=>handleInputChange('pfNumber', e.target.value),
-                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "PF Account Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
                                         lineNumber: 1495,
@@ -3039,7 +2862,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "text-sm font-semibold text-gray-700",
-                                        children: "ESI Number"
+                                        children: "Bank Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
                                         lineNumber: 1505,
@@ -3047,10 +2870,10 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                         type: "text",
-                                        value: formData.esiNumber,
-                                        onChange: (e)=>handleInputChange('esiNumber', e.target.value),
+                                        value: formData.bank_name,
+                                        onChange: (e)=>handleInputChange('bank_name', e.target.value),
                                         className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "ESI Number"
+                                        placeholder: "Bank Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
                                         lineNumber: 1506,
@@ -3067,7 +2890,7 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
                                         className: "text-sm font-semibold text-gray-700",
-                                        children: "Tax Status"
+                                        children: "Branch Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
                                         lineNumber: 1516,
@@ -3075,10 +2898,10 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
                                         type: "text",
-                                        value: formData.taxStatus,
-                                        onChange: (e)=>handleInputChange('taxStatus', e.target.value),
+                                        value: formData.branch_name,
+                                        onChange: (e)=>handleInputChange('branch_name', e.target.value),
                                         className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
-                                        placeholder: "Tax Status"
+                                        placeholder: "Branch Name"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
                                         lineNumber: 1517,
@@ -3089,23 +2912,290 @@ const EmploymentStep = ({ formData, handleInputChange })=>/*#__PURE__*/ (0, __TU
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
                                 lineNumber: 1515,
                                 columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700 flex items-center",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$wallet$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Wallet$3e$__["Wallet"], {
+                                                className: "w-4 h-4 mr-2 text-gray-400"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                                lineNumber: 1528,
+                                                columnNumber: 13
+                                            }, ("TURBOPACK compile-time value", void 0)),
+                                            "UPI ID"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1527,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.upiId,
+                                        onChange: (e)=>handleInputChange('upiId', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "username@upi"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1531,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1526,
+                                columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1449,
+                        lineNumber: 1456,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1443,
+                lineNumber: 1450,
+                columnNumber: 5
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "space-y-6",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
+                        className: "text-lg font-semibold text-gray-800 flex items-center",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"], {
+                                className: "w-5 h-5 mr-2 text-gray-400"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1545,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            "Government IDs"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                        lineNumber: 1544,
+                        columnNumber: 7
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "grid grid-cols-1 md:grid-cols-2 gap-6",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "PAN Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1551,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.panNumber,
+                                        onChange: (e)=>handleInputChange('panNumber', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "ABCDE1234F"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1552,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1550,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "Aadhaar Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1562,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.aadhaarNumber,
+                                        onChange: (e)=>handleInputChange('aadhaarNumber', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "XXXX-XXXX-XXXX"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1563,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1561,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "Passport Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1573,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.passportNumber,
+                                        onChange: (e)=>handleInputChange('passportNumber', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "Passport Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1574,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1572,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "Passport Expiry"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1584,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "date",
+                                        value: formData.passportExpiry,
+                                        onChange: (e)=>handleInputChange('passportExpiry', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1585,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1583,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "PF Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1594,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.pfNumber,
+                                        onChange: (e)=>handleInputChange('pfNumber', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "PF Account Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1595,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1593,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "ESI Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1605,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.esiNumber,
+                                        onChange: (e)=>handleInputChange('esiNumber', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "ESI Number"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1606,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1604,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "space-y-2",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                        className: "text-sm font-semibold text-gray-700",
+                                        children: "Tax Status"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1616,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0)),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                        type: "text",
+                                        value: formData.taxStatus,
+                                        onChange: (e)=>handleInputChange('taxStatus', e.target.value),
+                                        className: "w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all",
+                                        placeholder: "Tax Status"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                                        lineNumber: 1617,
+                                        columnNumber: 11
+                                    }, ("TURBOPACK compile-time value", void 0))
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/app/admin/employee/page.jsx",
+                                lineNumber: 1615,
+                                columnNumber: 9
+                            }, ("TURBOPACK compile-time value", void 0))
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/admin/employee/page.jsx",
+                        lineNumber: 1549,
+                        columnNumber: 7
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/app/admin/employee/page.jsx",
+                lineNumber: 1543,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1338,
+        lineNumber: 1438,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c4 = EmploymentStep;
@@ -3121,12 +3211,12 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1534,
+                            lineNumber: 1634,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1533,
+                        lineNumber: 1633,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3136,7 +3226,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                 children: "Education & Certifications"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1537,
+                                lineNumber: 1637,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3144,19 +3234,19 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                 children: "Your academic background"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1538,
+                                lineNumber: 1638,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1536,
+                        lineNumber: 1636,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1532,
+                lineNumber: 1632,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3170,7 +3260,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                 children: "Education Details"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1545,
+                                lineNumber: 1645,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3181,20 +3271,20 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                         className: "w-4 h-4 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1550,
+                                        lineNumber: 1650,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add Education"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1546,
+                                lineNumber: 1646,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1544,
+                        lineNumber: 1644,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     formData.education.map((edu, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3207,12 +3297,12 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                         className: "w-4 h-4 text-gray-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1562,
+                                        lineNumber: 1662,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1558,
+                                    lineNumber: 1658,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3226,7 +3316,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Qualification"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1568,
+                                                    lineNumber: 1668,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3237,13 +3327,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "B.Tech, MBA, etc."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1569,
+                                                    lineNumber: 1669,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1567,
+                                            lineNumber: 1667,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3254,7 +3344,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Institution"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1579,
+                                                    lineNumber: 1679,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3265,13 +3355,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "University/College Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1580,
+                                                    lineNumber: 1680,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1578,
+                                            lineNumber: 1678,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3282,7 +3372,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Board/University"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1590,
+                                                    lineNumber: 1690,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3293,13 +3383,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "Board/University"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1591,
+                                                    lineNumber: 1691,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1589,
+                                            lineNumber: 1689,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3310,7 +3400,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Year of Passing"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1601,
+                                                    lineNumber: 1701,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3321,13 +3411,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "2020"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1602,
+                                                    lineNumber: 1702,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1600,
+                                            lineNumber: 1700,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3338,7 +3428,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Percentage/CGPA"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1612,
+                                                    lineNumber: 1712,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3349,31 +3439,31 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "85% or 8.5 CGPA"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1613,
+                                                    lineNumber: 1713,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1611,
+                                            lineNumber: 1711,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1566,
+                                    lineNumber: 1666,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, index, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1556,
+                            lineNumber: 1656,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1543,
+                lineNumber: 1643,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3387,7 +3477,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                 children: "Professional Certifications"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1629,
+                                lineNumber: 1729,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3398,20 +3488,20 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                         className: "w-4 h-4 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1634,
+                                        lineNumber: 1734,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add Certification"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1630,
+                                lineNumber: 1730,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1628,
+                        lineNumber: 1728,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     formData.certifications.map((cert, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3424,12 +3514,12 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                         className: "w-4 h-4 text-gray-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1646,
+                                        lineNumber: 1746,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1642,
+                                    lineNumber: 1742,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3443,7 +3533,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Certification Title"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1652,
+                                                    lineNumber: 1752,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3454,13 +3544,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "AWS Certified, PMP, etc."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1653,
+                                                    lineNumber: 1753,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1651,
+                                            lineNumber: 1751,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3471,7 +3561,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Issuer"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1663,
+                                                    lineNumber: 1763,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3482,13 +3572,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     placeholder: "Issuing Organization"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1664,
+                                                    lineNumber: 1764,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1662,
+                                            lineNumber: 1762,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3499,7 +3589,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Issue Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1674,
+                                                    lineNumber: 1774,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3509,13 +3599,13 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     className: "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1675,
+                                                    lineNumber: 1775,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1673,
+                                            lineNumber: 1773,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3526,7 +3616,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     children: "Expiry Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1684,
+                                                    lineNumber: 1784,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3536,37 +3626,37 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                                                     className: "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1685,
+                                                    lineNumber: 1785,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1683,
+                                            lineNumber: 1783,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1650,
+                                    lineNumber: 1750,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, index, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1640,
+                            lineNumber: 1740,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1627,
+                lineNumber: 1727,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1531,
+        lineNumber: 1631,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c5 = EducationStep;
@@ -3582,12 +3672,12 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1703,
+                            lineNumber: 1803,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1702,
+                        lineNumber: 1802,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3597,7 +3687,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                 children: "Professional Experience"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1706,
+                                lineNumber: 1806,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3605,19 +3695,19 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                 children: "Your work history"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1707,
+                                lineNumber: 1807,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1705,
+                        lineNumber: 1805,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1701,
+                lineNumber: 1801,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3630,7 +3720,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                             children: "Total Years of Experience"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1714,
+                            lineNumber: 1814,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3641,18 +3731,18 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                             placeholder: "5"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1715,
+                            lineNumber: 1815,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 1713,
+                    lineNumber: 1813,
                     columnNumber: 7
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1712,
+                lineNumber: 1812,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3666,7 +3756,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                 children: "Work Experience"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1728,
+                                lineNumber: 1828,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3677,20 +3767,20 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                         className: "w-4 h-4 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1733,
+                                        lineNumber: 1833,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add Experience"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1729,
+                                lineNumber: 1829,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1727,
+                        lineNumber: 1827,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     formData.experience.map((exp, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3703,12 +3793,12 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                         className: "w-4 h-4 text-gray-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1745,
+                                        lineNumber: 1845,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1741,
+                                    lineNumber: 1841,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3722,7 +3812,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "Company Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1751,
+                                                    lineNumber: 1851,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3733,13 +3823,13 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     placeholder: "Company Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1752,
+                                                    lineNumber: 1852,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1750,
+                                            lineNumber: 1850,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3750,7 +3840,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "Job Title"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1762,
+                                                    lineNumber: 1862,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3761,13 +3851,13 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     placeholder: "Software Engineer, Manager, etc."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1763,
+                                                    lineNumber: 1863,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1761,
+                                            lineNumber: 1861,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3778,7 +3868,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "Start Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1773,
+                                                    lineNumber: 1873,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3788,13 +3878,13 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     className: "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1774,
+                                                    lineNumber: 1874,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1772,
+                                            lineNumber: 1872,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3805,7 +3895,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "End Date"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1783,
+                                                    lineNumber: 1883,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3815,13 +3905,13 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     className: "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1784,
+                                                    lineNumber: 1884,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1782,
+                                            lineNumber: 1882,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3832,7 +3922,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "Responsibilities"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1793,
+                                                    lineNumber: 1893,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -3842,13 +3932,13 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     placeholder: "Key responsibilities and achievements"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1794,
+                                                    lineNumber: 1894,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1792,
+                                            lineNumber: 1892,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3859,7 +3949,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     children: "Last Drawn Salary"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1803,
+                                                    lineNumber: 1903,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -3870,37 +3960,37 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
                                                     placeholder: "Annual CTC"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1804,
+                                                    lineNumber: 1904,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1802,
+                                            lineNumber: 1902,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1749,
+                                    lineNumber: 1849,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, index, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1739,
+                            lineNumber: 1839,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1726,
+                lineNumber: 1826,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1700,
+        lineNumber: 1800,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c6 = ExperienceStep;
@@ -3916,12 +4006,12 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                             className: "w-6 h-6 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1823,
+                            lineNumber: 1923,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1822,
+                        lineNumber: 1922,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3931,7 +4021,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 children: "Additional Information"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1826,
+                                lineNumber: 1926,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3939,19 +4029,19 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 children: "Skills, emergency contacts, and other details"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1827,
+                                lineNumber: 1927,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1825,
+                        lineNumber: 1925,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1821,
+                lineNumber: 1921,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3964,14 +4054,14 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1834,
+                                lineNumber: 1934,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Skills"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1833,
+                        lineNumber: 1933,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3989,7 +4079,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                         placeholder: "Add a skill"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1840,
+                                        lineNumber: 1940,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3998,13 +4088,13 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                         children: "Add"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1848,
+                                        lineNumber: 1948,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1839,
+                                lineNumber: 1939,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4020,35 +4110,35 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1867,
+                                                    lineNumber: 1967,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 1863,
+                                                lineNumber: 1963,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, index, true, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1858,
+                                        lineNumber: 1958,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)))
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1856,
+                                lineNumber: 1956,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1838,
+                        lineNumber: 1938,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1832,
+                lineNumber: 1932,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4064,14 +4154,14 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                         className: "w-5 h-5 mr-2 text-gray-400"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1879,
+                                        lineNumber: 1979,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Emergency Contacts"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1878,
+                                lineNumber: 1978,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -4082,20 +4172,20 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                         className: "w-4 h-4 mr-2"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1886,
+                                        lineNumber: 1986,
                                         columnNumber: 11
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add Contact"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1882,
+                                lineNumber: 1982,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1877,
+                        lineNumber: 1977,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     formData.emergencyContacts.map((contact, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4108,12 +4198,12 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                         className: "w-4 h-4 text-gray-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 1898,
+                                        lineNumber: 1998,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1894,
+                                    lineNumber: 1994,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4127,7 +4217,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     children: "Contact Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1904,
+                                                    lineNumber: 2004,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4138,13 +4228,13 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     placeholder: "Full Name"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1905,
+                                                    lineNumber: 2005,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1903,
+                                            lineNumber: 2003,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4155,7 +4245,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     children: "Relationship"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1915,
+                                                    lineNumber: 2015,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4168,7 +4258,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Select Relationship"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1921,
+                                                            lineNumber: 2021,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4176,7 +4266,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Spouse"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1922,
+                                                            lineNumber: 2022,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4184,7 +4274,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Parent"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1923,
+                                                            lineNumber: 2023,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4192,7 +4282,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Sibling"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1924,
+                                                            lineNumber: 2024,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4200,7 +4290,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Child"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1925,
+                                                            lineNumber: 2025,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4208,7 +4298,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Friend"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1926,
+                                                            lineNumber: 2026,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4216,19 +4306,19 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                             children: "Other"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                            lineNumber: 1927,
+                                                            lineNumber: 2027,
                                                             columnNumber: 17
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1916,
+                                                    lineNumber: 2016,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1914,
+                                            lineNumber: 2014,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4239,7 +4329,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     children: "Primary Phone"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1932,
+                                                    lineNumber: 2032,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4250,13 +4340,13 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     placeholder: "+91 98765 43210"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1933,
+                                                    lineNumber: 2033,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1931,
+                                            lineNumber: 2031,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4267,7 +4357,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     children: "Alternate Phone"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1943,
+                                                    lineNumber: 2043,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -4278,13 +4368,13 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     placeholder: "+91 98765 43210"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1944,
+                                                    lineNumber: 2044,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1942,
+                                            lineNumber: 2042,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4295,7 +4385,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     children: "Address"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1954,
+                                                    lineNumber: 2054,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4306,31 +4396,31 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                                     rows: "2"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                    lineNumber: 1955,
+                                                    lineNumber: 2055,
                                                     columnNumber: 15
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 1953,
+                                            lineNumber: 2053,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1902,
+                                    lineNumber: 2002,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, index, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1892,
+                            lineNumber: 1992,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1876,
+                lineNumber: 1976,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4343,14 +4433,14 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1971,
+                                lineNumber: 2071,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Medical Information"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1970,
+                        lineNumber: 2070,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4363,7 +4453,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     children: "Medical Conditions / Allergies"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1977,
+                                    lineNumber: 2077,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4374,7 +4464,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     rows: "3"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1978,
+                                    lineNumber: 2078,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4382,24 +4472,24 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     children: "This information will be kept confidential and used only for emergency purposes"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1985,
+                                    lineNumber: 2085,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1976,
+                            lineNumber: 2076,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1975,
+                        lineNumber: 2075,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1969,
+                lineNumber: 2069,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4412,14 +4502,14 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 1993,
+                                lineNumber: 2093,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "HR Notes"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1992,
+                        lineNumber: 2092,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4432,7 +4522,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     children: "Additional Notes"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 1999,
+                                    lineNumber: 2099,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -4443,24 +4533,24 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     rows: "4"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 2000,
+                                    lineNumber: 2100,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 1998,
+                            lineNumber: 2098,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 1997,
+                        lineNumber: 2097,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 1991,
+                lineNumber: 2091,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4473,14 +4563,14 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                 className: "w-5 h-5 mr-2 text-gray-400"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 2014,
+                                lineNumber: 2114,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Background Verification"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 2013,
+                        lineNumber: 2113,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4493,7 +4583,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                     children: "Background Check Status"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 2020,
+                                    lineNumber: 2120,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -4506,7 +4596,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                             children: "Pending"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 2026,
+                                            lineNumber: 2126,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4514,7 +4604,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                             children: "Clear"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 2027,
+                                            lineNumber: 2127,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4522,36 +4612,36 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
                                             children: "Failed"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 2028,
+                                            lineNumber: 2128,
                                             columnNumber: 13
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 2021,
+                                    lineNumber: 2121,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 2019,
+                            lineNumber: 2119,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 2018,
+                        lineNumber: 2118,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                lineNumber: 2012,
+                lineNumber: 2112,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 1820,
+        lineNumber: 1920,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 _c7 = AdditionalInfoStep;
@@ -4570,12 +4660,12 @@ const CompleteOnBoarding = ()=>{
                                 className: "w-10 h-10 text-white"
                             }, void 0, false, {
                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                lineNumber: 2042,
+                                lineNumber: 2142,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 2041,
+                            lineNumber: 2141,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
@@ -4583,7 +4673,7 @@ const CompleteOnBoarding = ()=>{
                             children: "Employee Onboarding"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 2044,
+                            lineNumber: 2144,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4591,13 +4681,13 @@ const CompleteOnBoarding = ()=>{
                             children: "Welcome aboard! Let's get you set up"
                         }, void 0, false, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 2047,
+                            lineNumber: 2147,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 2040,
+                    lineNumber: 2140,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4611,7 +4701,7 @@ const CompleteOnBoarding = ()=>{
                                     className: "absolute top-8 left-0 w-full h-2 bg-green-500 rounded-full"
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 2053,
+                                    lineNumber: 2153,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4624,49 +4714,49 @@ const CompleteOnBoarding = ()=>{
                                                 className: "w-6 h-6 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/admin/employee/page.jsx",
-                                                lineNumber: 2058,
-                                                columnNumber: 23
+                                                lineNumber: 2158,
+                                                columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                                            lineNumber: 2057,
+                                            lineNumber: 2157,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                                        lineNumber: 2056,
+                                        lineNumber: 2156,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                                    lineNumber: 2055,
+                                    lineNumber: 2155,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/admin/employee/page.jsx",
-                            lineNumber: 2052,
+                            lineNumber: 2152,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/app/admin/employee/page.jsx",
-                        lineNumber: 2051,
+                        lineNumber: 2151,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/app/admin/employee/page.jsx",
-                    lineNumber: 2050,
+                    lineNumber: 2150,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/app/admin/employee/page.jsx",
-            lineNumber: 2039,
+            lineNumber: 2139,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/app/admin/employee/page.jsx",
-        lineNumber: 2038,
+        lineNumber: 2138,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

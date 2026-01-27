@@ -113,7 +113,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   // Submit verification updates
   const submitVerification = async () => {
     const changedFields = {};
-    
+
     Object.keys(verificationStatus).forEach((key) => {
       const current = verificationStatus[key];
       if (current && current.status) {
@@ -238,11 +238,11 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         isLocal: true,
       };
     }
-    
+
     // Otherwise use API status
     const apiStatus = getApiStatus(field);
     const apiReason = getApiReason(field);
-    
+
     if (apiStatus) {
       return {
         status: apiStatus === "approved" ? "accepted" : apiStatus,
@@ -250,7 +250,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         isLocal: false,
       };
     }
-    
+
     return null;
   };
 
@@ -258,15 +258,15 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   const canModifyField = (field) => {
     const apiStatus = getApiStatus(field);
     const value = getRawValue(field);
-    
+
     // Can only modify pending fields that have values
     if (apiStatus !== "pending") return false;
-    
+
     // Check if field has a value
     if (field === "khatauni_images") {
       return getKhatauniImages().length > 0;
     }
-    
+
     return value !== null && value !== undefined;
   };
 
@@ -277,7 +277,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
 
   const handleVerification = (field, status) => {
     if (!canModifyField(field)) return;
-    
+
     if (status === "rejected") {
       setRejectionModal({ isOpen: true, field, label: field.replace(/_/g, " ") });
     } else {
@@ -310,7 +310,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   const getStatusColor = (field) => {
     const effectiveStatus = getEffectiveStatus(field);
     const status = effectiveStatus?.status;
-    
+
     if (status === "accepted" || status === "approved")
       return "bg-gradient-to-br from-green-50 to-emerald-50 border-green-300 shadow-md";
     if (status === "rejected")
@@ -324,7 +324,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
     const isModified = isFieldModified(field);
     const value = getRawValue(field);
     const apiStatus = getApiStatus(field);
-    
+
     // No value submitted
     if (value === null && apiStatus === "pending") {
       return (
@@ -334,7 +334,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         </div>
       );
     }
-    
+
     if (status === "accepted" || status === "approved")
       return (
         <div className="flex items-center gap-1.5">
@@ -371,7 +371,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
     if (!verifiedBy) return null;
 
     const { manager, supervisor, admin } = verifiedBy;
-    
+
     if (admin?.status && admin?.user_id) {
       return {
         name: admin.user_id.name,
@@ -516,7 +516,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
       const value = getRawValue(fieldDef.field);
       const apiStatus = getApiStatus(fieldDef.field);
       const effectiveStatus = getEffectiveStatus(fieldDef.field);
-      
+
       // Check for multi-image fields
       if (fieldDef.type === "multi-image") {
         const images = getKhatauniImages();
@@ -528,10 +528,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         notSubmitted++;
         return;
       }
-      
+
       total++;
       const status = effectiveStatus?.status;
-      
+
       if (status === "accepted" || status === "approved") approved++;
       else if (status === "rejected") rejected++;
       else pending++;
@@ -608,7 +608,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   };
 
   // Rejection Reason Modal
-  const RejectionModal = () => {
+  const renderRejectionModal = () => {
     if (!rejectionModal.isOpen) return null;
 
     const quickReasons = [
@@ -654,11 +654,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                   <button
                     key={index}
                     onClick={() => setRejectionReason(reason)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 ${
-                      rejectionReason === reason
+                    className={`px-3 py-1.5 text-xs font-medium rounded-full border transition-all duration-200 ${rejectionReason === reason
                         ? "bg-red-100 border-red-300 text-red-700"
                         : "bg-gray-50 border-gray-200 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
-                    }`}
+                      }`}
                   >
                     {reason}
                   </button>
@@ -701,11 +700,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
             <button
               onClick={handleRejectWithReason}
               disabled={!rejectionReason.trim()}
-              className={`px-5 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all duration-200 ${
-                rejectionReason.trim()
+              className={`px-5 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 transition-all duration-200 ${rejectionReason.trim()
                   ? "bg-gradient-to-r from-red-500 to-rose-500 text-white hover:shadow-lg hover:scale-105"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
+                }`}
             >
               <XCircle className="w-4 h-4" />
               Confirm Rejection
@@ -840,11 +838,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                   setSelectedImage(img);
                   setImageRotation(0);
                 }}
-                className={`w-14 h-14 rounded-lg overflow-hidden transition-all duration-300 ${
-                  index === currentImageIndex
+                className={`w-14 h-14 rounded-lg overflow-hidden transition-all duration-300 ${index === currentImageIndex
                     ? "ring-2 ring-white scale-110 shadow-lg"
                     : "opacity-60 hover:opacity-100"
-                }`}
+                  }`}
               >
                 <img src={img} alt="" className="w-full h-full object-cover" />
               </button>
@@ -877,7 +874,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
     const verifierInfo = getVerifierInfo(field);
     const apiStatus = getApiStatus(field);
     const rawValue = getRawValue(field);
-    
+
     // Handle not submitted fields
     const isNotSubmitted = rawValue === null && apiStatus === "pending";
     if (fieldType === "multi-image" && getKhatauniImages().length === 0 && apiStatus === "pending") {
@@ -941,13 +938,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <div className="flex items-start gap-3">
-              <div className={`p-2 rounded-lg shadow ${
-                status === "accepted" || status === "approved" 
-                  ? "bg-gradient-to-br from-green-500 to-emerald-600" 
-                  : status === "rejected" 
+              <div className={`p-2 rounded-lg shadow ${status === "accepted" || status === "approved"
+                  ? "bg-gradient-to-br from-green-500 to-emerald-600"
+                  : status === "rejected"
                     ? "bg-gradient-to-br from-red-500 to-rose-600"
                     : "bg-gradient-to-br from-indigo-500 to-purple-600"
-              }`}>
+                }`}>
                 <div className="text-white">{icon || getFieldIcon(field)}</div>
               </div>
               <div className="flex-1">
@@ -1033,11 +1029,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                 <div className="flex items-center gap-1.5 p-1 bg-gray-50 rounded-lg">
                   <button
                     onClick={() => handleVerification(field, "accepted")}
-                    className={`relative p-2 rounded-lg font-medium transition-all duration-300 ${
-                      status === "accepted"
+                    className={`relative p-2 rounded-lg font-medium transition-all duration-300 ${status === "accepted"
                         ? "bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg scale-105"
                         : "bg-white text-green-600 hover:bg-green-50 border border-green-300"
-                    }`}
+                      }`}
                     title="Approve"
                   >
                     <Check className="w-4 h-4" />
@@ -1047,11 +1042,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                   </button>
                   <button
                     onClick={() => handleVerification(field, "rejected")}
-                    className={`relative p-2 rounded-lg font-medium transition-all duration-300 ${
-                      status === "rejected"
+                    className={`relative p-2 rounded-lg font-medium transition-all duration-300 ${status === "rejected"
                         ? "bg-gradient-to-br from-red-500 to-rose-600 text-white shadow-lg scale-105"
                         : "bg-white text-red-600 hover:bg-red-50 border border-red-300"
-                    }`}
+                      }`}
                     title="Reject"
                   >
                     <X className="w-4 h-4" />
@@ -1075,11 +1069,10 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                 <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider mb-1">
                   Verified
                 </span>
-                <div className={`p-2 rounded-lg ${
-                  status === "accepted" || status === "approved"
+                <div className={`p-2 rounded-lg ${status === "accepted" || status === "approved"
                     ? "bg-green-100"
                     : "bg-red-100"
-                }`}>
+                  }`}>
                   {status === "accepted" || status === "approved" ? (
                     <CheckCircle2 className="w-5 h-5 text-green-600" />
                   ) : (
@@ -1275,16 +1268,14 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 px-4 py-2 flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-300 ${
-                    activeTab === tab.id
+                  className={`flex-shrink-0 px-4 py-2 flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-300 ${activeTab === tab.id
                       ? `bg-white text-gray-800 shadow-md scale-[1.02] border border-gray-200`
                       : "text-gray-500 hover:bg-white/50 hover:text-gray-700"
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`p-1.5 rounded-lg bg-gradient-to-br ${
-                      activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
-                    } shadow-sm`}
+                    className={`p-1.5 rounded-lg bg-gradient-to-br ${activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
+                      } shadow-sm`}
                   >
                     <Icon className="w-3.5 h-3.5 text-white" />
                   </div>
@@ -1357,7 +1348,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
       </div>
 
       {/* Rejection Modal */}
-      <RejectionModal />
+      {renderRejectionModal()}
 
       {/* Image Popup */}
       {selectedImage && <ImagePopup image={selectedImage} onClose={() => setSelectedImage(null)} />}

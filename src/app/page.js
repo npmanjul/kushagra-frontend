@@ -133,7 +133,7 @@ export default function LandingPage() {
                   <div className="text-xl font-black/90 font-bold">
                     Kushagra
                   </div>
-                  <div className="text-[11px] font-bold font-black tracking-[0.15em] uppercase">
+                  <div className="text-[11px] font-bold tracking-[0.15em] uppercase">
                     Bhumitra FPO
                   </div>
                 </div>
@@ -226,7 +226,7 @@ export default function LandingPage() {
         {heroSlides.map((slide, idx) => (
           <div
             key={idx}
-            className={`absolute inset-0 transition-all duration-[800ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx
+            className={`absolute inset-0 transition-all duration-800 ease-in-out ${heroSlide === idx
               ? 'opacity-100 z-10'
               : 'opacity-0 z-0'
               }`}
@@ -234,10 +234,10 @@ export default function LandingPage() {
             <img
               src={slide.image}
               alt={`${slide.title} ${slide.highlight}`}
-              className={`w-full h-full object-cover transition-transform duration-[6000ms] ease-out ${heroSlide === idx ? 'scale-105' : 'scale-100'}`}
+              className={`w-full h-full object-cover transition-transform duration-6000 ease-out ${heroSlide === idx ? 'scale-105' : 'scale-100'}`}
             />
             {/* Dark Overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-r from-stone-900/80 via-stone-900/60 to-stone-900/40" />
+            <div className="absolute inset-0 bg-linear-to-r from-stone-900/80 via-stone-900/60 to-stone-900/40" />
           </div>
         ))}
 
@@ -249,7 +249,7 @@ export default function LandingPage() {
               {heroSlides.map((slide, idx) => (
                 <div
                   key={idx}
-                  className={`transition-all duration-[600ms] ease-[cubic-bezier(0.4,0,0.2,1)] ${heroSlide === idx
+                  className={`transition-all duration-600 ease-in-out ${heroSlide === idx
                     ? 'opacity-100 translate-y-0'
                     : 'opacity-0 translate-y-4 absolute pointer-events-none'
                     }`}
@@ -317,7 +317,7 @@ export default function LandingPage() {
             {/* Left: Visual */}
             <div className="relative">
               <div className="aspect-square bg-stone-100 rounded-3xl lg:rounded-[3rem] overflow-hidden shadow-xl">
-                <div className="h-full w-full bg-gradient-to-tr from-amber-100 to-emerald-50 flex items-center justify-center p-10">
+                <div className="h-full w-full bg-linear-to-tr from-amber-100 to-emerald-50 flex items-center justify-center p-10">
                   <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-sm">
                     {[
                       { icon: Warehouse, label: "Safe Storage" },
@@ -588,7 +588,7 @@ export default function LandingPage() {
               { name: "Rahul Kumar", role: "Independent Director", bio: "Governance and compliance champion." }
             ].map((member, idx) => (
               <div key={idx} className="flex flex-col items-center text-center group">
-                <div className="w-40 h-40 rounded-full bg-gradient-to-br from-stone-100 to-stone-200 mb-6 overflow-hidden relative shadow-lg group-hover:shadow-xl transition-shadow">
+                <div className="w-40 h-40 rounded-full bg-linear-to-br from-stone-100 to-stone-200 mb-6 overflow-hidden relative shadow-lg group-hover:shadow-xl transition-shadow">
                   <div className="absolute inset-0 flex items-center justify-center text-stone-400">
                     <Users className="w-16 h-16 opacity-40" />
                   </div>

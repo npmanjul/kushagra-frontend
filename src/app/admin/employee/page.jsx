@@ -11,12 +11,96 @@ import {
 import API_BASE_URL from "@/utils/constants";
 import toast from "react-hot-toast";
 
+// --- S3 Upload Helper Functions ---
+
+/**
+ * Fetches presigned upload URLs from the backend
+ * @param {Array<{fileName: string, fileType: string}>} fileDetails - Array of file details
+ * @returns {Promise<{success: boolean, data: Array<{uploadUrl: string, publicUrl: string, key: string}>}>}
+ */
+const getPresignedUploadUrls = async (fileDetails) => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_BASE_URL}/aws/getpresigneduploadurls`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ files: fileDetails }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || "Failed to get presigned URLs");
+  }
+
+  return response.json();
+};
+
+/**
+ * Uploads a single file to S3 using the presigned URL
+ * @param {File} file - The file to upload
+ * @param {string} uploadUrl - The presigned upload URL
+ * @returns {Promise<void>}
+ */
+const uploadFileToS3 = async (file, uploadUrl) => {
+  // Note: Do NOT send custom headers - S3 presigned URLs are signed without them
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to upload file: ${file.name}`);
+  }
+};
+
+/**
+ * Uploads a single file to S3 and returns the public URL
+ * @param {File} file - The file to upload
+ * @param {string} keyPrefix - Prefix for the file key (e.g., 'employee')
+ * @returns {Promise<string>} - The public URL of the uploaded file
+ */
+const uploadSingleFileToS3 = async (file, keyPrefix = 'employee') => {
+  if (!file) {
+    return '';
+  }
+
+  // Prepare file details for the presigned URL request
+  const fileDetails = [{
+    fileName: `${keyPrefix}_${Date.now()}_${file.name}`,
+    fileType: file.type || "image/jpeg",
+  }];
+
+  // Get presigned URLs from the backend
+  const presignedResponse = await getPresignedUploadUrls(fileDetails);
+
+  // Handle the API response format: { success, message, data: [...] }
+  const urls = presignedResponse.data || presignedResponse.urls || presignedResponse;
+
+  if (!Array.isArray(urls) || urls.length === 0) {
+    console.error("Presigned URL response:", presignedResponse);
+    throw new Error("Invalid presigned URL response from server");
+  }
+
+  const urlData = urls[0];
+
+  if (!urlData.uploadUrl) {
+    throw new Error("Missing uploadUrl from server response");
+  }
+
+  // Upload the file to S3
+  await uploadFileToS3(file, urlData.uploadUrl);
+
+  return urlData.publicUrl;
+};
+
 const EmployeeOnboarding = () => {
-  const [currentStep, setCurrentStep] = useState(1); 
+  const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedSteps, setCompletedSteps] = useState(new Set());
   const [empId, setEmpId] = useState(null);
-  
+
   // FIX 2: Added backgroundCheckStatus field
   const [formData, setFormData] = useState({
     // Step 1 - User Model fields
@@ -121,6 +205,7 @@ const EmployeeOnboarding = () => {
 
   const [newSkill, setNewSkill] = useState("");
   const [imagePreview, setImagePreview] = useState("");
+  const [employeeImageFile, setEmployeeImageFile] = useState(null); // Store file for S3 upload
 
   // FIX 3: Add useEffect to handle empId persistence
   useEffect(() => {
@@ -173,10 +258,13 @@ const EmployeeOnboarding = () => {
         return;
       }
 
+      // Store the actual file for S3 upload
+      setEmployeeImageFile(file);
+
+      // Create preview for UI display
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
-        setFormData((prev) => ({ ...prev, employeeImage: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -354,7 +442,7 @@ const EmployeeOnboarding = () => {
         setEmpId(data.id);
         // Store empId for persistence
         localStorage.setItem('currentOnboardingEmpId', data.id);
-      } else if(data.message === 'Employee already exists') {
+      } else if (data.message === 'Employee already exists') {
         setCurrentStep(data.step_completed + 1);
         setEmpId(data.id);
         toast.error("Employee already exists. Resuming from last completed step.");
@@ -375,6 +463,20 @@ const EmployeeOnboarding = () => {
 
     setIsSubmitting(true);
     try {
+      let employeeImageUrl = formData.employeeImage || "";
+
+      // Upload employee image to S3 if a file is selected
+      if (employeeImageFile) {
+        toast.loading("Uploading employee image...", { id: "upload-image" });
+        try {
+          employeeImageUrl = await uploadSingleFileToS3(employeeImageFile, 'employee-profile');
+          toast.success("Image uploaded successfully!", { id: "upload-image" });
+        } catch (uploadError) {
+          toast.error(`Failed to upload image: ${uploadError.message}`, { id: "upload-image" });
+          throw uploadError;
+        }
+      }
+
       const token = getAuthToken();
       const response = await fetch(`${API_BASE_URL}/employee/onboarding/step2`, {
         method: "POST",
@@ -384,7 +486,7 @@ const EmployeeOnboarding = () => {
         },
         body: JSON.stringify({
           id: empId,
-          employeeImage: formData.employeeImage,
+          employeeImage: employeeImageUrl, // Send S3 public URL instead of base64
           maritalStatus: formData.maritalStatus,
           nationality: formData.nationality,
           bloodGroup: formData.bloodGroup,
@@ -394,9 +496,11 @@ const EmployeeOnboarding = () => {
       if (response.ok) {
         setCompletedSteps((prev) => new Set([...prev, 2]));
         setCurrentStep(3);
+        // Clear the file after successful upload
+        setEmployeeImageFile(null);
       } else {
         const errorData = await response.json();
-        toast.error(`Failed to save Step 2: ${errorData.message || 'Unknown error'}`);  
+        toast.error(`Failed to save Step 2: ${errorData.message || 'Unknown error'}`);
       }
     } catch (error) {
       handleApiError(error, 2);
@@ -501,10 +605,10 @@ const EmployeeOnboarding = () => {
     try {
       const token = getAuthToken();
       // Filter out empty education and certification entries
-      const filteredEducation = formData.education.filter(edu => 
+      const filteredEducation = formData.education.filter(edu =>
         edu.qualification || edu.institution
       );
-      const filteredCertifications = formData.certifications.filter(cert => 
+      const filteredCertifications = formData.certifications.filter(cert =>
         cert.title || cert.issuer
       );
 
@@ -545,7 +649,7 @@ const EmployeeOnboarding = () => {
     try {
       const token = getAuthToken();
       // Filter out empty experience entries
-      const filteredExperience = formData.experience.filter(exp => 
+      const filteredExperience = formData.experience.filter(exp =>
         exp.companyName || exp.title
       );
 
@@ -576,7 +680,7 @@ const EmployeeOnboarding = () => {
     }
   };
 
-const saveStep7 = async () => {
+  const saveStep7 = async () => {
     if (!empId) {
       toast.error("Employee ID is missing. Please complete Step 1 first.");
       return;
@@ -586,7 +690,7 @@ const saveStep7 = async () => {
     try {
       const token = getAuthToken();
       // Filter out empty emergency contacts
-      const filteredContacts = formData.emergencyContacts.filter(contact => 
+      const filteredContacts = formData.emergencyContacts.filter(contact =>
         contact.name || contact.phone
       );
 
@@ -661,7 +765,7 @@ const saveStep7 = async () => {
       toast.error("Please fill in all required fields");
       return;
     }
-    
+
     switch (currentStep) {
       case 1:
         await saveStep1();
@@ -706,9 +810,9 @@ const saveStep7 = async () => {
       case 4:
         return <EmploymentStep formData={formData} handleInputChange={handleInputChange} />;
       case 5:
-        return <EducationStep 
-          formData={formData} 
-          handleInputChange={handleInputChange} 
+        return <EducationStep
+          formData={formData}
+          handleInputChange={handleInputChange}
           addEducation={addEducation}
           removeEducation={removeEducation}
           addCertification={addCertification}
@@ -779,21 +883,19 @@ const saveStep7 = async () => {
                     <div key={step.id} className="flex flex-col items-center">
                       <div className="relative">
                         <div
-                          className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isActive
-                              ? `bg-gradient-to-br ${step.color} shadow-lg scale-110`
-                              : isCompleted
+                          className={`w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
+                            ? `bg-gradient-to-br ${step.color} shadow-lg scale-110`
+                            : isCompleted
                               ? "bg-green-500 shadow-md"
                               : "bg-gray-300"
-                          }`}
+                            }`}
                         >
                           {isCompleted && !isActive ? (
                             <Check className="w-6 h-6 text-white" />
                           ) : (
                             <Icon
-                              className={`w-6 h-6 ${
-                                isActive || isCompleted ? "text-white" : "text-gray-500"
-                              }`}
+                              className={`w-6 h-6 ${isActive || isCompleted ? "text-white" : "text-gray-500"
+                                }`}
                             />
                           )}
                         </div>
@@ -804,13 +906,12 @@ const saveStep7 = async () => {
                         )}
                       </div>
                       <span
-                        className={`mt-3 text-xs md:text-sm font-semibold transition-colors duration-300 ${
-                          isActive
-                            ? "text-gray-900"
-                            : isCompleted
+                        className={`mt-3 text-xs md:text-sm font-semibold transition-colors duration-300 ${isActive
+                          ? "text-gray-900"
+                          : isCompleted
                             ? "text-green-600"
                             : "text-gray-500"
-                        }`}
+                          }`}
                       >
                         {step.title}
                       </span>
@@ -843,9 +944,8 @@ const saveStep7 = async () => {
             `}
           >
             <ChevronLeft
-              className={`w-5 h-5 mr-2 transition-transform ${
-                currentStep !== 1 && !isSubmitting ? "group-hover:-translate-x-1" : ""
-              }`}
+              className={`w-5 h-5 mr-2 transition-transform ${currentStep !== 1 && !isSubmitting ? "group-hover:-translate-x-1" : ""
+                }`}
             />
             Previous
           </button>
@@ -915,10 +1015,10 @@ const AccountSetupStep = ({ formData, handleInputChange }) => (
         <p className="text-gray-500">Basic profile and account information</p>
       </div>
     </div>
-    
+
     <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-2xl p-6 space-y-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Basic Profile</h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center">
@@ -1157,7 +1257,7 @@ const AddressStep = ({ formData, handleInputChange, handleSameAsPermanent }) => 
         <Building2 className="w-5 h-5 mr-2 text-gray-400" />
         Permanent Address
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2 space-y-2">
           <label className="text-sm font-semibold text-gray-700">
@@ -1352,7 +1452,7 @@ const EmploymentStep = ({ formData, handleInputChange }) => (
         <CreditCard className="w-5 h-5 mr-2 text-gray-400" />
         Banking Details
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700 flex items-center">
@@ -1445,7 +1545,7 @@ const EmploymentStep = ({ formData, handleInputChange }) => (
         <FileText className="w-5 h-5 mr-2 text-gray-400" />
         Government IDs
       </h3>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">PAN Number</label>
@@ -1562,7 +1662,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
               <X className="w-4 h-4 text-gray-500" />
             </button>
           )}
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Qualification</label>
@@ -1646,7 +1746,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
               <X className="w-4 h-4 text-gray-500" />
             </button>
           )}
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Certification Title</label>
@@ -1676,7 +1776,7 @@ const EducationStep = ({ formData, handleInputChange, addEducation, removeEducat
                 type="date"
                 value={cert.issueDate}
                 onChange={(e) => handleInputChange('issueDate', e.target.value, 'certifications', index)}
-                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-rose-500 focus:border-transparent transition-all"
               />
             </div>
 
@@ -1745,7 +1845,7 @@ const ExperienceStep = ({ formData, handleInputChange, addExperience, removeExpe
               <X className="w-4 h-4 text-gray-500" />
             </button>
           )}
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Company Name</label>
@@ -1834,7 +1934,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
         <Target className="w-5 h-5 mr-2 text-gray-400" />
         Skills
       </h3>
-      
+
       <div className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-2xl p-6">
         <div className="flex gap-3 mb-4">
           <input
@@ -1852,7 +1952,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
             Add
           </button>
         </div>
-        
+
         <div className="flex flex-wrap gap-2">
           {formData.skills.map((skill, index) => (
             <span
@@ -1898,7 +1998,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
               <X className="w-4 h-4 text-gray-500" />
             </button>
           )}
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">Contact Name</label>
@@ -1971,7 +2071,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
         <Activity className="w-5 h-5 mr-2 text-gray-400" />
         Medical Information
       </h3>
-      
+
       <div className="bg-gradient-to-r from-red-50 to-pink-50 rounded-2xl p-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">Medical Conditions / Allergies</label>
@@ -1993,7 +2093,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
         <FileText className="w-5 h-5 mr-2 text-gray-400" />
         HR Notes
       </h3>
-      
+
       <div className="bg-gradient-to-r from-gray-50 to-slate-50 rounded-2xl p-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">Additional Notes</label>
@@ -2014,7 +2114,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
         <Shield className="w-5 h-5 mr-2 text-gray-400" />
         Background Verification
       </h3>
-      
+
       <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl p-6">
         <div className="space-y-2">
           <label className="text-sm font-semibold text-gray-700">Background Check Status</label>
@@ -2033,7 +2133,7 @@ const AdditionalInfoStep = ({ formData, handleInputChange, addEmergencyContact, 
   </div>
 );
 
-const CompleteOnBoarding = ()=>{
+const CompleteOnBoarding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-8 px-4">
       <div className="max-w-7xl mx-auto">
@@ -2053,10 +2153,10 @@ const CompleteOnBoarding = ()=>{
               <div className="absolute top-8 left-0 w-full h-2 bg-green-500 rounded-full" />
 
               <div className="relative flex justify-between items-center">
-                <div className="flex flex-col items-center">                  
+                <div className="flex flex-col items-center">
                   <div className="relative">
-                      <Check className="w-6 h-6 text-white" />
-                
+                    <Check className="w-6 h-6 text-white" />
+
                   </div>
                 </div>
               </div>

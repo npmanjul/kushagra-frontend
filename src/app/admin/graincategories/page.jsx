@@ -68,28 +68,63 @@ const GrainCategories = () => {
     }
   };
 
-  // Grain icons based on type
+  // Grain icons based on type (Hindi and English)
   const getGrainIcon = (grainType) => {
     const type = grainType.toLowerCase();
-    if (type.includes('wheat')) return '🌾';
-    if (type.includes('rice')) return '🍚';
-    if (type.includes('moong') || type.includes('bean')) return '🫘';
-    if (type.includes('corn') || type.includes('maize')) return '🌽';
-    if (type.includes('barley')) return '🌿';
-    if (type.includes('pulse') || type.includes('pluse') || type.includes('dal')) return '🥣';
-    if (type.includes('soybean')) return '🫛';
-    if (type.includes('oat')) return '🥣';
+    // Wheat - गेहूं
+    if (type.includes('wheat') || type.includes('गेहूं') || type.includes('गेहुं') || type.includes('gehun')) return '🌾';
+    // Rice - चावल
+    if (type.includes('rice') || type.includes('चावल') || type.includes('chawal') || type.includes('बासमती')) return '🍚';
+    // Moong - मूंग
+    if (type.includes('moong') || type.includes('मूंग') || type.includes('मूँग') || type.includes('bean')) return '🫘';
+    // Corn/Maize - मक्का
+    if (type.includes('corn') || type.includes('maize') || type.includes('मक्का') || type.includes('makka')) return '🌽';
+    // Barley - जौ
+    if (type.includes('barley') || type.includes('जौ') || type.includes('jau')) return '🌿';
+    // Pulses/Dal - दाल
+    if (type.includes('pulse') || type.includes('pluse') || type.includes('dal') || type.includes('दाल') || type.includes('अरहर') || type.includes('चना') || type.includes('उड़द') || type.includes('मसूर')) return '🥣';
+    // Soybean - सोयाबीन
+    if (type.includes('soybean') || type.includes('सोयाबीन') || type.includes('सोया')) return '🫛';
+    // Oat - जई
+    if (type.includes('oat') || type.includes('जई') || type.includes('jai')) return '🥣';
+    // Mustard - सरसों
+    if (type.includes('mustard') || type.includes('सरसों') || type.includes('sarson')) return '🌻';
+    // Bajra - बाजरा
+    if (type.includes('bajra') || type.includes('बाजरा') || type.includes('pearl millet')) return '🌾';
+    // Jowar - ज्वार
+    if (type.includes('jowar') || type.includes('ज्वार') || type.includes('sorghum')) return '🌾';
+    // Ragi - रागी
+    if (type.includes('ragi') || type.includes('रागी') || type.includes('finger millet')) return '�';
+    // Groundnut - मूंगफली
+    if (type.includes('groundnut') || type.includes('मूंगफली') || type.includes('peanut') || type.includes('moongfali')) return '🥜';
+    // Sesame - तिल
+    if (type.includes('sesame') || type.includes('तिल') || type.includes('til')) return '�🌱';
     return '🌱';
   };
 
-  // Get gradient based on grain type
+  // Get gradient based on grain type (Hindi and English)
   const getGrainGradient = (grainType) => {
     const type = grainType.toLowerCase();
-    if (type.includes('wheat')) return 'from-amber-400 to-yellow-500';
-    if (type.includes('rice')) return 'from-slate-300 to-gray-400';
-    if (type.includes('moong') || type.includes('bean')) return 'from-green-400 to-emerald-500';
-    if (type.includes('corn') || type.includes('maize')) return 'from-yellow-400 to-orange-500';
-    if (type.includes('pulse') || type.includes('pluse')) return 'from-orange-400 to-red-500';
+    // Wheat - गेहूं
+    if (type.includes('wheat') || type.includes('गेहूं') || type.includes('गेहुं') || type.includes('gehun')) return 'from-amber-400 to-yellow-500';
+    // Rice - चावल
+    if (type.includes('rice') || type.includes('चावल') || type.includes('chawal') || type.includes('बासमती')) return 'from-slate-300 to-gray-400';
+    // Moong - मूंग
+    if (type.includes('moong') || type.includes('मूंग') || type.includes('मूँग') || type.includes('bean')) return 'from-green-400 to-emerald-500';
+    // Corn/Maize - मक्का
+    if (type.includes('corn') || type.includes('maize') || type.includes('मक्का') || type.includes('makka')) return 'from-yellow-400 to-orange-500';
+    // Pulses/Dal - दाल
+    if (type.includes('pulse') || type.includes('pluse') || type.includes('dal') || type.includes('दाल')) return 'from-orange-400 to-red-500';
+    // Mustard - सरसों
+    if (type.includes('mustard') || type.includes('सरसों') || type.includes('sarson')) return 'from-yellow-500 to-amber-600';
+    // Bajra - बाजरा
+    if (type.includes('bajra') || type.includes('बाजरा')) return 'from-stone-400 to-zinc-500';
+    // Jowar - ज्वार
+    if (type.includes('jowar') || type.includes('ज्वार')) return 'from-orange-300 to-amber-400';
+    // Ragi - रागी
+    if (type.includes('ragi') || type.includes('रागी')) return 'from-red-400 to-rose-500';
+    // Groundnut - मूंगफली
+    if (type.includes('groundnut') || type.includes('मूंगफली') || type.includes('peanut')) return 'from-amber-500 to-orange-600';
     return 'from-emerald-400 to-teal-500';
   };
 
@@ -114,7 +149,7 @@ const GrainCategories = () => {
   // Create new category with all three quality grades
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.grain_type.trim()) {
       toast.error('Please enter grain type');
       return;
@@ -124,7 +159,7 @@ const GrainCategories = () => {
     const existingGrain = categories.find(
       c => c.grain_type.toLowerCase() === formData.grain_type.toLowerCase()
     );
-    
+
     if (existingGrain) {
       toast.error('This grain type already exists!');
       return;
@@ -132,9 +167,9 @@ const GrainCategories = () => {
 
     try {
       setSubmitting(true);
-    
+
       const res = await axios.post(
-        `${API_BASE_URL}/grain/creategraincategories`, 
+        `${API_BASE_URL}/grain/creategraincategories`,
         formData,
         {
           headers: {
@@ -142,7 +177,7 @@ const GrainCategories = () => {
           },
         }
       );
-      
+
       toast.success(
         <div className="flex items-center gap-2">
           <span className="text-2xl">{getGrainIcon(formData.grain_type)}</span>
@@ -152,7 +187,7 @@ const GrainCategories = () => {
           </div>
         </div>
       );
-      
+
       setIsModalOpen(false);
       setFormData({ grain_type: '' });
       fetchCategories();
@@ -166,7 +201,7 @@ const GrainCategories = () => {
   // Edit category (update grain type for all qualities)
   const handleEdit = async (e) => {
     e.preventDefault();
-    
+
     if (!editData.newGrainType.trim()) {
       toast.error('Please enter grain type');
       return;
@@ -174,19 +209,19 @@ const GrainCategories = () => {
 
     try {
       setSubmitting(true);
-      
+
       const categoriesToUpdate = categories.filter(
         c => c.grain_type === editData.oldGrainType
       );
-      
-      const promises = categoriesToUpdate.map(c => 
+
+      const promises = categoriesToUpdate.map(c =>
         axios.put(`${API_BASE_URL}/grain/updategraincategory/${c._id}`, {
           grain_type: editData.newGrainType.trim()
         })
       );
-      
+
       await Promise.all(promises);
-      
+
       toast.success('Category updated successfully!');
       setIsEditModalOpen(false);
       setEditData({ oldGrainType: '', newGrainType: '' });
@@ -202,17 +237,17 @@ const GrainCategories = () => {
   const handleDelete = async () => {
     try {
       setSubmitting(true);
-      
+
       const categoriesToDelete = categories.filter(
         c => c.grain_type === deleteTarget
       );
-      
-      const promises = categoriesToDelete.map(c => 
+
+      const promises = categoriesToDelete.map(c =>
         axios.delete(`${API_BASE_URL}/grain/deletegraincategory/${c._id}`)
       );
-      
+
       await Promise.all(promises);
-      
+
       toast.success(`${deleteTarget} deleted successfully!`);
       setIsDeleteModalOpen(false);
       setDeleteTarget('');
@@ -237,7 +272,7 @@ const GrainCategories = () => {
   };
 
   // Filter categories
-  const filteredCategories = categories.filter((cat) => 
+  const filteredCategories = categories.filter((cat) =>
     cat.grain_type.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -300,21 +335,19 @@ const GrainCategories = () => {
                 <div className="flex items-center bg-gray-100/80 rounded-xl p-1">
                   <button
                     onClick={() => setViewMode('grid')}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'grid' 
-                        ? 'bg-white shadow-sm text-emerald-600' 
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                    className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'grid'
+                      ? 'bg-white shadow-sm text-emerald-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                      }`}
                   >
                     <Grid3X3 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setViewMode('list')}
-                    className={`p-2 rounded-lg transition-all duration-200 ${
-                      viewMode === 'list' 
-                        ? 'bg-white shadow-sm text-emerald-600' 
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                    className={`p-2 rounded-lg transition-all duration-200 ${viewMode === 'list'
+                      ? 'bg-white shadow-sm text-emerald-600'
+                      : 'text-gray-500 hover:text-gray-700'
+                      }`}
                   >
                     <LayoutList className="w-5 h-5" />
                   </button>
@@ -440,8 +473,8 @@ const GrainCategories = () => {
             </div>
             <h3 className="text-xl font-semibold text-gray-900">No categories found</h3>
             <p className="text-gray-500 mt-2 text-center max-w-md">
-              {searchTerm 
-                ? `No results for "${searchTerm}". Try a different search term.` 
+              {searchTerm
+                ? `No results for "${searchTerm}". Try a different search term.`
                 : 'Start by adding your first grain category. All quality grades will be created automatically.'}
             </p>
             {!searchTerm && (
@@ -524,28 +557,6 @@ const GrainCategories = () => {
                       Economy
                     </span>
                   </div>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-                    <button
-                      onClick={() => openEditModal(grainType)}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 
-                               bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-xl 
-                               transition-colors duration-200 group/btn"
-                    >
-                      <Edit3 className="w-4 h-4 group-hover/btn:text-blue-600 transition-colors" />
-                      <span className="text-sm font-medium">Edit</span>
-                    </button>
-                    <button
-                      onClick={() => openDeleteModal(grainType)}
-                      className="flex-1 flex items-center justify-center gap-2 py-2.5 px-4 
-                               bg-red-50 hover:bg-red-100 text-red-600 rounded-xl 
-                               transition-colors duration-200 group/btn"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span className="text-sm font-medium">Delete</span>
-                    </button>
-                  </div>
                 </div>
               </div>
             ))}
@@ -561,12 +572,11 @@ const GrainCategories = () => {
                     <th className="text-center px-6 py-4 text-sm font-semibold text-gray-600">Grade A</th>
                     <th className="text-center px-6 py-4 text-sm font-semibold text-gray-600">Grade B</th>
                     <th className="text-center px-6 py-4 text-sm font-semibold text-gray-600">Grade C</th>
-                    <th className="text-right px-6 py-4 text-sm font-semibold text-gray-600">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {grainTypeEntries.map(([grainType, items]) => (
-                    <tr 
+                    <tr
                       key={grainType}
                       className="hover:bg-emerald-50/30 transition-colors duration-150"
                     >
@@ -596,24 +606,6 @@ const GrainCategories = () => {
                           </td>
                         );
                       })}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => openEditModal(grainType)}
-                            className="p-2 hover:bg-blue-100 text-gray-500 hover:text-blue-600 
-                                     rounded-lg transition-colors"
-                          >
-                            <Edit3 className="w-5 h-5" />
-                          </button>
-                          <button
-                            onClick={() => openDeleteModal(grainType)}
-                            className="p-2 hover:bg-red-100 text-gray-500 hover:text-red-600 
-                                     rounded-lg transition-colors"
-                          >
-                            <Trash2 className="w-5 h-5" />
-                          </button>
-                        </div>
-                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -626,7 +618,7 @@ const GrainCategories = () => {
         {!loading && grainTypeEntries.length > 0 && (
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-500">
-              Showing <span className="font-semibold text-gray-900">{grainTypeEntries.length}</span> grain types 
+              Showing <span className="font-semibold text-gray-900">{grainTypeEntries.length}</span> grain types
               with <span className="font-semibold text-gray-900">{filteredCategories.length}</span> total entries
             </p>
           </div>
@@ -637,7 +629,7 @@ const GrainCategories = () => {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !submitting && setIsModalOpen(false)}
           />
@@ -678,7 +670,7 @@ const GrainCategories = () => {
                     type="text"
                     value={formData.grain_type}
                     onChange={(e) => setFormData({ ...formData, grain_type: e.target.value })}
-                    placeholder="e.g., Basmati Rice, Wheat, Moong Dal..."
+                    placeholder="जैसे: गेहूं, चावल, मूंग दाल, मक्का, बाजरा, ज्वार..."
                     className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl
                              focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500
                              focus:bg-white transition-all duration-200"
@@ -772,7 +764,7 @@ const GrainCategories = () => {
       {/* Edit Category Modal */}
       {isEditModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !submitting && setIsEditModalOpen(false)}
           />
@@ -870,7 +862,7 @@ const GrainCategories = () => {
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div 
+          <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => !submitting && setIsDeleteModalOpen(false)}
           />
@@ -885,7 +877,7 @@ const GrainCategories = () => {
 
               <h2 className="text-xl font-bold text-gray-900 mb-2">Delete Category?</h2>
               <p className="text-gray-500 mb-6">
-                This will permanently delete <span className="font-semibold text-gray-900">"{deleteTarget}"</span> and 
+                This will permanently delete <span className="font-semibold text-gray-900">"{deleteTarget}"</span> and
                 all its quality grades (A, B, C). This action cannot be undone.
               </p>
 

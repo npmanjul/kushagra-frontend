@@ -36,7 +36,12 @@ import NoticeModal from "@/components/dashboard/NoticeModal";
 import Loader from "@/components/common/Loader";
 
 const sidebarItems = [
-  { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/supervisor" },
+  {
+    id: "dashboard",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/supervisor",
+  },
   {
     id: "deposit",
     label: "Deposit Grain",
@@ -237,21 +242,22 @@ export default function DashboardLayout({ children }) {
 
         {/* Logo */}
         <div className="p-6 flex items-center space-x-1">
-          {/* Logo */}
-
           <Image
-            src="/logo.png"
-            alt="Samriddh Grain Bank Logo"
+            src="/logo_v2.png"
+            alt="Kushagra Bhumitra FPO Logo"
             className="w-18 h-18 rounded-xl object-cover bg-white border"
             width={500}
             height={500}
           />
 
           {/* Brand Name */}
-          <div>
-            <h1 className="text-xl font-extrabold bg-gradient-to-r from-green-700 to-yellow-600 bg-clip-text text-transparent tracking-wide">
-              Samriddh Grain Bank
+          <div className="flex flex-col leading-tight">
+            <h1 className="text-xl font-bold bg-linear-to-r from-green-600 via-green-700 to-emerald-800 bg-clip-text text-transparent tracking-tight">
+              Kushagra
             </h1>
+            <p className="text-base font-semibold bg-linear-to-r from-green-700 to-green-800 bg-clip-text text-transparent tracking-wide -mt-0.5">
+              Bhumitra FPO
+            </p>
           </div>
         </div>
 
@@ -304,99 +310,6 @@ export default function DashboardLayout({ children }) {
 
             {/* Right side */}
             <div className="flex items-center space-x-4">
-              <div className="relative" ref={notificationRef}>
-                <button
-                  className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                  onClick={() => setNotificationOpen((open) => !open)}
-                >
-                  <Bell className="w-6 h-6" />
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center font-semibold shadow">
-                    3
-                  </span>
-                </button>
-                {notificationOpen && (
-                  <>
-                    {/* Overlay */}
-                    <div
-                      className="fixed inset-0 z-40"
-                      onClick={() => setNotificationOpen(false)}
-                    />
-                    {/* Modern Notification Dropdown */}
-                    <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden animate-fade-in">
-                      <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between bg-gray-50">
-                        <h3 className="text-sm font-semibold text-gray-800">
-                          Notifications
-                        </h3>
-                        <button
-                          onClick={() => setNotificationOpen(false)}
-                          className="text-xs text-blue-600 hover:underline"
-                        >
-                          Mark all as read
-                        </button>
-                      </div>
-                      <div className="max-h-72 overflow-y-auto divide-y divide-gray-100">
-                        <div className="flex items-start gap-3 px-5 py-4 hover:bg-gray-50 transition-colors">
-                          <div className="w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full text-sm font-bold">
-                            D
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-700">
-                              New{" "}
-                              <span className="font-medium">
-                                deposit request
-                              </span>{" "}
-                              received.
-                            </p>
-                            <span className="text-xs text-gray-400">
-                              2m ago
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 px-5 py-4 hover:bg-gray-50 transition-colors">
-                          <div className="w-8 h-8 flex items-center justify-center bg-green-100 text-green-600 rounded-full text-sm font-bold">
-                            S
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-700">
-                              Your{" "}
-                              <span className="font-medium">
-                                grain selling order
-                              </span>{" "}
-                              is approved.
-                            </p>
-                            <span className="text-xs text-gray-400">
-                              10m ago
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex items-start gap-3 px-5 py-4 hover:bg-gray-50 transition-colors">
-                          <div className="w-8 h-8 flex items-center justify-center bg-yellow-100 text-yellow-600 rounded-full text-sm font-bold">
-                            M
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-sm text-gray-700">
-                              <span className="font-medium">
-                                System maintenance
-                              </span>{" "}
-                              scheduled tomorrow.
-                            </p>
-                            <span className="text-xs text-gray-400">
-                              1h ago
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => setNotificationOpen(false)}
-                        className="w-full text-center py-3 text-sm font-medium text-blue-600 hover:bg-gray-50 transition-colors"
-                      >
-                        View All Notifications
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
-
               <div className="flex items-center space-x-3">
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-bold text-gray-900">

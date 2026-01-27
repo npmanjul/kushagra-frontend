@@ -13,6 +13,7 @@ import {
   KeyRound,
 } from "lucide-react";
 import Link from "next/link";
+import API_BASE_URL from "@/utils/constants";
 
 const Page = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,11 +26,10 @@ const Page = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resetToken, setResetToken] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [apiMessage, setApiMessage] = useState({ type: "", message: "" });
-
-  const API_BASE_URL = "http://localhost:8000/api/v1/auth";
 
   // Load saved state on mount
   useEffect(() => {
@@ -38,8 +38,8 @@ const Page = () => {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed.currentStep) setCurrentStep(parsed.currentStep);
-        if (parsed.formData)
-          setFormData((prev) => ({ ...prev, ...parsed.formData }));
+        if (parsed.formData) setFormData((prev) => ({ ...prev, ...parsed.formData }));
+        if (parsed.resetToken) setResetToken(parsed.resetToken);
       }
     } catch (e) {
       // ignore malformed storage
@@ -54,6 +54,7 @@ const Page = () => {
         email: formData.email,
         phone: formData.phone,
       },
+      resetToken,
     };
     try {
       localStorage.setItem("forgetPasswordState", JSON.stringify(toSave));
@@ -160,7 +161,7 @@ const Page = () => {
   // API call to send OTP
   const sendOTP = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/sendotp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/sendotpforpasswordreset`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -174,6 +175,7 @@ const Page = () => {
       const data = await response.json();
 
       if (response.ok) {
+        if (data.token) setResetToken(data.token);
         setApiMessage({ type: "success", message: data.message || "OTP sent successfully!" });
         return { success: true, data };
       } else {
@@ -189,7 +191,7 @@ const Page = () => {
   // API call to verify OTP
   const verifyOTP = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/verifyotp`, {
+      const response = await fetch(`${API_BASE_URL}/auth/verifyotpforpasswordreset`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -219,14 +221,13 @@ const Page = () => {
   // API call to reset password
   const resetPassword = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/resetpassword`, {
+      const response = await fetch(`${API_BASE_URL}/auth/resetpassword`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: formData.email,
-          phone_number: formData.phone,
+          token: resetToken,
           newPassword: formData.password,
         }),
       });
@@ -253,31 +254,31 @@ const Page = () => {
 
     if (currentStep === 1) {
       if (!validateStep1()) return;
-      
+
       setIsLoading(true);
       const result = await sendOTP();
       setIsLoading(false);
-      
+
       if (result.success) {
         setCurrentStep(2);
       }
     } else if (currentStep === 2) {
       if (!validateStep2()) return;
-      
+
       setIsLoading(true);
       const result = await verifyOTP();
       setIsLoading(false);
-      
+
       if (result.success) {
         setCurrentStep(3);
       }
     } else if (currentStep === 3) {
       if (!validateStep3()) return;
-      
+
       setIsLoading(true);
       const result = await resetPassword();
       setIsLoading(false);
-      
+
       if (result.success) {
         setCurrentStep(4);
       }
@@ -287,12 +288,12 @@ const Page = () => {
   // Resend OTP
   const handleResendOtp = async () => {
     if (isLoading) return;
-    
+
     setApiMessage({ type: "", message: "" });
     setIsLoading(true);
     const result = await sendOTP();
     setIsLoading(false);
-    
+
     if (result.success) {
       setApiMessage({ type: "success", message: "OTP resent successfully!" });
     }
@@ -309,11 +310,10 @@ const Page = () => {
             {/* API Message Display */}
             {apiMessage.message && (
               <div
-                className={`mb-4 p-3 rounded-lg text-sm font-medium animate-slideDown ${
-                  apiMessage.type === "success"
-                    ? "bg-green-50 text-green-700 border border-green-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
-                }`}
+                className={`mb-4 p-3 rounded-lg text-sm font-medium animate-slideDown ${apiMessage.type === "success"
+                  ? "bg-green-50 text-green-700 border border-green-200"
+                  : "bg-red-50 text-red-700 border border-red-200"
+                  }`}
               >
                 {apiMessage.message}
               </div>
@@ -354,10 +354,9 @@ const Page = () => {
                         className={`
                           w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 
                           transition-all duration-200 text-black placeholder-gray-400
-                          ${
-                            errors.email
-                              ? "border-red-500 focus:ring-red-500"
-                              : "border-gray-200 focus:ring-black focus:border-black"
+                          ${errors.email
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-200 focus:ring-black focus:border-black"
                           }
                         `}
                         placeholder="Enter your email"
@@ -389,10 +388,9 @@ const Page = () => {
                         className={`
                           w-full pl-10 pr-3 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 
                           transition-all duration-200 text-black placeholder-gray-400
-                          ${
-                            errors.phone
-                              ? "border-red-500 focus:ring-red-500"
-                              : "border-gray-200 focus:ring-black focus:border-black"
+                          ${errors.phone
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-200 focus:ring-black focus:border-black"
                           }
                         `}
                         placeholder="Enter 10-digit phone number"
@@ -490,7 +488,7 @@ const Page = () => {
                     disabled={isLoading}
                     className="text-black hover:text-gray-700 text-sm font-semibold disabled:opacity-50 transition-colors underline"
                   >
-                    {isLoading ? "Sending..." : "Didn&apos;t receive code? Resend"}
+                    {isLoading ? "Sending..." : "Didn't receive code? Resend"}
                   </button>
                 </div>
 
@@ -563,10 +561,9 @@ const Page = () => {
                         className={`
                           w-full pl-10 pr-10 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 
                           transition-all duration-200 text-black placeholder-gray-400
-                          ${
-                            errors.password
-                              ? "border-red-500 focus:ring-red-500"
-                              : "border-gray-200 focus:ring-black focus:border-black"
+                          ${errors.password
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-200 focus:ring-black focus:border-black"
                           }
                         `}
                         placeholder="Enter new password"
@@ -612,10 +609,9 @@ const Page = () => {
                         className={`
                           w-full pl-10 pr-10 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 
                           transition-all duration-200 text-black placeholder-gray-400
-                          ${
-                            errors.confirmPassword
-                              ? "border-red-500 focus:ring-red-500"
-                              : "border-gray-200 focus:ring-black focus:border-black"
+                          ${errors.confirmPassword
+                            ? "border-red-500 focus:ring-red-500"
+                            : "border-gray-200 focus:ring-black focus:border-black"
                           }
                         `}
                         placeholder="Confirm new password"
@@ -654,95 +650,83 @@ const Page = () => {
                     </p>
                     <ul className="space-y-2">
                       <li
-                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${
-                          strength.hasMinLength
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
+                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${strength.hasMinLength
+                          ? "text-green-600"
+                          : "text-gray-500"
+                          }`}
                       >
                         <div
-                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                            strength.hasMinLength
-                              ? "border-green-600 bg-green-600"
-                              : "border-gray-400"
-                          }`}
+                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${strength.hasMinLength
+                            ? "border-green-600 bg-green-600"
+                            : "border-gray-400"
+                            }`}
                         >
                           <Check
-                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${
-                              strength.hasMinLength
-                                ? "opacity-100"
-                                : "opacity-0"
-                            }`}
+                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${strength.hasMinLength
+                              ? "opacity-100"
+                              : "opacity-0"
+                              }`}
                           />
                         </div>
                         At least 8 characters
                       </li>
                       <li
-                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${
-                          strength.hasUppercase
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
+                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${strength.hasUppercase
+                          ? "text-green-600"
+                          : "text-gray-500"
+                          }`}
                       >
                         <div
-                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                            strength.hasUppercase
-                              ? "border-green-600 bg-green-600"
-                              : "border-gray-400"
-                          }`}
+                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${strength.hasUppercase
+                            ? "border-green-600 bg-green-600"
+                            : "border-gray-400"
+                            }`}
                         >
                           <Check
-                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${
-                              strength.hasUppercase
-                                ? "opacity-100"
-                                : "opacity-0"
-                            }`}
+                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${strength.hasUppercase
+                              ? "opacity-100"
+                              : "opacity-0"
+                              }`}
                           />
                         </div>
                         One uppercase letter (A-Z)
                       </li>
                       <li
-                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${
-                          strength.hasNumber
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
+                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${strength.hasNumber
+                          ? "text-green-600"
+                          : "text-gray-500"
+                          }`}
                       >
                         <div
-                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                            strength.hasNumber
-                              ? "border-green-600 bg-green-600"
-                              : "border-gray-400"
-                          }`}
+                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${strength.hasNumber
+                            ? "border-green-600 bg-green-600"
+                            : "border-gray-400"
+                            }`}
                         >
                           <Check
-                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${
-                              strength.hasNumber ? "opacity-100" : "opacity-0"
-                            }`}
+                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${strength.hasNumber ? "opacity-100" : "opacity-0"
+                              }`}
                           />
                         </div>
                         One number (0-9)
                       </li>
                       <li
-                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${
-                          strength.hasSpecialChar
-                            ? "text-green-600"
-                            : "text-gray-500"
-                        }`}
+                        className={`flex items-center text-xs transition-colors duration-200 font-medium ${strength.hasSpecialChar
+                          ? "text-green-600"
+                          : "text-gray-500"
+                          }`}
                       >
                         <div
-                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${
-                            strength.hasSpecialChar
-                              ? "border-green-600 bg-green-600"
-                              : "border-gray-400"
-                          }`}
+                          className={`w-4 h-4 mr-2 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${strength.hasSpecialChar
+                            ? "border-green-600 bg-green-600"
+                            : "border-gray-400"
+                            }`}
                         >
                           <Check
-                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${
-                              strength.hasSpecialChar
-                                ? "opacity-100"
-                                : "opacity-0"
-                            }`}
+                            className={`w-2.5 h-2.5 text-white transition-opacity duration-200 ${strength.hasSpecialChar
+                              ? "opacity-100"
+                              : "opacity-0"
+                              }`}
                           />
                         </div>
                         One special character (!@#$%^&*)

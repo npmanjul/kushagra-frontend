@@ -217,21 +217,22 @@ export default function DashboardLayout({ children }) {
 
         {/* Logo */}
         <div className="p-6 flex items-center space-x-1">
-          {/* Logo */}
-
           <Image
-            src="/logo.png"
-            alt="Samriddh Grain Bank Logo"
+            src="/logo_v2.png"
+            alt="Kushagra Bhumitra FPO Logo"
             className="w-18 h-18 rounded-xl object-cover bg-white border"
             width={500}
             height={500}
           />
 
           {/* Brand Name */}
-          <div>
-            <h1 className="text-xl font-extrabold bg-gradient-to-r from-green-700 to-yellow-600 bg-clip-text text-transparent tracking-wide">
-              Samriddh Grain Bank
+          <div className="flex flex-col leading-tight">
+            <h1 className="text-xl font-bold bg-linear-to-r from-green-600 via-green-700 to-emerald-800 bg-clip-text text-transparent tracking-tight">
+              Kushagra
             </h1>
+            <p className="text-base font-semibold bg-linear-to-r from-green-700 to-green-800 bg-clip-text text-transparent tracking-wide -mt-0.5">
+              Bhumitra FPO
+            </p>
           </div>
         </div>
 

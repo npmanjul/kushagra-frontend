@@ -1057,7 +1057,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
         }
     };
     // Rejection Reason Modal
-    const RejectionModal = ()=>{
+    const renderRejectionModal = ()=>{
         if (!rejectionModal.isOpen) return null;
         const quickReasons = [
             "Document is blurry or unclear",
@@ -1177,7 +1177,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         children: "Rejection Reason"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 671,
+                                        lineNumber: 670,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1187,7 +1187,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "absolute left-3 top-3 w-5 h-5 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 675,
+                                                lineNumber: 674,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -1198,13 +1198,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 rows: 3
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 676,
+                                                lineNumber: 675,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 674,
+                                        lineNumber: 673,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1215,13 +1215,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 684,
+                                        lineNumber: 683,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 670,
+                                lineNumber: 669,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
@@ -1246,7 +1246,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 692,
+                                lineNumber: 691,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1258,20 +1258,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 710,
+                                        lineNumber: 708,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Confirm Rejection"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 701,
+                                lineNumber: 700,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 691,
+                        lineNumber: 690,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
@@ -1300,12 +1300,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-300"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 733,
+                        lineNumber: 731,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 729,
+                    lineNumber: 727,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1319,12 +1319,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 739,
+                        lineNumber: 737,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 738,
+                    lineNumber: 736,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1339,12 +1339,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-6 h-6 text-white group-hover:-translate-x-1 transition-transform"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 755,
+                                lineNumber: 753,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 748,
+                            lineNumber: 746,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1357,12 +1357,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-6 h-6 text-white group-hover:translate-x-1 transition-transform"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 764,
+                                lineNumber: 762,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 757,
+                            lineNumber: 755,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
@@ -1383,20 +1383,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 775,
+                                    lineNumber: 773,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 783,
+                                    lineNumber: 781,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 774,
+                            lineNumber: 772,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1412,19 +1412,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white transform -scale-x-100 group-hover:rotate-[-90deg] transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 794,
+                                            lineNumber: 792,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 789,
+                                        lineNumber: 787,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 797,
+                                        lineNumber: 795,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1435,19 +1435,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 804,
+                                            lineNumber: 802,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 799,
+                                        lineNumber: 797,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 807,
+                                        lineNumber: 805,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1458,19 +1458,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white group-hover:scale-110 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 814,
+                                            lineNumber: 812,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 809,
+                                        lineNumber: 807,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 817,
+                                        lineNumber: 815,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1482,7 +1482,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-4 h-4 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 824,
+                                                lineNumber: 822,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1490,30 +1490,30 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 children: "Download"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 825,
+                                                lineNumber: 823,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 819,
+                                        lineNumber: 817,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 788,
+                                lineNumber: 786,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 787,
+                            lineNumber: 785,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 770,
+                    lineNumber: 768,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1532,23 +1532,23 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-full h-full object-cover"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 849,
+                                lineNumber: 846,
                                 columnNumber: 17
                             }, ("TURBOPACK compile-time value", void 0))
                         }, index, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 835,
+                            lineNumber: 833,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 833,
+                    lineNumber: 831,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 724,
+            lineNumber: 722,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -1564,7 +1564,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-full h-full object-cover"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 861,
+                        lineNumber: 858,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1575,28 +1575,28 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-4 h-4 text-white"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 864,
+                                lineNumber: 861,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 863,
+                            lineNumber: 860,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 862,
+                        lineNumber: 859,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 860,
+                lineNumber: 857,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 859,
+            lineNumber: 856,
             columnNumber: 5
         }, ("TURBOPACK compile-time value", void 0));
     const VerificationField = ({ label, value, field, relatedImage = null, icon, fieldType })=>{
@@ -1624,12 +1624,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: icon || getFieldIcon(field)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 889,
+                                lineNumber: 886,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 888,
+                            lineNumber: 885,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1643,7 +1643,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 893,
+                                            lineNumber: 890,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1653,7 +1653,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5 text-gray-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 897,
+                                                    lineNumber: 894,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1661,19 +1661,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Not Submitted"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 898,
+                                                    lineNumber: 895,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 896,
+                                            lineNumber: 893,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 892,
+                                    lineNumber: 889,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1681,24 +1681,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Awaiting farmer submission"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 901,
+                                    lineNumber: 898,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 891,
+                            lineNumber: 888,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 887,
+                    lineNumber: 884,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 886,
+                lineNumber: 883,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1715,12 +1715,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: icon || getFieldIcon(field)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 913,
+                                lineNumber: 910,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 912,
+                            lineNumber: 909,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1734,7 +1734,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 917,
+                                            lineNumber: 914,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1744,7 +1744,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5 text-gray-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 921,
+                                                    lineNumber: 918,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1752,19 +1752,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Not Submitted"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 922,
+                                                    lineNumber: 919,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 920,
+                                            lineNumber: 917,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 916,
+                                    lineNumber: 913,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1772,24 +1772,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Awaiting farmer submission"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 925,
+                                    lineNumber: 922,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 915,
+                            lineNumber: 912,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 911,
+                    lineNumber: 908,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 910,
+                lineNumber: 907,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1814,12 +1814,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         children: icon || getFieldIcon(field)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 951,
+                                        lineNumber: 947,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 944,
+                                    lineNumber: 941,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1833,7 +1833,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 955,
+                                                    lineNumber: 951,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 getStatusBadge(field),
@@ -1842,13 +1842,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Modified"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 960,
+                                                    lineNumber: 956,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 954,
+                                            lineNumber: 950,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         value && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1856,7 +1856,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: value
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 965,
+                                            lineNumber: 961,
                                             columnNumber: 27
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         verifierInfo && !canModify && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1866,7 +1866,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 970,
+                                                    lineNumber: 966,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1877,7 +1877,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             children: verifierInfo.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 972,
+                                                            lineNumber: 968,
                                                             columnNumber: 35
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1889,7 +1889,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 973,
+                                                            lineNumber: 969,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         verifierInfo.date && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1900,19 +1900,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 975,
+                                                            lineNumber: 971,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 971,
+                                                    lineNumber: 967,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 969,
+                                            lineNumber: 965,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         status === "rejected" && reason && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1924,7 +1924,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-4 h-4 text-red-500 mt-0.5 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 985,
+                                                        lineNumber: 981,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1934,7 +1934,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Rejection Reason"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 987,
+                                                                lineNumber: 983,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1942,24 +1942,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: reason
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 990,
+                                                                lineNumber: 986,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 986,
+                                                        lineNumber: 982,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 984,
+                                                lineNumber: 980,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 983,
+                                            lineNumber: 979,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         relatedImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1972,14 +1972,14 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-3.5 h-3.5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 999,
+                                                            lineNumber: 995,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         fieldType === "image" ? "Document" : "Supporting Documents"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 998,
+                                                    lineNumber: 994,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1990,7 +1990,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             onClick: ()=>openImageViewer(img, relatedImage)
                                                         }, index, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1005,
+                                                            lineNumber: 1001,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0))) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageThumbnail, {
                                                         src: relatedImage,
@@ -1998,35 +1998,35 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         onClick: ()=>openImageViewer(relatedImage)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1013,
+                                                        lineNumber: 1009,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1002,
+                                                    lineNumber: 998,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 997,
+                                            lineNumber: 993,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 953,
+                                    lineNumber: 949,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 943,
+                            lineNumber: 940,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 942,
+                        lineNumber: 939,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2038,7 +2038,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Verify"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1030,
+                                    lineNumber: 1026,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2053,20 +2053,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1043,
+                                                    lineNumber: 1038,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 status === "accepted" && isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full animate-ping"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1045,
+                                                    lineNumber: 1040,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1034,
+                                            lineNumber: 1030,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2078,20 +2078,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1057,
+                                                    lineNumber: 1051,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 status === "rejected" && isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-400 rounded-full animate-ping"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1059,
+                                                    lineNumber: 1053,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1048,
+                                            lineNumber: 1043,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2102,18 +2102,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-4 h-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1068,
+                                                lineNumber: 1062,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1063,
+                                            lineNumber: 1057,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1033,
+                                    lineNumber: 1029,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
@@ -2125,7 +2125,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Verified"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1075,
+                                    lineNumber: 1069,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2134,40 +2134,40 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-5 h-5 text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1084,
+                                        lineNumber: 1077,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__XCircle$3e$__["XCircle"], {
                                         className: "w-5 h-5 text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1086,
+                                        lineNumber: 1079,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1078,
+                                    lineNumber: 1072,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1074,
+                            lineNumber: 1068,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)) : null
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1027,
+                        lineNumber: 1023,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 941,
+                lineNumber: 938,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 938,
+            lineNumber: 935,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -2214,12 +2214,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     children: "No data available"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1112,
+                    lineNumber: 1105,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1111,
+                lineNumber: 1104,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -2236,7 +2236,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     fieldType: fieldDef.type
                 }, fieldDef.field, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1124,
+                    lineNumber: 1117,
                     columnNumber: 13
                 }, ("TURBOPACK compile-time value", void 0));
             })
@@ -2254,7 +2254,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-12 h-12 text-indigo-600 animate-spin"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1146,
+                        lineNumber: 1139,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2262,18 +2262,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         children: "Loading verification data..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1147,
+                        lineNumber: 1140,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1145,
+                lineNumber: 1138,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 1144,
+            lineNumber: 1137,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -2292,12 +2292,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-8 h-8 text-red-600"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1160,
+                                lineNumber: 1153,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1159,
+                            lineNumber: 1152,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2305,7 +2305,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: "Error Loading Data"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1162,
+                            lineNumber: 1155,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2313,7 +2313,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1163,
+                            lineNumber: 1156,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2325,7 +2325,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Close"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1165,
+                                    lineNumber: 1158,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2336,36 +2336,36 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1175,
+                                            lineNumber: 1168,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         "Retry"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1171,
+                                    lineNumber: 1164,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1164,
+                            lineNumber: 1157,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1158,
+                    lineNumber: 1151,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1157,
+                lineNumber: 1150,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 1156,
+            lineNumber: 1149,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -2385,12 +2385,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1193,
+                                        lineNumber: 1186,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1192,
+                                    lineNumber: 1185,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2408,7 +2408,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "absolute -inset-1 bg-white/20 rounded-lg blur animate-pulse"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1200,
+                                                                lineNumber: 1193,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2417,18 +2417,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                     className: "w-5 h-5 text-white"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                    lineNumber: 1202,
+                                                                    lineNumber: 1195,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1201,
+                                                                lineNumber: 1194,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1199,
+                                                        lineNumber: 1192,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2441,13 +2441,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                         className: "w-4 h-4 text-yellow-300 animate-pulse"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                        lineNumber: 1208,
+                                                                        lineNumber: 1201,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0))
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1206,
+                                                                lineNumber: 1199,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2455,19 +2455,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Review and verify all farmer documents"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1210,
+                                                                lineNumber: 1203,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1205,
+                                                        lineNumber: 1198,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1198,
+                                                lineNumber: 1191,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2482,7 +2482,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Progress:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1220,
+                                                                lineNumber: 1213,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2494,12 +2494,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                     }
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                    lineNumber: 1222,
+                                                                    lineNumber: 1215,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1221,
+                                                                lineNumber: 1214,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2510,13 +2510,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1227,
+                                                                lineNumber: 1220,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1219,
+                                                        lineNumber: 1212,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2526,7 +2526,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-green-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1231,
+                                                                lineNumber: 1224,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2534,13 +2534,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.approved
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1232,
+                                                                lineNumber: 1225,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1230,
+                                                        lineNumber: 1223,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2550,7 +2550,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-red-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1236,
+                                                                lineNumber: 1229,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2558,13 +2558,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.rejected
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1237,
+                                                                lineNumber: 1230,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1235,
+                                                        lineNumber: 1228,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2574,7 +2574,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-amber-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1241,
+                                                                lineNumber: 1234,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2582,13 +2582,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.pending
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1242,
+                                                                lineNumber: 1235,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1240,
+                                                        lineNumber: 1233,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2598,35 +2598,35 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1249,
+                                                            lineNumber: 1242,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1245,
+                                                        lineNumber: 1238,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1215,
+                                                lineNumber: 1208,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1197,
+                                        lineNumber: 1190,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1196,
+                                    lineNumber: 1189,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1190,
+                            lineNumber: 1183,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2636,7 +2636,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     className: "w-5 h-5 text-red-500 flex-shrink-0"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1259,
+                                    lineNumber: 1252,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2644,7 +2644,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1260,
+                                    lineNumber: 1253,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2654,18 +2654,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-4 h-4 text-red-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1265,
+                                        lineNumber: 1258,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1261,
+                                    lineNumber: 1254,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1258,
+                            lineNumber: 1251,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2682,12 +2682,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-3.5 h-3.5 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1289,
+                                                lineNumber: 1280,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1284,
+                                            lineNumber: 1276,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2695,19 +2695,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: tab.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1291,
+                                            lineNumber: 1282,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, tab.id, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1275,
+                                    lineNumber: 1268,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0));
                             })
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1271,
+                            lineNumber: 1264,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2717,12 +2717,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: renderTabContent()
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1299,
+                                lineNumber: 1290,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1298,
+                            lineNumber: 1289,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2740,7 +2740,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1309,
+                                                        lineNumber: 1300,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2752,13 +2752,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1310,
+                                                        lineNumber: 1301,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1308,
+                                                lineNumber: 1299,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2768,7 +2768,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1313,
+                                                        lineNumber: 1304,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2780,13 +2780,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1314,
+                                                        lineNumber: 1305,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1312,
+                                                lineNumber: 1303,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2796,7 +2796,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-amber-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1317,
+                                                        lineNumber: 1308,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2808,13 +2808,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1318,
+                                                        lineNumber: 1309,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1316,
+                                                lineNumber: 1307,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             stats.notSubmitted > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2824,7 +2824,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gray-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1322,
+                                                        lineNumber: 1313,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2836,19 +2836,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1323,
+                                                        lineNumber: 1314,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1321,
+                                                lineNumber: 1312,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1307,
+                                        lineNumber: 1298,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2861,7 +2861,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1328,
+                                                lineNumber: 1319,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2874,7 +2874,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4 animate-spin"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1342,
+                                                            lineNumber: 1333,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Submitting..."
@@ -2885,7 +2885,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1347,
+                                                            lineNumber: 1338,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Submit Verification (",
@@ -2895,55 +2895,51 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1349,
+                                                            lineNumber: 1340,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1335,
+                                                lineNumber: 1326,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1327,
+                                        lineNumber: 1318,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1306,
+                                lineNumber: 1297,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1305,
+                            lineNumber: 1296,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1188,
+                    lineNumber: 1181,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1187,
+                lineNumber: 1180,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(RejectionModal, {}, void 0, false, {
-                fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1360,
-                columnNumber: 7
-            }, ("TURBOPACK compile-time value", void 0)),
+            renderRejectionModal(),
             selectedImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePopup, {
                 image: selectedImage,
                 onClose: ()=>setSelectedImage(null)
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1363,
+                lineNumber: 1354,
                 columnNumber: 25
             }, ("TURBOPACK compile-time value", void 0))
         ]
@@ -4868,7 +4864,7 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 100,
+                                lineNumber: 98,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             options.map((opt)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -4876,7 +4872,7 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                                     children: opt.label
                                 }, opt.value, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 102,
+                                    lineNumber: 100,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)))
                         ]
@@ -4896,7 +4892,7 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
             `
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 108,
+                        lineNumber: 106,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -4910,45 +4906,45 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                                     className: "w-4 h-4 text-gray-400"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 142,
+                                    lineNumber: 138,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
                                     className: "w-4 h-4 text-gray-400"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 144,
+                                    lineNumber: 140,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 136,
+                                lineNumber: 132,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             hasError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__["AlertCircle"], {
                                 className: "w-4 h-4 text-red-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 148,
+                                lineNumber: 144,
                                 columnNumber: 24
                             }, ("TURBOPACK compile-time value", void 0)),
                             isChanged && !hasError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$zap$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Zap$3e$__["Zap"], {
                                 className: "w-4 h-4 text-amber-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 149,
+                                lineNumber: 145,
                                 columnNumber: 38
                             }, ("TURBOPACK compile-time value", void 0)),
                             isValid && !isChanged && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {
                                 className: "w-4 h-4 text-green-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 151,
+                                lineNumber: 147,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 134,
+                        lineNumber: 130,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
@@ -4964,14 +4960,14 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                         className: "w-3 h-3"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 158,
+                        lineNumber: 154,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     error
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 157,
+                lineNumber: 153,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             isChanged && originalValue && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -4981,7 +4977,7 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                         className: "w-3 h-3"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 165,
+                        lineNumber: 161,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     "Original: ",
@@ -4989,7 +4985,7 @@ const InputField = ({ label, field, type = "text", placeholder, icon: Icon, requ
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 164,
+                lineNumber: 160,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         ]
@@ -5017,19 +5013,19 @@ const SectionCard = ({ title, icon: Icon, children, color = "indigo", badge = nu
                                         className: "w-3.5 h-3.5 text-white"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 190,
+                                        lineNumber: 186,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 187,
+                                    lineNumber: 183,
                                     columnNumber: 11
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 title
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 186,
+                            lineNumber: 182,
                             columnNumber: 9
                         }, ("TURBOPACK compile-time value", void 0)),
                         badge && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5037,18 +5033,18 @@ const SectionCard = ({ title, icon: Icon, children, color = "indigo", badge = nu
                             children: badge.text
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 195,
+                            lineNumber: 191,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 185,
+                    lineNumber: 181,
                     columnNumber: 7
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 182,
+                lineNumber: 178,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5056,13 +5052,13 @@ const SectionCard = ({ title, icon: Icon, children, color = "indigo", badge = nu
                 children: children
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 203,
+                lineNumber: 199,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-        lineNumber: 181,
+        lineNumber: 177,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0));
 // Move ImagePreview OUTSIDE the main component
@@ -5079,12 +5075,12 @@ const ImagePreview = ({ src, label, icon: Icon })=>{
                     className: "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 214,
+                    lineNumber: 210,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 213,
+                lineNumber: 209,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5098,17 +5094,17 @@ const ImagePreview = ({ src, label, icon: Icon })=>{
                         className: "w-5 h-5 text-gray-700"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 227,
+                        lineNumber: 223,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 221,
+                    lineNumber: 217,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 220,
+                lineNumber: 216,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5118,20 +5114,387 @@ const ImagePreview = ({ src, label, icon: Icon })=>{
                         className: "w-3.5 h-3.5 text-gray-400"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 231,
+                        lineNumber: 227,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     label
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 230,
+                lineNumber: 226,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-        lineNumber: 212,
+        lineNumber: 208,
+        columnNumber: 5
+    }, ("TURBOPACK compile-time value", void 0));
+};
+// ImageUploadField Component - For S3 presigned URL uploads
+const ImageUploadField = ({ label, field, icon: Icon, value, onChange, folder = "farmer-documents", isChanged = false, aspectRatio = "aspect-video" })=>{
+    const [uploading, setUploading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [uploadProgress, setUploadProgress] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(0);
+    const [uploadError, setUploadError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
+    const [preview, setPreview] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(value);
+    (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
+        setPreview(value);
+    }, [
+        value
+    ]);
+    // Function to get presigned URL from backend
+    const getPresignedUrl = async (file)=>{
+        const fileExtension = file.name.split('.').pop();
+        const fileName = `${field}_${Date.now()}.${fileExtension}`;
+        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]}/aws/getpresigneduploadurls`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                files: [
+                    {
+                        fileName: fileName,
+                        fileType: file.type,
+                        folder: folder
+                    }
+                ]
+            })
+        });
+        if (!response.ok) {
+            throw new Error('Failed to get presigned URL');
+        }
+        const result = await response.json();
+        if (!result.success || !result.urls || result.urls.length === 0) {
+            throw new Error('Failed to get presigned URL');
+        }
+        return result.urls[0];
+    };
+    // Function to upload file to S3 using presigned URL
+    const uploadToS3 = async (file, presignedUrl)=>{
+        const response = await fetch(presignedUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': file.type
+            },
+            body: file
+        });
+        if (!response.ok) {
+            throw new Error('Failed to upload file to S3');
+        }
+        // Return the public URL (presigned URL without query params)
+        return presignedUrl.split('?')[0];
+    };
+    const handleUpload = async (e)=>{
+        const file = e.target.files[0];
+        if (!file) return;
+        // Validate file size (max 5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            setUploadError('File size must be less than 5MB');
+            return;
+        }
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setUploadError('Only image files are allowed');
+            return;
+        }
+        setUploading(true);
+        setUploadError(null);
+        setUploadProgress(0);
+        try {
+            // Show local preview immediately
+            const reader = new FileReader();
+            reader.onloadend = ()=>{
+                setPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+            setUploadProgress(20);
+            // Get presigned URL
+            const { uploadUrl, publicUrl } = await getPresignedUrl(file);
+            setUploadProgress(40);
+            // Upload to S3
+            await uploadToS3(file, uploadUrl);
+            setUploadProgress(80);
+            // Update the preview with S3 URL and notify parent
+            setPreview(publicUrl);
+            onChange(field, publicUrl);
+            setUploadProgress(100);
+            // Reset progress after a short delay
+            setTimeout(()=>{
+                setUploadProgress(0);
+            }, 500);
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            setUploadError('Failed to upload image. Please try again.');
+            setPreview(value); // Revert to previous image
+        } finally{
+            setUploading(false);
+        }
+    };
+    const handleRemove = ()=>{
+        setPreview(null);
+        setUploadError(null);
+        onChange(field, "");
+    };
+    return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+        className: "space-y-2",
+        children: [
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                className: "flex items-center justify-between text-xs font-semibold text-gray-600 uppercase tracking-wide",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "flex items-center gap-1.5",
+                        children: [
+                            Icon && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(Icon, {
+                                className: "w-3.5 h-3.5 text-gray-400"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                lineNumber: 371,
+                                columnNumber: 20
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            label
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                        lineNumber: 370,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    isChanged && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                        className: "flex items-center gap-1 text-amber-600 normal-case text-[10px] font-medium bg-amber-50 px-2 py-0.5 rounded-full",
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$zap$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Zap$3e$__["Zap"], {
+                                className: "w-3 h-3"
+                            }, void 0, false, {
+                                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                lineNumber: 376,
+                                columnNumber: 13
+                            }, ("TURBOPACK compile-time value", void 0)),
+                            "Modified"
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                        lineNumber: 375,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                lineNumber: 369,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "relative group",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: `${aspectRatio} rounded-xl overflow-hidden border-2 border-dashed transition-all ${uploading ? 'border-indigo-400 bg-indigo-50' : preview ? 'border-gray-200 bg-gray-50' : 'border-gray-300 hover:border-indigo-400 bg-gray-50'}`,
+                        children: uploading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "w-full h-full flex flex-col items-center justify-center bg-indigo-50",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
+                                    className: "w-8 h-8 text-indigo-500 animate-spin mb-2"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 391,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-sm font-medium text-indigo-600",
+                                    children: [
+                                        uploadProgress,
+                                        "%"
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 392,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-xs text-indigo-500 mt-1",
+                                    children: "Uploading..."
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 393,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0))
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                            lineNumber: 390,
+                            columnNumber: 13
+                        }, ("TURBOPACK compile-time value", void 0)) : preview ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                    src: preview,
+                                    alt: label,
+                                    className: "w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 397,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    className: "absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3",
+                                    children: [
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                            href: preview,
+                                            target: "_blank",
+                                            rel: "noopener noreferrer",
+                                            className: "p-2.5 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition-colors",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$eye$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Eye$3e$__["Eye"], {
+                                                className: "w-5 h-5 text-gray-700"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                                lineNumber: 409,
+                                                columnNumber: 19
+                                            }, ("TURBOPACK compile-time value", void 0))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                            lineNumber: 403,
+                                            columnNumber: 17
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                                            className: "p-2.5 bg-white rounded-lg shadow-lg hover:bg-gray-100 transition-colors cursor-pointer",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                    type: "file",
+                                                    className: "hidden",
+                                                    accept: "image/*",
+                                                    onChange: handleUpload,
+                                                    disabled: uploading
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                                    lineNumber: 412,
+                                                    columnNumber: 19
+                                                }, ("TURBOPACK compile-time value", void 0)),
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
+                                                    className: "w-5 h-5 text-gray-700"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                                    lineNumber: 419,
+                                                    columnNumber: 19
+                                                }, ("TURBOPACK compile-time value", void 0))
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                            lineNumber: 411,
+                                            columnNumber: 17
+                                        }, ("TURBOPACK compile-time value", void 0)),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                            type: "button",
+                                            onClick: handleRemove,
+                                            className: "p-2.5 bg-red-500 rounded-lg shadow-lg hover:bg-red-600 transition-colors",
+                                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
+                                                className: "w-5 h-5 text-white"
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                                lineNumber: 426,
+                                                columnNumber: 19
+                                            }, ("TURBOPACK compile-time value", void 0))
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                            lineNumber: 421,
+                                            columnNumber: 17
+                                        }, ("TURBOPACK compile-time value", void 0))
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 402,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0))
+                            ]
+                        }, void 0, true) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("label", {
+                            className: "cursor-pointer w-full h-full flex flex-col items-center justify-center text-gray-400 hover:text-indigo-500 transition-colors",
+                            children: [
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                    type: "file",
+                                    className: "hidden",
+                                    accept: "image/*",
+                                    onChange: handleUpload,
+                                    disabled: uploading
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 432,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$camera$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Camera$3e$__["Camera"], {
+                                    className: "w-8 h-8 mb-2"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 439,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-sm font-medium",
+                                    children: "Click to upload"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 440,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0)),
+                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
+                                    className: "text-xs text-gray-400 mt-1",
+                                    children: "JPG, PNG (max 5MB)"
+                                }, void 0, false, {
+                                    fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                                    lineNumber: 441,
+                                    columnNumber: 15
+                                }, ("TURBOPACK compile-time value", void 0))
+                            ]
+                        }, void 0, true, {
+                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                            lineNumber: 431,
+                            columnNumber: 13
+                        }, ("TURBOPACK compile-time value", void 0))
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                        lineNumber: 383,
+                        columnNumber: 9
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    uploading && uploadProgress > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                        className: "absolute -bottom-1 left-2 right-2 h-1.5 bg-gray-200 rounded-full overflow-hidden",
+                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            className: "h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-300",
+                            style: {
+                                width: `${uploadProgress}%`
+                            }
+                        }, void 0, false, {
+                            fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                            lineNumber: 449,
+                            columnNumber: 13
+                        }, ("TURBOPACK compile-time value", void 0))
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                        lineNumber: 448,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0))
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                lineNumber: 382,
+                columnNumber: 7
+            }, ("TURBOPACK compile-time value", void 0)),
+            uploadError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                className: "text-xs text-red-500 flex items-center gap-1",
+                children: [
+                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$alert$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__AlertCircle$3e$__["AlertCircle"], {
+                        className: "w-3 h-3"
+                    }, void 0, false, {
+                        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                        lineNumber: 459,
+                        columnNumber: 11
+                    }, ("TURBOPACK compile-time value", void 0)),
+                    uploadError
+                ]
+            }, void 0, true, {
+                fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+                lineNumber: 458,
+                columnNumber: 9
+            }, ("TURBOPACK compile-time value", void 0))
+        ]
+    }, void 0, true, {
+        fileName: "[project]/src/components/admin/EditProfileModal.jsx",
+        lineNumber: 368,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -5583,7 +5946,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
             originalValue: originalData[props.field]
         }, void 0, false, {
             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-            lineNumber: 653,
+            lineNumber: 882,
             columnNumber: 5
         }, ("TURBOPACK compile-time value", void 0));
     const getCompletionPercentage = ()=>{
@@ -5606,20 +5969,20 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 className: "w-16 h-16 border-4 border-indigo-100 rounded-full"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 680,
+                                lineNumber: 909,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "absolute inset-0 w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 681,
+                                lineNumber: 910,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 679,
+                        lineNumber: 908,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5630,7 +5993,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: "Loading Farmer Details"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 684,
+                                lineNumber: 913,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5638,24 +6001,24 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: "Please wait while we fetch the data..."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 687,
+                                lineNumber: 916,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 683,
+                        lineNumber: 912,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 678,
+                lineNumber: 907,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-            lineNumber: 677,
+            lineNumber: 906,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -5672,12 +6035,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                             className: "w-8 h-8 text-red-600"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 702,
+                            lineNumber: 931,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 701,
+                        lineNumber: 930,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5688,7 +6051,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: "Failed to Load Data"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 705,
+                                lineNumber: 934,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5696,13 +6059,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: fetchError
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 708,
+                                lineNumber: 937,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 704,
+                        lineNumber: 933,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5714,7 +6077,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 711,
+                                lineNumber: 940,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -5725,31 +6088,31 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 721,
+                                        lineNumber: 950,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Retry"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 717,
+                                lineNumber: 946,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 710,
+                        lineNumber: 939,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                lineNumber: 700,
+                lineNumber: 929,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-            lineNumber: 699,
+            lineNumber: 928,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -5767,12 +6130,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 className: "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 736,
+                                lineNumber: 965,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 735,
+                            lineNumber: 964,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5786,40 +6149,40 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "relative group",
                                                 children: [
-                                                    farmerInfo?.user_image ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
-                                                        src: farmerInfo.user_image,
+                                                    formData.user_image ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
+                                                        src: formData.user_image,
                                                         alt: formData.name,
                                                         className: "w-16 h-16 rounded-2xl object-cover border-2 border-white/30 shadow-xl"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 745,
+                                                        lineNumber: 974,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         className: "w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white font-bold text-xl border border-white/30 shadow-xl",
                                                         children: formData.name ? formData.name.split(" ").map((n)=>n[0]).join("").substring(0, 2).toUpperCase() : "NA"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 751,
+                                                        lineNumber: 980,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
-                                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
-                                                        className: "absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center",
-                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$camera$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Camera$3e$__["Camera"], {
-                                                            className: "w-5 h-5 text-white"
+                                                    changedFields.user_image !== undefined && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                                        className: "absolute -top-1 -right-1 w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center",
+                                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$zap$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Zap$3e$__["Zap"], {
+                                                            className: "w-3 h-3 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 763,
-                                                            columnNumber: 21
+                                                            lineNumber: 993,
+                                                            columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 762,
-                                                        columnNumber: 19
+                                                        lineNumber: 992,
+                                                        columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 743,
+                                                lineNumber: 972,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5834,27 +6197,27 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         className: "w-5 h-5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 770,
+                                                                        lineNumber: 1001,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     "Edit Farmer Profile"
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 769,
+                                                                lineNumber: 1000,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$sparkles$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Sparkles$3e$__["Sparkles"], {
                                                                 className: "w-4 h-4 text-yellow-300 animate-pulse"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 773,
+                                                                lineNumber: 1004,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 768,
+                                                        lineNumber: 999,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5868,7 +6231,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 776,
+                                                                lineNumber: 1007,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             farmerInfo?.overallStatus && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5876,25 +6239,25 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 children: farmerInfo.overallStatus.charAt(0).toUpperCase() + farmerInfo.overallStatus.slice(1)
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 780,
+                                                                lineNumber: 1011,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 775,
+                                                        lineNumber: 1006,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 767,
+                                                lineNumber: 998,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 741,
+                                        lineNumber: 970,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5907,7 +6270,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         className: "w-4 h-4 text-amber-300"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 801,
+                                                        lineNumber: 1031,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -5919,13 +6282,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 802,
+                                                        lineNumber: 1032,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 800,
+                                                lineNumber: 1030,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5942,7 +6305,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 812,
+                                                                lineNumber: 1042,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -5950,13 +6313,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 children: "Complete"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 815,
+                                                                lineNumber: 1045,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 811,
+                                                        lineNumber: 1041,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -5974,7 +6337,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         strokeWidth: "4"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 819,
+                                                                        lineNumber: 1049,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("circle", {
@@ -5989,32 +6352,32 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         className: "transition-all duration-500"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 827,
+                                                                        lineNumber: 1057,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0))
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 818,
+                                                                lineNumber: 1048,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__["CheckCircle2"], {
                                                                 className: "w-5 h-5 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 841,
+                                                                lineNumber: 1070,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 817,
+                                                        lineNumber: 1047,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 810,
+                                                lineNumber: 1040,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6024,35 +6387,35 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     className: "w-5 h-5 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 849,
+                                                    lineNumber: 1078,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 845,
+                                                lineNumber: 1074,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 797,
+                                        lineNumber: 1027,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 740,
+                                lineNumber: 969,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 739,
+                            lineNumber: 968,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 734,
+                    lineNumber: 963,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 saveSuccess && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6064,12 +6427,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 className: "w-5 h-5 text-green-600"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 860,
+                                lineNumber: 1089,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 859,
+                            lineNumber: 1088,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6079,7 +6442,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                     children: "Changes saved successfully!"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 863,
+                                    lineNumber: 1092,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6087,19 +6450,19 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                     children: "Closing in a moment..."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 866,
+                                    lineNumber: 1095,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 862,
+                            lineNumber: 1091,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 858,
+                    lineNumber: 1087,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 errors.general && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6111,12 +6474,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 className: "w-5 h-5 text-red-600"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 875,
+                                lineNumber: 1104,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 874,
+                            lineNumber: 1103,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6126,12 +6489,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 children: errors.general
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 878,
+                                lineNumber: 1107,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 877,
+                            lineNumber: 1106,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6144,18 +6507,18 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                 className: "w-4 h-4 text-red-500"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 886,
+                                lineNumber: 1115,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 882,
+                            lineNumber: 1111,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 873,
+                    lineNumber: 1102,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6211,12 +6574,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                         className: "w-3.5 h-3.5 text-white"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 954,
+                                        lineNumber: 1181,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 947,
+                                    lineNumber: 1175,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6224,7 +6587,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                     children: tab.label
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 956,
+                                    lineNumber: 1183,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 changedCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6232,19 +6595,19 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                     children: changedCount
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 958,
+                                    lineNumber: 1185,
                                     columnNumber: 19
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, tab.id, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 938,
+                            lineNumber: 1167,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0));
                     })
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 892,
+                    lineNumber: 1121,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6273,12 +6636,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         className: "w-5 h-5 text-white"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 982,
+                                                                        lineNumber: 1209,
                                                                         columnNumber: 25
                                                                     }, ("TURBOPACK compile-time value", void 0))
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                    lineNumber: 981,
+                                                                    lineNumber: 1208,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6288,7 +6651,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                             children: "Account Status"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                            lineNumber: 985,
+                                                                            lineNumber: 1212,
                                                                             columnNumber: 25
                                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6296,19 +6659,19 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                             children: formData.is_active ? 'Farmer can access the system' : 'Farmer access is disabled'
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                            lineNumber: 986,
+                                                                            lineNumber: 1213,
                                                                             columnNumber: 25
                                                                         }, ("TURBOPACK compile-time value", void 0))
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                    lineNumber: 984,
+                                                                    lineNumber: 1211,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 980,
+                                                            lineNumber: 1207,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -6321,7 +6684,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         className: "w-5 h-5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 1002,
+                                                                        lineNumber: 1228,
                                                                         columnNumber: 27
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     "Active"
@@ -6332,7 +6695,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                         className: "w-5 h-5"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                        lineNumber: 1007,
+                                                                        lineNumber: 1233,
                                                                         columnNumber: 27
                                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                                     "Inactive"
@@ -6340,13 +6703,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                             }, void 0, true)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 991,
+                                                            lineNumber: 1218,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 979,
+                                                    lineNumber: 1206,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 changedFields.is_active !== undefined && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6356,7 +6719,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                             className: "w-3.5 h-3.5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1015,
+                                                            lineNumber: 1241,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Status will change from ",
@@ -6366,13 +6729,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1014,
+                                                    lineNumber: 1240,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 978,
+                                            lineNumber: 1205,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6414,13 +6777,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1021,
+                                            lineNumber: 1247,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 972,
+                                    lineNumber: 1199,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(SectionCard, {
@@ -6447,10 +6810,10 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1063,
+                                            lineNumber: 1289,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
-                                        (formData.aadhaar_image || formData.pan_image) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "mt-4",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6458,50 +6821,62 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     children: "Document Images"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1082,
-                                                    columnNumber: 21
+                                                    lineNumber: 1307,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.user_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "Profile Photo",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"]
+                                                            field: "user_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"],
+                                                            value: formData.user_image,
+                                                            onChange: handleChange,
+                                                            folder: "farmer-photos",
+                                                            isChanged: changedFields.user_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1086,
-                                                            columnNumber: 23
+                                                            lineNumber: 1311,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.aadhaar_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "Aadhaar Card",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"]
+                                                            field: "aadhaar_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"],
+                                                            value: formData.aadhaar_image,
+                                                            onChange: handleChange,
+                                                            folder: "farmer-documents",
+                                                            isChanged: changedFields.aadhaar_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1091,
-                                                            columnNumber: 23
+                                                            lineNumber: 1320,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.pan_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "PAN Card",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"]
+                                                            field: "pan_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"],
+                                                            value: formData.pan_image,
+                                                            onChange: handleChange,
+                                                            folder: "farmer-documents",
+                                                            isChanged: changedFields.pan_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1096,
-                                                            columnNumber: 23
+                                                            lineNumber: 1329,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1085,
-                                                    columnNumber: 21
+                                                    lineNumber: 1310,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1081,
-                                            columnNumber: 19
+                                            lineNumber: 1306,
+                                            columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "mt-4 p-4 bg-blue-50 rounded-xl border border-blue-100",
@@ -6512,54 +6887,54 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         className: "w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1108,
+                                                        lineNumber: 1344,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                         children: [
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-sm font-medium text-blue-800",
-                                                                children: "Document Verification"
+                                                                children: "Document Upload"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1110,
+                                                                lineNumber: 1346,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                                                                 className: "text-xs text-blue-600 mt-1",
-                                                                children: "Identity documents were verified during registration. Contact admin to update document images."
+                                                                children: "Click on any document to upload or replace. Images are securely stored and will require re-verification after changes."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1113,
+                                                                lineNumber: 1349,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1109,
+                                                        lineNumber: 1345,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1107,
+                                                lineNumber: 1343,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1106,
+                                            lineNumber: 1342,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1058,
+                                    lineNumber: 1284,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 971,
+                            lineNumber: 1198,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         activeTab === "address" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6583,7 +6958,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 })
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1133,
+                                                lineNumber: 1368,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             renderInputField({
@@ -6622,12 +6997,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1132,
+                                        lineNumber: 1367,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1127,
+                                    lineNumber: 1362,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(SectionCard, {
@@ -6646,7 +7021,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                             })
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1179,
+                                            lineNumber: 1414,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         farmerInfo?.khatauni_images?.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6657,7 +7032,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     children: "Khatauni Documents"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1192,
+                                                    lineNumber: 1427,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6668,18 +7043,18 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                             icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"]
                                                         }, img.khatauni_id, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1197,
+                                                            lineNumber: 1432,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0)))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1195,
+                                                    lineNumber: 1430,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1191,
+                                            lineNumber: 1426,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6691,7 +7066,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         className: "w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1211,
+                                                        lineNumber: 1446,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6701,7 +7076,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 children: "Khatauni Documents"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1213,
+                                                                lineNumber: 1448,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6709,36 +7084,36 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 children: "Land ownership documents are verified separately. Contact admin to update Khatauni records."
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1216,
+                                                                lineNumber: 1451,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1212,
+                                                        lineNumber: 1447,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1210,
+                                                lineNumber: 1445,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1209,
+                                            lineNumber: 1444,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1178,
+                                    lineNumber: 1413,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 1126,
+                            lineNumber: 1361,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         activeTab === "bank" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6789,10 +7164,10 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1235,
+                                            lineNumber: 1470,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
-                                        formData.bank_passbook_img && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "mt-4",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6800,35 +7175,39 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     children: "Bank Documents"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1275,
-                                                    columnNumber: 21
+                                                    lineNumber: 1509,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
-                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                        src: formData.bank_passbook_img,
+                                                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                         label: "Bank Passbook",
-                                                        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"]
+                                                        field: "bank_passbook_img",
+                                                        icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"],
+                                                        value: formData.bank_passbook_img,
+                                                        onChange: handleChange,
+                                                        folder: "farmer-bank-docs",
+                                                        isChanged: changedFields.bank_passbook_img !== undefined
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1279,
-                                                        columnNumber: 23
+                                                        lineNumber: 1513,
+                                                        columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1278,
-                                                    columnNumber: 21
+                                                    lineNumber: 1512,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1274,
-                                            columnNumber: 19
+                                            lineNumber: 1508,
+                                            columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1230,
+                                    lineNumber: 1465,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6845,12 +7224,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                             className: "w-5 h-5 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1294,
+                                                            lineNumber: 1531,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1293,
+                                                        lineNumber: 1530,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6860,7 +7239,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 children: "Bank Account Status"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1297,
+                                                                lineNumber: 1534,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -6872,19 +7251,19 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                                lineNumber: 1300,
+                                                                lineNumber: 1537,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1296,
+                                                        lineNumber: 1533,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1292,
+                                                lineNumber: 1529,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6894,7 +7273,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         className: "w-4 h-4 text-green-600"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1309,
+                                                        lineNumber: 1546,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -6902,30 +7281,30 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         children: "Linked"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1310,
+                                                        lineNumber: 1547,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1308,
+                                                lineNumber: 1545,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1291,
+                                        lineNumber: 1528,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1290,
+                                    lineNumber: 1527,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 1229,
+                            lineNumber: 1464,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         activeTab === "nominee" && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -6978,12 +7357,12 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1327,
+                                        lineNumber: 1564,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1322,
+                                    lineNumber: 1559,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(SectionCard, {
@@ -7016,16 +7395,16 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     })
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1386,
+                                                    lineNumber: 1623,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1373,
+                                            lineNumber: 1610,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
-                                        (formData.nominee_image || formData.nominee_aadhaar_image || formData.nominee_pan_image) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                             className: "mt-4",
                                             children: [
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7033,55 +7412,67 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     children: "Nominee Documents"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1401,
-                                                    columnNumber: 21
+                                                    lineNumber: 1635,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4",
                                                     children: [
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.nominee_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "Nominee Photo",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"]
+                                                            field: "nominee_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"],
+                                                            value: formData.nominee_image,
+                                                            onChange: handleChange,
+                                                            folder: "nominee-photos",
+                                                            isChanged: changedFields.nominee_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1405,
-                                                            columnNumber: 23
+                                                            lineNumber: 1639,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.nominee_aadhaar_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "Nominee Aadhaar",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"]
+                                                            field: "nominee_aadhaar_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$credit$2d$card$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CreditCard$3e$__["CreditCard"],
+                                                            value: formData.nominee_aadhaar_image,
+                                                            onChange: handleChange,
+                                                            folder: "nominee-documents",
+                                                            isChanged: changedFields.nominee_aadhaar_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1410,
-                                                            columnNumber: 23
+                                                            lineNumber: 1648,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
-                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
-                                                            src: formData.nominee_pan_image,
+                                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageUploadField, {
                                                             label: "Nominee PAN",
-                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"]
+                                                            field: "nominee_pan_image",
+                                                            icon: __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$file$2d$text$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__FileText$3e$__["FileText"],
+                                                            value: formData.nominee_pan_image,
+                                                            onChange: handleChange,
+                                                            folder: "nominee-documents",
+                                                            isChanged: changedFields.nominee_pan_image !== undefined
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                            lineNumber: 1415,
-                                                            columnNumber: 23
+                                                            lineNumber: 1657,
+                                                            columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1404,
-                                                    columnNumber: 21
+                                                    lineNumber: 1638,
+                                                    columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                            lineNumber: 1400,
-                                            columnNumber: 19
+                                            lineNumber: 1634,
+                                            columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1368,
+                                    lineNumber: 1605,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7093,7 +7484,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 className: "w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1428,
+                                                lineNumber: 1673,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7103,7 +7494,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         children: "Nominee Information"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1430,
+                                                        lineNumber: 1675,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -7111,36 +7502,36 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                         children: "The nominee will be the beneficiary in case of any claims. Ensure all details are accurate and up-to-date."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                        lineNumber: 1433,
+                                                        lineNumber: 1678,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1429,
+                                                lineNumber: 1674,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1427,
+                                        lineNumber: 1672,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                    lineNumber: 1426,
+                                    lineNumber: 1671,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                            lineNumber: 1321,
+                            lineNumber: 1558,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 968,
+                    lineNumber: 1195,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7158,7 +7549,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 className: "w-2 h-2 bg-green-500 rounded-full"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1449,
+                                                lineNumber: 1694,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7166,13 +7557,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 children: "Required fields marked with *"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1450,
+                                                lineNumber: 1695,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1448,
+                                        lineNumber: 1693,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     getChangedFieldsCount() > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7182,7 +7573,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 className: "w-4 h-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1457,
+                                                lineNumber: 1702,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -7194,13 +7585,13 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1458,
+                                                lineNumber: 1703,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1456,
+                                        lineNumber: 1701,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     Object.keys(errors).filter((k)=>k !== "general").length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7210,8 +7601,8 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 className: "w-4 h-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1468,
-                                                columnNumber: 19
+                                                lineNumber: 1713,
+                                                columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 className: "text-xs font-medium",
@@ -7225,19 +7616,19 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1469,
-                                                columnNumber: 19
+                                                lineNumber: 1714,
+                                                columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1467,
-                                        columnNumber: 17
+                                        lineNumber: 1712,
+                                        columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 1447,
+                                lineNumber: 1692,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -7259,14 +7650,14 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                 className: "w-4 h-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                lineNumber: 1493,
+                                                lineNumber: 1738,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Reset"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1483,
+                                        lineNumber: 1728,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -7276,7 +7667,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1496,
+                                        lineNumber: 1741,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -7289,7 +7680,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     className: "w-4 h-4 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1510,
+                                                    lineNumber: 1755,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 "Saving..."
@@ -7300,7 +7691,7 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1515,
+                                                    lineNumber: 1760,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 "Save Changes",
@@ -7309,49 +7700,49 @@ const EditProfileModal = ({ isOpen, onClose, farmerId, onSave })=>{
                                                     children: getChangedFieldsCount()
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1518,
+                                                    lineNumber: 1763,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                                     className: "w-4 h-4 group-hover:translate-x-1 transition-transform"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                                    lineNumber: 1522,
+                                                    lineNumber: 1767,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                        lineNumber: 1503,
+                                        lineNumber: 1748,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                                lineNumber: 1482,
+                                lineNumber: 1727,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                        lineNumber: 1446,
+                        lineNumber: 1691,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-                    lineNumber: 1445,
+                    lineNumber: 1690,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-            lineNumber: 732,
+            lineNumber: 961,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/admin/EditProfileModal.jsx",
-        lineNumber: 731,
+        lineNumber: 960,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };

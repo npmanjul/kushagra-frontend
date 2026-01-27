@@ -19,7 +19,6 @@ __turbopack_context__.s([
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.js [app-ssr] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
-// Import all necessary icons from lucide-react
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/chevron-right.js [app-ssr] (ecmascript) <export default as ChevronRight>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/user.js [app-ssr] (ecmascript) <export default as User>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$map$2d$pin$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__MapPin$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/map-pin.js [app-ssr] (ecmascript) <export default as MapPin>");
@@ -32,15 +31,89 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$re
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$camera$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Camera$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/camera.js [app-ssr] (ecmascript) <export default as Camera>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__CircleCheck$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-check.js [app-ssr] (ecmascript) <export default as CircleCheck>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/lock.js [app-ssr] (ecmascript) <export default as Lock>");
-// Import constant for API base URL
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/constants.js [app-ssr] (ecmascript)");
 "use client";
 ;
 ;
 ;
 ;
-// --- Configuration Constants ---
-// Defines the steps of the multi-step form for rendering the indicator
+// --- S3 Upload Helper Functions ---
+/**
+ * Fetches presigned upload URLs from the backend
+ * @param {Array<{fileName: string, fileType: string}>} fileDetails - Array of file details
+ * @returns {Promise<{success: boolean, data: Array<{uploadUrl: string, publicUrl: string, key: string}>}>}
+ */ const getPresignedUploadUrls = async (fileDetails)=>{
+    const token = localStorage.getItem("token");
+    const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]}/aws/getpresigneduploadurls`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            files: fileDetails
+        })
+    });
+    if (!response.ok) {
+        const errorData = await response.json().catch(()=>null);
+        throw new Error(errorData?.message || "Failed to get presigned URLs");
+    }
+    return response.json();
+};
+/**
+ * Uploads a single file to S3 using the presigned URL
+ * @param {File} file - The file to upload
+ * @param {string} uploadUrl - The presigned upload URL
+ * @returns {Promise<void>}
+ */ const uploadFileToS3 = async (file, uploadUrl)=>{
+    // Note: Do NOT send custom headers - S3 presigned URLs are signed without them
+    const response = await fetch(uploadUrl, {
+        method: "PUT",
+        body: file
+    });
+    if (!response.ok) {
+        throw new Error(`Failed to upload file: ${file.name}`);
+    }
+};
+/**
+ * Uploads multiple files to S3 and returns their public URLs
+ * @param {Array<{key: string, file: File}>} filesToUpload - Array of files with their keys
+ * @returns {Promise<Object<string, string>>} - Object mapping file keys to public URLs
+ */ const uploadFilesToS3 = async (filesToUpload)=>{
+    if (!filesToUpload || filesToUpload.length === 0) {
+        return {};
+    }
+    // Filter out null/undefined files
+    const validFiles = filesToUpload.filter((f)=>f.file != null);
+    if (validFiles.length === 0) {
+        return {};
+    }
+    // Prepare file details for the presigned URL request
+    const fileDetails = validFiles.map((f)=>({
+            fileName: `${f.key}_${Date.now()}_${f.file.name}`,
+            fileType: f.file.type || "image/jpeg"
+        }));
+    // Get presigned URLs from the backend
+    const presignedResponse = await getPresignedUploadUrls(fileDetails);
+    // Handle the API response format: { success, message, data: [...] }
+    const urls = presignedResponse.data || presignedResponse.urls || presignedResponse;
+    if (!Array.isArray(urls) || urls.length !== validFiles.length) {
+        console.error("Presigned URL response:", presignedResponse);
+        throw new Error("Invalid presigned URL response from server");
+    }
+    // Upload files sequentially
+    const publicUrls = {};
+    for(let i = 0; i < validFiles.length; i++){
+        const file = validFiles[i];
+        const urlData = urls[i];
+        if (!urlData.uploadUrl) {
+            throw new Error(`Missing uploadUrl for file: ${file.key}`);
+        }
+        await uploadFileToS3(file.file, urlData.uploadUrl);
+        publicUrls[file.key] = urlData.publicUrl;
+    }
+    return publicUrls;
+};
 const STEPS = [
     {
         id: 1,
@@ -97,7 +170,7 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
         className: "relative group",
         children: [
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: `relative w-full h-28 sm:h-32 rounded-xl overflow-hidden border-2 border-dashed transition-colors ${error ? "border-red-500 bg-red-50" : "border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200 hover:border-blue-400"}`,
+                className: `relative w-full h-28 sm:h-32 rounded-xl overflow-hidden border-2 border-dashed transition-colors ${error ? "border-red-500 bg-red-50" : "border-gray-300 bg-linear-to-br from-gray-100 to-gray-200 hover:border-blue-400"}`,
                 children: file ? // If a file preview URL exists, show the image and a remove button
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
                     children: [
@@ -107,7 +180,7 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                             className: "w-full h-full object-cover"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 78,
+                            lineNumber: 165,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -121,17 +194,17 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                     size: 16
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 86,
+                                    lineNumber: 173,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 80,
+                                lineNumber: 167,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 79,
+                            lineNumber: 166,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
@@ -144,7 +217,7 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                             className: "mb-1"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 93,
+                            lineNumber: 180,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -152,18 +225,18 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                             children: label
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 94,
+                            lineNumber: 181,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 92,
+                    lineNumber: 179,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 68,
+                lineNumber: 156,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             error && // Display validation error if present
@@ -172,23 +245,23 @@ const ImagePreview = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                         size: 14,
-                        className: "mr-1 flex-shrink-0"
+                        className: "mr-1 shrink-0"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 101,
+                        lineNumber: 188,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     error
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 100,
+                lineNumber: 187,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 67,
+        lineNumber: 155,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0)));
 // Shared: File upload wrapper component (memoized for performance)
@@ -205,13 +278,13 @@ const FileUpload = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f
                         children: "*"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 113,
+                        lineNumber: 200,
                         columnNumber: 17
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 112,
+                lineNumber: 199,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -224,7 +297,7 @@ const FileUpload = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f
                         className: "absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 117,
+                        lineNumber: 204,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(ImagePreview, {
@@ -234,19 +307,19 @@ const FileUpload = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d2f
                         error: error
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 123,
+                        lineNumber: 210,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 115,
+                lineNumber: 202,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 111,
+        lineNumber: 198,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0)));
 // Shared: Step indicator component (memoized for performance)
@@ -259,27 +332,27 @@ const StepIndicator = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5
                 const isActive = currentStep === step.id; // True if this is the current step
                 return(// ... (Styling logic for active, done, and pending steps)
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                    className: "flex flex-col items-center relative min-w-[70px] sm:min-w-[100px] flex-shrink-0",
+                    className: "flex flex-col items-center relative min-w-[70px] sm:min-w-[100px] shrink-0",
                     children: [
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            className: `w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${isDone ? "bg-gradient-to-r from-green-400 to-green-600 border-green-500 text-white shadow-lg scale-110" : isActive ? "bg-gradient-to-r from-blue-400 to-blue-600 border-blue-500 text-white shadow-lg scale-110" : "bg-white border-gray-300 text-gray-400 shadow-md"}`,
+                            className: `w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${isDone ? "bg-linear-to-r from-green-400 to-green-600 border-green-500 text-white shadow-lg scale-110" : isActive ? "bg-linear-to-r from-blue-400 to-blue-600 border-blue-500 text-white shadow-lg scale-110" : "bg-white border-gray-300 text-gray-400 shadow-md"}`,
                             children: isDone ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$check$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Check$3e$__["Check"], {
                                 size: 20,
                                 className: "animate-pulse"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 158,
+                                lineNumber: 244,
                                 columnNumber: 17
                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(step.icon, {
                                 size: 20
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 160,
+                                lineNumber: 246,
                                 columnNumber: 17
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 148,
+                            lineNumber: 235,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -290,7 +363,7 @@ const StepIndicator = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5
                                     children: step.title
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 165,
+                                    lineNumber: 251,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -298,30 +371,30 @@ const StepIndicator = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5
                                     children: step.description
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 172,
+                                    lineNumber: 257,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 164,
+                            lineNumber: 250,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, step.id, true, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 144,
+                    lineNumber: 231,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)));
             })
         }, void 0, false, {
             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-            lineNumber: 137,
+            lineNumber: 224,
             columnNumber: 5
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 136,
+        lineNumber: 223,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0)));
 // --- Step Components (Steps 2-6) ---
@@ -335,11 +408,11 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                 className: "text-center mb-6 sm:mb-8",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2",
+                        className: "text-2xl sm:text-3xl font-bold bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2",
                         children: "Address Information"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 195,
+                        lineNumber: 279,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -347,13 +420,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         children: "Where can we reach you?"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 198,
+                        lineNumber: 282,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 194,
+                lineNumber: 278,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -368,13 +441,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: "*"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 205,
+                                lineNumber: 289,
                                 columnNumber: 22
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 204,
+                        lineNumber: 288,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -386,7 +459,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         placeholder: "Enter your complete address"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 207,
+                        lineNumber: 291,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     errors.address && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -394,23 +467,23 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                 size: 14,
-                                className: "mr-1 flex-shrink-0"
+                                className: "mr-1 shrink-0"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 221,
+                                lineNumber: 304,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.address
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 220,
+                        lineNumber: 303,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 203,
+                lineNumber: 287,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -428,13 +501,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 230,
+                                        lineNumber: 313,
                                         columnNumber: 18
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 229,
+                                lineNumber: 312,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -446,7 +519,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 placeholder: "Enter tehsil"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 232,
+                                lineNumber: 315,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.tehsil && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -454,23 +527,23 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 246,
+                                        lineNumber: 328,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.tehsil
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 245,
+                                lineNumber: 327,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 228,
+                        lineNumber: 311,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -485,13 +558,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 254,
+                                        lineNumber: 336,
                                         columnNumber: 20
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 253,
+                                lineNumber: 335,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -503,7 +576,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 placeholder: "Enter district"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 256,
+                                lineNumber: 338,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.district && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -511,23 +584,23 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 270,
+                                        lineNumber: 351,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.district
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 269,
+                                lineNumber: 350,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 252,
+                        lineNumber: 334,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -542,13 +615,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 278,
+                                        lineNumber: 359,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 277,
+                                lineNumber: 358,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -560,7 +633,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 placeholder: "Enter state"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 280,
+                                lineNumber: 361,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.state && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -568,23 +641,23 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 294,
+                                        lineNumber: 374,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.state
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 293,
+                                lineNumber: 373,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 276,
+                        lineNumber: 357,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -599,13 +672,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 302,
+                                        lineNumber: 382,
                                         columnNumber: 20
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 301,
+                                lineNumber: 381,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -618,7 +691,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 maxLength: 6
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 304,
+                                lineNumber: 384,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.pin_code && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -626,29 +699,29 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 319,
+                                        lineNumber: 398,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.pin_code
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 318,
+                                lineNumber: 397,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 300,
+                        lineNumber: 380,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 227,
+                lineNumber: 310,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -663,13 +736,13 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: "*"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 328,
+                                lineNumber: 407,
                                 columnNumber: 18
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 327,
+                        lineNumber: 406,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -681,7 +754,7 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         placeholder: "Near any famous place"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 330,
+                        lineNumber: 409,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     errors.landmark && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -689,29 +762,29 @@ const Step2Address = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                 size: 14,
-                                className: "mr-1 flex-shrink-0"
+                                className: "mr-1 shrink-0"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 344,
+                                lineNumber: 422,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.landmark
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 343,
+                        lineNumber: 421,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 326,
+                lineNumber: 405,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 193,
+        lineNumber: 277,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0)));
 // Component for Step 3: Identification
@@ -722,11 +795,11 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                 className: "text-center mb-6 sm:mb-8",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2",
+                        className: "text-2xl sm:text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2",
                         children: "Farmer Identification"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 370,
+                        lineNumber: 448,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -734,13 +807,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                         children: "Upload your identification documents"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 373,
+                        lineNumber: 451,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 369,
+                lineNumber: 447,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -758,13 +831,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 381,
+                                        lineNumber: 459,
                                         columnNumber: 28
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 380,
+                                lineNumber: 458,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -777,7 +850,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 maxLength: 12
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 383,
+                                lineNumber: 461,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.aadhaar_number && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -785,23 +858,23 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 398,
+                                        lineNumber: 475,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.aadhaar_number
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 397,
+                                lineNumber: 474,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 379,
+                        lineNumber: 457,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -816,13 +889,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 406,
+                                        lineNumber: 483,
                                         columnNumber: 24
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 405,
+                                lineNumber: 482,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -835,7 +908,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 maxLength: 10
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 408,
+                                lineNumber: 485,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.pan_number && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -843,23 +916,23 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 423,
+                                        lineNumber: 499,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.pan_number
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 422,
+                                lineNumber: 498,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 404,
+                        lineNumber: 481,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -875,13 +948,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 433,
+                                        lineNumber: 509,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 431,
+                                lineNumber: 507,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -906,12 +979,12 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                     }
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                    lineNumber: 441,
+                                                    lineNumber: 517,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 440,
+                                                lineNumber: 516,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -925,7 +998,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                             className: "hidden"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 461,
+                                                            lineNumber: 537,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -935,26 +1008,26 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                                     size: 16
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                                    lineNumber: 468,
+                                                                    lineNumber: 544,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                                     children: "Upload Khatauni Image"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                                    lineNumber: 469,
+                                                                    lineNumber: 545,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 467,
+                                                            lineNumber: 543,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                    lineNumber: 460,
+                                                    lineNumber: 536,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                     className: "relative",
@@ -965,7 +1038,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                             className: "w-full h-12 object-cover rounded-xl"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 474,
+                                                            lineNumber: 550,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -976,65 +1049,65 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                                 size: 12
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                                lineNumber: 484,
+                                                                lineNumber: 560,
                                                                 columnNumber: 23
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 479,
+                                                            lineNumber: 555,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                    lineNumber: 473,
+                                                    lineNumber: 549,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 458,
+                                                lineNumber: 534,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 438,
+                                        lineNumber: 514,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         type: "button",
                                         onClick: handleAddKhatauniEntry,
                                         disabled: !formData.khatauni_id_input || !tempKhatauniImage,
-                                        className: `w-full px-4 py-2 sm:px-6 sm:py-3 font-semibold rounded-xl transition-all shadow-md text-sm sm:text-base flex items-center justify-center gap-2 ${!formData.khatauni_id_input || !tempKhatauniImage ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg active:scale-95"}`,
+                                        className: `w-full px-4 py-2 sm:px-6 sm:py-3 font-semibold rounded-xl transition-all shadow-md text-sm sm:text-base flex items-center justify-center gap-2 ${!formData.khatauni_id_input || !tempKhatauniImage ? "bg-gray-300 text-gray-500 cursor-not-allowed" : "bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg active:scale-95"}`,
                                         children: [
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                 children: "Add Khatauni Entry"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 502,
+                                                lineNumber: 577,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
                                                 size: 16
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 503,
+                                                lineNumber: 578,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 492,
+                                        lineNumber: 568,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 437,
+                                lineNumber: 513,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             formData.khatauni_entries && formData.khatauni_entries.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                className: "mt-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200",
+                                className: "mt-4 p-4 bg-linear-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200",
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "flex items-center justify-between mb-3",
@@ -1046,7 +1119,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                     className: "text-purple-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                    lineNumber: 513,
+                                                    lineNumber: 588,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 "Added Khatauni Entries (",
@@ -1055,12 +1128,12 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 512,
+                                            lineNumber: 587,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 511,
+                                        lineNumber: 586,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1069,19 +1142,19 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                 className: "group flex items-center gap-3 p-3 bg-white border-2 border-purple-300 rounded-lg shadow-sm hover:shadow-md transition-all",
                                                 children: [
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                                        className: "flex-shrink-0",
+                                                        className: "shrink-0",
                                                         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
                                                             src: entry.preview,
                                                             alt: `Khatauni ${entry.id}`,
                                                             className: "w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border border-gray-200"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 525,
+                                                            lineNumber: 600,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 524,
+                                                        lineNumber: 599,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1095,7 +1168,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                                lineNumber: 534,
+                                                                lineNumber: 609,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1103,13 +1176,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                                 children: "Image uploaded"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                                lineNumber: 537,
+                                                                lineNumber: 612,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 533,
+                                                        lineNumber: 608,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1123,29 +1196,29 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                                             className: "text-red-500"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                            lineNumber: 548,
+                                                            lineNumber: 623,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 541,
+                                                        lineNumber: 616,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, index, true, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 519,
+                                                lineNumber: 594,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 517,
+                                        lineNumber: 592,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 510,
+                                lineNumber: 585,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.khatauni_entries && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1153,17 +1226,17 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 559,
+                                        lineNumber: 634,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.khatauni_entries
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 558,
+                                lineNumber: 633,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             formData.khatauni_entries.length === 0 && !errors.khatauni_entries && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1181,25 +1254,25 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                             d: "M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 574,
+                                            lineNumber: 649,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 568,
+                                        lineNumber: 643,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Add Khatauni ID with its corresponding image. You can add multiple entries."
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 567,
+                                lineNumber: 642,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 430,
+                        lineNumber: 506,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1214,13 +1287,13 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 589,
+                                        lineNumber: 664,
                                         columnNumber: 31
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 588,
+                                lineNumber: 663,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1234,7 +1307,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 step: "0.1"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 591,
+                                lineNumber: 666,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.land_size && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1242,33 +1315,33 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 607,
+                                        lineNumber: 681,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.land_size
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 606,
+                                lineNumber: 680,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 587,
+                        lineNumber: 662,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 378,
+                lineNumber: 456,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl border border-blue-100",
+                className: "bg-linear-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl border border-blue-100",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
                         className: "text-base sm:text-lg font-semibold text-gray-800 mb-4 flex items-center",
@@ -1278,14 +1351,14 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 size: 18
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 616,
+                                lineNumber: 690,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Other Document Uploads (All Required)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 615,
+                        lineNumber: 689,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1300,7 +1373,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 error: errors.userImage
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 620,
+                                lineNumber: 694,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FileUpload, {
@@ -1312,7 +1385,7 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 error: errors.aadhaarImg
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 628,
+                                lineNumber: 702,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FileUpload, {
@@ -1324,25 +1397,25 @@ const Step3Identification = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$pro
                                 error: errors.panImg
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 636,
+                                lineNumber: 710,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 619,
+                        lineNumber: 693,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 614,
+                lineNumber: 688,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 368,
+        lineNumber: 446,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0)));
 // Component for Step 4: Bank Details
@@ -1354,11 +1427,11 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                 className: "text-center mb-6 sm:mb-8",
                 children: [
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                        className: "text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-teal-600 bg-clip-text text-transparent mb-2",
+                        className: "text-2xl sm:text-3xl font-bold bg-linear-to-r from-indigo-600 to-teal-600 bg-clip-text text-transparent mb-2",
                         children: "Bank Details"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 663,
+                        lineNumber: 737,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1366,13 +1439,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                         children: "Secure banking information for transactions"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 666,
+                        lineNumber: 740,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 662,
+                lineNumber: 736,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1390,13 +1463,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 674,
+                                        lineNumber: 748,
                                         columnNumber: 28
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 673,
+                                lineNumber: 747,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1408,7 +1481,7 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 placeholder: "1234567890123456"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 676,
+                                lineNumber: 750,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.account_number && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1416,23 +1489,23 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 690,
+                                        lineNumber: 763,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.account_number
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 689,
+                                lineNumber: 762,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 672,
+                        lineNumber: 746,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1447,13 +1520,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 698,
+                                        lineNumber: 771,
                                         columnNumber: 23
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 697,
+                                lineNumber: 770,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1465,7 +1538,7 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 placeholder: "SBIN0001234"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 700,
+                                lineNumber: 773,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.ifsc_code && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1473,23 +1546,23 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 714,
+                                        lineNumber: 786,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.ifsc_code
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 713,
+                                lineNumber: 785,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 696,
+                        lineNumber: 769,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1504,13 +1577,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 722,
+                                        lineNumber: 794,
                                         columnNumber: 33
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 721,
+                                lineNumber: 793,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1522,7 +1595,7 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 placeholder: "As per bank records"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 724,
+                                lineNumber: 796,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.account_holder && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1530,23 +1603,23 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$x$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__X$3e$__["X"], {
                                         size: 14,
-                                        className: "mr-1 flex-shrink-0"
+                                        className: "mr-1 shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 738,
+                                        lineNumber: 809,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.account_holder
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 737,
+                                lineNumber: 808,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 720,
+                        lineNumber: 792,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1561,13 +1634,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 746,
+                                        lineNumber: 817,
                                         columnNumber: 23
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 745,
+                                lineNumber: 816,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1579,7 +1652,7 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 placeholder: "State Bank of India"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 748,
+                                lineNumber: 819,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.bank_name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1590,26 +1663,26 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 762,
+                                        lineNumber: 832,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.bank_name
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 761,
+                                lineNumber: 831,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 744,
+                        lineNumber: 815,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 671,
+                lineNumber: 745,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1624,13 +1697,13 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 children: "*"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 771,
+                                lineNumber: 841,
                                 columnNumber: 23
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 770,
+                        lineNumber: 840,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1642,7 +1715,7 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                         placeholder: "Branch location"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 773,
+                        lineNumber: 843,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     errors.branch_name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1653,20 +1726,20 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 className: "mr-1 flex-shrink-0"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 787,
+                                lineNumber: 856,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.branch_name
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 786,
+                        lineNumber: 855,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 769,
+                lineNumber: 839,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1680,14 +1753,14 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                                 size: 18
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 795,
+                                lineNumber: 864,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Bank Document (Required)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 794,
+                        lineNumber: 863,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1701,24 +1774,24 @@ const Step4BankDetails = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$projec
                             error: errors.bank_passbook_img
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 799,
+                            lineNumber: 868,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 798,
+                        lineNumber: 867,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 793,
+                lineNumber: 862,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 661,
+        lineNumber: 735,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0)));
 // Component for Step 5: Nominee
@@ -1736,7 +1809,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         children: "Nominee Information"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 829,
+                        lineNumber: 898,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1744,13 +1817,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         children: "Emergency contact and beneficiary details"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 832,
+                        lineNumber: 901,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 828,
+                lineNumber: 897,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1768,13 +1841,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 840,
+                                        lineNumber: 909,
                                         columnNumber: 28
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 839,
+                                lineNumber: 908,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1786,7 +1859,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 placeholder: "Nominee full name"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 842,
+                                lineNumber: 911,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_name && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1797,20 +1870,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 856,
+                                        lineNumber: 924,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_name
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 855,
+                                lineNumber: 923,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 838,
+                        lineNumber: 907,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1825,13 +1898,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 864,
+                                        lineNumber: 932,
                                         columnNumber: 37
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 863,
+                                lineNumber: 931,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1843,7 +1916,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 className: `w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_dob ? "border-red-500 bg-red-50" : "border-gray-200 bg-gray-50"}`
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 866,
+                                lineNumber: 934,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_dob && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1854,20 +1927,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 880,
+                                        lineNumber: 947,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_dob
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 879,
+                                lineNumber: 946,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 862,
+                        lineNumber: 930,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1882,13 +1955,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 888,
+                                        lineNumber: 955,
                                         columnNumber: 29
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 887,
+                                lineNumber: 954,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1901,7 +1974,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 maxLength: 10
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 890,
+                                lineNumber: 957,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_phone && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1912,20 +1985,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 905,
+                                        lineNumber: 971,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_phone
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 904,
+                                lineNumber: 970,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 886,
+                        lineNumber: 953,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1940,13 +2013,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 913,
+                                        lineNumber: 979,
                                         columnNumber: 29
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 912,
+                                lineNumber: 978,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -1958,7 +2031,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 placeholder: "nominee@example.com"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 915,
+                                lineNumber: 981,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_email && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1969,20 +2042,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 929,
+                                        lineNumber: 994,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_email
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 928,
+                                lineNumber: 993,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 911,
+                        lineNumber: 977,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1997,13 +2070,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 937,
+                                        lineNumber: 1002,
                                         columnNumber: 31
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 936,
+                                lineNumber: 1001,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2016,7 +2089,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 maxLength: 12
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 939,
+                                lineNumber: 1004,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_aadhaar && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2027,20 +2100,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 954,
+                                        lineNumber: 1018,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_aadhaar
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 953,
+                                lineNumber: 1017,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 935,
+                        lineNumber: 1000,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2055,13 +2128,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 962,
+                                        lineNumber: 1026,
                                         columnNumber: 27
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 961,
+                                lineNumber: 1025,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2074,7 +2147,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 maxLength: 10
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 964,
+                                lineNumber: 1028,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_pan && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2085,20 +2158,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 979,
+                                        lineNumber: 1042,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_pan
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 978,
+                                lineNumber: 1041,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 960,
+                        lineNumber: 1024,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2113,13 +2186,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 987,
+                                        lineNumber: 1050,
                                         columnNumber: 24
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 986,
+                                lineNumber: 1049,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2133,7 +2206,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Select Relation"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 999,
+                                        lineNumber: 1061,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2141,7 +2214,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Spouse"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1000,
+                                        lineNumber: 1062,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2149,7 +2222,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Father"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1001,
+                                        lineNumber: 1063,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2157,7 +2230,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Mother"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1002,
+                                        lineNumber: 1064,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2165,7 +2238,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Son"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1003,
+                                        lineNumber: 1065,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2173,7 +2246,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Daughter"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1004,
+                                        lineNumber: 1066,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2181,7 +2254,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Brother"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1005,
+                                        lineNumber: 1067,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2189,7 +2262,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Sister"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1006,
+                                        lineNumber: 1068,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2197,13 +2270,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Other"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1007,
+                                        lineNumber: 1069,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 989,
+                                lineNumber: 1052,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_relation && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2214,20 +2287,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1011,
+                                        lineNumber: 1073,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_relation
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1010,
+                                lineNumber: 1072,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 985,
+                        lineNumber: 1048,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2242,13 +2315,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1019,
+                                        lineNumber: 1081,
                                         columnNumber: 30
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1018,
+                                lineNumber: 1080,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -2262,7 +2335,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Select Gender"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1031,
+                                        lineNumber: 1092,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2270,7 +2343,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Male"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1032,
+                                        lineNumber: 1093,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2278,7 +2351,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Female"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1033,
+                                        lineNumber: 1094,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -2286,13 +2359,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         children: "Other"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1034,
+                                        lineNumber: 1095,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1021,
+                                lineNumber: 1083,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_gender && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2303,26 +2376,26 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1038,
+                                        lineNumber: 1099,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.nominee_gender
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1037,
+                                lineNumber: 1098,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1017,
+                        lineNumber: 1079,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 837,
+                lineNumber: 906,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2337,13 +2410,13 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 children: "*"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1047,
+                                lineNumber: 1108,
                                 columnNumber: 29
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1046,
+                        lineNumber: 1107,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -2355,7 +2428,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                         placeholder: "Nominee complete address"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1049,
+                        lineNumber: 1110,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     errors.nominee_address && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2366,20 +2439,20 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 className: "mr-1 flex-shrink-0"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1063,
+                                lineNumber: 1123,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.nominee_address
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1062,
+                        lineNumber: 1122,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1045,
+                lineNumber: 1106,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2393,14 +2466,14 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 size: 18
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1071,
+                                lineNumber: 1131,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             "Nominee Documents (All Required)"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1070,
+                        lineNumber: 1130,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2415,7 +2488,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 error: errors.nominee_image
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1075,
+                                lineNumber: 1135,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FileUpload, {
@@ -2427,7 +2500,7 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 error: errors.nominee_aadhaar_image
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1083,
+                                lineNumber: 1143,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(FileUpload, {
@@ -2439,25 +2512,25 @@ const Step5Nominee = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$5d
                                 error: errors.nominee_pan_image
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1091,
+                                lineNumber: 1151,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1074,
+                        lineNumber: 1134,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1069,
+                lineNumber: 1129,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 827,
+        lineNumber: 896,
         columnNumber: 7
     }, ("TURBOPACK compile-time value", void 0)));
 });
@@ -2474,7 +2547,7 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                         children: "Create Your 6-Digit PIN"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1111,
+                        lineNumber: 1171,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2482,13 +2555,13 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                         children: "This PIN will be used to authorize sensitive actions. Keep it confidential."
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1114,
+                        lineNumber: 1174,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1110,
+                lineNumber: 1170,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2506,13 +2579,13 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1123,
+                                        lineNumber: 1183,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1122,
+                                lineNumber: 1182,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2527,7 +2600,7 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                 placeholder: "••••••"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1125,
+                                lineNumber: 1185,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.account_pin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2538,20 +2611,20 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1142,
+                                        lineNumber: 1201,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.account_pin
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1141,
+                                lineNumber: 1200,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1121,
+                        lineNumber: 1181,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2566,13 +2639,13 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                         children: "*"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1150,
+                                        lineNumber: 1209,
                                         columnNumber: 23
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1149,
+                                lineNumber: 1208,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -2587,7 +2660,7 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                 placeholder: "••••••"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1152,
+                                lineNumber: 1211,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             errors.confirm_account_pin && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2598,26 +2671,26 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                         className: "mr-1 flex-shrink-0"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 1169,
+                                        lineNumber: 1227,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     errors.confirm_account_pin
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1168,
+                                lineNumber: 1226,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1148,
+                        lineNumber: 1207,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1120,
+                lineNumber: 1180,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2627,7 +2700,7 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                         children: "Security Tips:"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1177,
+                        lineNumber: 1235,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
@@ -2637,39 +2710,39 @@ const Step6CreatePin = /*#__PURE__*/ __TURBOPACK__imported__module__$5b$project$
                                 children: "Use a PIN that's easy for you to remember but hard for others to guess"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1179,
+                                lineNumber: 1237,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                 children: "Avoid obvious patterns like 123456 or your birthdate"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1182,
+                                lineNumber: 1240,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                 children: "Never share your PIN with anyone"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 1183,
+                                lineNumber: 1241,
                                 columnNumber: 9
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1178,
+                        lineNumber: 1236,
                         columnNumber: 7
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1176,
+                lineNumber: 1234,
                 columnNumber: 5
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 1109,
+        lineNumber: 1169,
         columnNumber: 3
     }, ("TURBOPACK compile-time value", void 0)));
 // --- Main Component ---
@@ -3007,74 +3080,131 @@ const MultiStepRegistration = ({ moveStep })=>{
                 case 3:
                     {
                         endpoint = `${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]}/register/step3`;
-                        const formDataToSend = new FormData();
-                        // Append form fields
-                        formDataToSend.append("aadhaar_number", formData.aadhaar_number);
-                        formDataToSend.append("pan_number", formData.pan_number);
-                        formDataToSend.append("land_size", formData.land_size);
-                        // Append khatauni entries (IDs and images as parallel arrays)
+                        // Prepare files for S3 upload
+                        const step3FilesToUpload = [
+                            {
+                                key: "userImage",
+                                file: files.userImage
+                            },
+                            {
+                                key: "aadhaarImg",
+                                file: files.aadhaarImg
+                            },
+                            {
+                                key: "panImg",
+                                file: files.panImg
+                            }
+                        ];
+                        // Add khatauni images to upload list
                         if (Array.isArray(formData.khatauni_entries) && formData.khatauni_entries.length) {
                             formData.khatauni_entries.forEach((entry, index)=>{
-                                // Append ID
-                                formDataToSend.append(`khatauni_ids[]`, entry.id);
-                                // Append corresponding image with index to maintain order
-                                formDataToSend.append(`khatauni_images[]`, entry.image, `khatauni_${entry.id}_${index}.jpg`);
+                                step3FilesToUpload.push({
+                                    key: `khatauni_image_${index}`,
+                                    file: entry.image
+                                });
                             });
-                            // Also send count for backend validation
-                            formDataToSend.append("khatauni_count", formData.khatauni_entries.length.toString());
                         }
-                        // Append other files
-                        if (files.userImage) formDataToSend.append("userImage", files.userImage);
-                        if (files.aadhaarImg) formDataToSend.append("aadhaarImg", files.aadhaarImg);
-                        if (files.panImg) formDataToSend.append("panImg", files.panImg);
+                        // Upload all files to S3 and get public URLs
+                        const step3PublicUrls = await uploadFilesToS3(step3FilesToUpload);
+                        // Prepare khatauni entries with public URLs
+                        const khatauniEntriesWithUrls = formData.khatauni_entries.map((entry, index)=>({
+                                id: entry.id,
+                                imageUrl: step3PublicUrls[`khatauni_image_${index}`] || ""
+                            }));
+                        // Prepare JSON payload with public URLs
+                        const step3Payload = {
+                            aadhaar_number: formData.aadhaar_number,
+                            pan_number: formData.pan_number,
+                            land_size: formData.land_size,
+                            khatauni_entries: khatauniEntriesWithUrls,
+                            khatauni_count: formData.khatauni_entries.length,
+                            userImage: step3PublicUrls.userImage || "",
+                            aadhaarImg: step3PublicUrls.aadhaarImg || "",
+                            panImg: step3PublicUrls.panImg || ""
+                        };
                         options = {
                             method: "POST",
                             headers: {
+                                "Content-Type": "application/json",
                                 Authorization: `Bearer ${localStorage.getItem("token")}`
                             },
-                            body: formDataToSend
+                            body: JSON.stringify(step3Payload)
                         };
                         break;
                     }
                 case 4:
                     {
                         endpoint = `${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]}/register/step4`;
-                        const formDataToSend = new FormData();
-                        // Append form fields
-                        formDataToSend.append("account_number", formData.account_number);
-                        formDataToSend.append("ifsc_code", formData.ifsc_code);
-                        formDataToSend.append("account_holder", formData.account_holder);
-                        formDataToSend.append("bank_name", formData.bank_name);
-                        formDataToSend.append("branch_name", formData.branch_name);
-                        // Append file
-                        if (files.bank_passbook_img) formDataToSend.append("bank_passbook_img", files.bank_passbook_img);
+                        // Prepare files for S3 upload
+                        const step4FilesToUpload = [
+                            {
+                                key: "bank_passbook_img",
+                                file: files.bank_passbook_img
+                            }
+                        ];
+                        // Upload files to S3 and get public URLs
+                        const step4PublicUrls = await uploadFilesToS3(step4FilesToUpload);
+                        // Prepare JSON payload with public URLs
+                        const step4Payload = {
+                            account_number: formData.account_number,
+                            ifsc_code: formData.ifsc_code,
+                            account_holder: formData.account_holder,
+                            bank_name: formData.bank_name,
+                            branch_name: formData.branch_name,
+                            bank_passbook_img: step4PublicUrls.bank_passbook_img || ""
+                        };
                         options = {
                             method: "POST",
                             headers: {
+                                "Content-Type": "application/json",
                                 Authorization: `Bearer ${localStorage.getItem("token")}`
                             },
-                            body: formDataToSend
+                            body: JSON.stringify(step4Payload)
                         };
                         break;
                     }
                 case 5:
                     {
                         endpoint = `${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"]}/register/step5`;
-                        const formDataToSend = new FormData();
-                        // Append nominee form fields
-                        Object.keys(formData).forEach((key)=>{
-                            if (key.startsWith("nominee_")) formDataToSend.append(key, formData[key]);
-                        });
-                        // Append nominee files
-                        if (files.nominee_image) formDataToSend.append("nominee_image", files.nominee_image);
-                        if (files.nominee_aadhaar_image) formDataToSend.append("nominee_aadhaar_image", files.nominee_aadhaar_image);
-                        if (files.nominee_pan_image) formDataToSend.append("nominee_pan_image", files.nominee_pan_image);
+                        // Prepare files for S3 upload
+                        const step5FilesToUpload = [
+                            {
+                                key: "nominee_image",
+                                file: files.nominee_image
+                            },
+                            {
+                                key: "nominee_aadhaar_image",
+                                file: files.nominee_aadhaar_image
+                            },
+                            {
+                                key: "nominee_pan_image",
+                                file: files.nominee_pan_image
+                            }
+                        ];
+                        // Upload files to S3 and get public URLs
+                        const step5PublicUrls = await uploadFilesToS3(step5FilesToUpload);
+                        // Prepare JSON payload with public URLs
+                        const step5Payload = {
+                            nominee_name: formData.nominee_name,
+                            nominee_dob: formData.nominee_dob,
+                            nominee_phone: formData.nominee_phone,
+                            nominee_email: formData.nominee_email,
+                            nominee_aadhaar: formData.nominee_aadhaar,
+                            nominee_pan: formData.nominee_pan,
+                            nominee_relation: formData.nominee_relation,
+                            nominee_gender: formData.nominee_gender,
+                            nominee_address: formData.nominee_address,
+                            nominee_image: step5PublicUrls.nominee_image || "",
+                            nominee_aadhaar_image: step5PublicUrls.nominee_aadhaar_image || "",
+                            nominee_pan_image: step5PublicUrls.nominee_pan_image || ""
+                        };
                         options = {
                             method: "POST",
                             headers: {
+                                "Content-Type": "application/json",
                                 Authorization: `Bearer ${localStorage.getItem("token")}`
                             },
-                            body: formDataToSend
+                            body: JSON.stringify(step5Payload)
                         };
                         break;
                     }
@@ -3299,7 +3429,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     handleInputChange: handleInputChange
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 1911,
+                    lineNumber: 1990,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             case 3:
@@ -3318,7 +3448,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     removeTempKhatauniImage: removeTempKhatauniImage
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 1919,
+                    lineNumber: 1998,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             case 4:
@@ -3331,7 +3461,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     previews: previews
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 1936,
+                    lineNumber: 2015,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             case 5:
@@ -3344,7 +3474,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     previews: previews
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 1947,
+                    lineNumber: 2026,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             case 6:
@@ -3354,7 +3484,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     handleInputChange: handleInputChange
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 1958,
+                    lineNumber: 2037,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             default:
@@ -3380,7 +3510,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                         className: "animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-b-4 border-blue-600 mx-auto mb-4"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1986,
+                        lineNumber: 2065,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -3388,7 +3518,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                         children: "Loading Registration..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1987,
+                        lineNumber: 2066,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3396,18 +3526,18 @@ const MultiStepRegistration = ({ moveStep })=>{
                         children: "Please wait while we check your progress"
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                        lineNumber: 1990,
+                        lineNumber: 2069,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                lineNumber: 1985,
+                lineNumber: 2064,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-            lineNumber: 1984,
+            lineNumber: 2063,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -3435,7 +3565,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     className: "sm:mr-1.5 un"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2014,
+                                    lineNumber: 2093,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3443,13 +3573,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     children: "Exit"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2015,
+                                    lineNumber: 2094,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2008,
+                            lineNumber: 2087,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3460,7 +3590,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     children: "Farmer Registration"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2019,
+                                    lineNumber: 2098,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3473,7 +3603,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2022,
+                                    lineNumber: 2101,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 showSteps && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3487,13 +3617,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2027,
+                                    lineNumber: 2106,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2018,
+                            lineNumber: 2097,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         showSteps && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(StepIndicator, {
@@ -3502,7 +3632,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                             steps: STEPS
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2036,
+                            lineNumber: 2115,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)),
                         globalError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3516,7 +3646,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                             className: "mt-0.5 mr-2 flex-shrink-0"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2047,
+                                            lineNumber: 2126,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3524,13 +3654,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                                             children: globalError
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2048,
+                                            lineNumber: 2127,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2046,
+                                    lineNumber: 2125,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3539,13 +3669,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     children: "Dismiss"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2050,
+                                    lineNumber: 2129,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2045,
+                            lineNumber: 2124,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3561,7 +3691,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                             children: "Registration Complete"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2067,
+                                            lineNumber: 2146,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3569,23 +3699,23 @@ const MultiStepRegistration = ({ moveStep })=>{
                                             children: "Thank you for completing your registration!"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2070,
+                                            lineNumber: 2149,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2066,
+                                    lineNumber: 2145,
                                     columnNumber: 19
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                lineNumber: 2061,
+                                lineNumber: 2140,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2060,
+                            lineNumber: 2139,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         showSteps && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3606,7 +3736,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         className: "animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white mr-2"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2097,
+                                                        lineNumber: 2175,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3614,7 +3744,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         children: "Saving..."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2098,
+                                                        lineNumber: 2176,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
@@ -3625,7 +3755,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         children: "Save & Continue"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2104,
+                                                        lineNumber: 2182,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$chevron$2d$right$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__ChevronRight$3e$__["ChevronRight"], {
@@ -3633,14 +3763,14 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         className: "ml-2"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2107,
+                                                        lineNumber: 2185,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true)
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2085,
+                                            lineNumber: 2164,
                                             columnNumber: 23
                                         }, ("TURBOPACK compile-time value", void 0)) : // Complete Registration Button (Final Step)
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3654,7 +3784,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         className: "animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white mr-2 inline-block"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2125,
+                                                        lineNumber: 2202,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3662,7 +3792,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                         children: "Completing Registration..."
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                        lineNumber: 2126,
+                                                        lineNumber: 2203,
                                                         columnNumber: 29
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
@@ -3671,22 +3801,22 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                 children: "Complete Registration"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 2131,
+                                                lineNumber: 2208,
                                                 columnNumber: 27
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2113,
+                                            lineNumber: 2191,
                                             columnNumber: 23
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 2082,
+                                        lineNumber: 2161,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2081,
+                                    lineNumber: 2160,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3701,7 +3831,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2142,
+                                            lineNumber: 2219,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3713,18 +3843,18 @@ const MultiStepRegistration = ({ moveStep })=>{
                                                 }
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                                lineNumber: 2146,
+                                                lineNumber: 2223,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                            lineNumber: 2145,
+                                            lineNumber: 2222,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2141,
+                                    lineNumber: 2218,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
@@ -3732,7 +3862,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 2006,
+                    lineNumber: 2085,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3740,13 +3870,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                     children: "Your progress is securely synced with the server."
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 2156,
+                    lineNumber: 2233,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-            lineNumber: 2005,
+            lineNumber: 2084,
             columnNumber: 9
         }, ("TURBOPACK compile-time value", void 0)) : // Success Message View
         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3763,7 +3893,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                                     children: "🎉"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2165,
+                                    lineNumber: 2242,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3773,18 +3903,18 @@ const MultiStepRegistration = ({ moveStep })=>{
                                         className: "text-green-600 animate-pulse"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                        lineNumber: 2169,
+                                        lineNumber: 2246,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2168,
+                                    lineNumber: 2245,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2164,
+                            lineNumber: 2241,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -3792,7 +3922,7 @@ const MultiStepRegistration = ({ moveStep })=>{
                             children: "Registration Complete!"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2175,
+                            lineNumber: 2252,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3801,14 +3931,14 @@ const MultiStepRegistration = ({ moveStep })=>{
                                 "You have successfully completed the registration process.",
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                                    lineNumber: 2180,
+                                    lineNumber: 2257,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 "Your data has been securely saved."
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2178,
+                            lineNumber: 2255,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
@@ -3817,13 +3947,13 @@ const MultiStepRegistration = ({ moveStep })=>{
                             children: "Go to Dashboard"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                            lineNumber: 2183,
+                            lineNumber: 2260,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 2163,
+                    lineNumber: 2240,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("style", {
@@ -3835,18 +3965,18 @@ const MultiStepRegistration = ({ moveStep })=>{
           `
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-                    lineNumber: 2191,
+                    lineNumber: 2268,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-            lineNumber: 2162,
+            lineNumber: 2239,
             columnNumber: 9
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/dashboard/MultiStepRegistration.jsx",
-        lineNumber: 2002,
+        lineNumber: 2081,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -4091,7 +4221,7 @@ function SignupForm() {
             columnNumber: 9
         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["Fragment"], {
             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                className: "min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4",
+                className: "min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center p-4",
                 children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     className: "w-full max-w-2xl",
                     children: [

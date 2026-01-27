@@ -1,7 +1,5 @@
 "use client";
-
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-// Import all necessary icons from lucide-react
 import {
   ChevronRight,
   User,
@@ -16,12 +14,102 @@ import {
   CircleCheck,
   Lock,
 } from "lucide-react";
-// Import constant for API base URL
 import API_BASE_URL from "@/utils/constants";
 
-// --- Configuration Constants ---
+// --- S3 Upload Helper Functions ---
 
-// Defines the steps of the multi-step form for rendering the indicator
+/**
+ * Fetches presigned upload URLs from the backend
+ * @param {Array<{fileName: string, fileType: string}>} fileDetails - Array of file details
+ * @returns {Promise<{success: boolean, data: Array<{uploadUrl: string, publicUrl: string, key: string}>}>}
+ */
+const getPresignedUploadUrls = async (fileDetails) => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_BASE_URL}/aws/getpresigneduploadurls`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ files: fileDetails }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || "Failed to get presigned URLs");
+  }
+
+  return response.json();
+};
+
+/**
+ * Uploads a single file to S3 using the presigned URL
+ * @param {File} file - The file to upload
+ * @param {string} uploadUrl - The presigned upload URL
+ * @returns {Promise<void>}
+ */
+const uploadFileToS3 = async (file, uploadUrl) => {
+  // Note: Do NOT send custom headers - S3 presigned URLs are signed without them
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    body: file,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to upload file: ${file.name}`);
+  }
+};
+
+/**
+ * Uploads multiple files to S3 and returns their public URLs
+ * @param {Array<{key: string, file: File}>} filesToUpload - Array of files with their keys
+ * @returns {Promise<Object<string, string>>} - Object mapping file keys to public URLs
+ */
+const uploadFilesToS3 = async (filesToUpload) => {
+  if (!filesToUpload || filesToUpload.length === 0) {
+    return {};
+  }
+
+  // Filter out null/undefined files
+  const validFiles = filesToUpload.filter((f) => f.file != null);
+  if (validFiles.length === 0) {
+    return {};
+  }
+
+  // Prepare file details for the presigned URL request
+  const fileDetails = validFiles.map((f) => ({
+    fileName: `${f.key}_${Date.now()}_${f.file.name}`,
+    fileType: f.file.type || "image/jpeg",
+  }));
+
+  // Get presigned URLs from the backend
+  const presignedResponse = await getPresignedUploadUrls(fileDetails);
+
+  // Handle the API response format: { success, message, data: [...] }
+  const urls = presignedResponse.data || presignedResponse.urls || presignedResponse;
+
+  if (!Array.isArray(urls) || urls.length !== validFiles.length) {
+    console.error("Presigned URL response:", presignedResponse);
+    throw new Error("Invalid presigned URL response from server");
+  }
+
+  // Upload files sequentially
+  const publicUrls = {};
+  for (let i = 0; i < validFiles.length; i++) {
+    const file = validFiles[i];
+    const urlData = urls[i];
+
+    if (!urlData.uploadUrl) {
+      throw new Error(`Missing uploadUrl for file: ${file.key}`);
+    }
+
+    await uploadFileToS3(file.file, urlData.uploadUrl);
+    publicUrls[file.key] = urlData.publicUrl;
+  }
+
+  return publicUrls;
+};
+
 const STEPS = [
   {
     id: 1,
@@ -66,11 +154,10 @@ const PATTERN = {
 const ImagePreview = React.memo(({ file, onRemove, label, error }) => (
   <div className="relative group">
     <div
-      className={`relative w-full h-28 sm:h-32 rounded-xl overflow-hidden border-2 border-dashed transition-colors ${
-        error
-          ? "border-red-500 bg-red-50"
-          : "border-gray-300 bg-gradient-to-br from-gray-100 to-gray-200 hover:border-blue-400"
-      }`}
+      className={`relative w-full h-28 sm:h-32 rounded-xl overflow-hidden border-2 border-dashed transition-colors ${error
+        ? "border-red-500 bg-red-50"
+        : "border-gray-300 bg-linear-to-br from-gray-100 to-gray-200 hover:border-blue-400"
+        }`}
     >
       {file ? (
         // If a file preview URL exists, show the image and a remove button
@@ -98,7 +185,7 @@ const ImagePreview = React.memo(({ file, onRemove, label, error }) => (
     {error && (
       // Display validation error if present
       <p className="text-red-500 text-xs flex items-center mt-1">
-        <X size={14} className="mr-1 flex-shrink-0" />
+        <X size={14} className="mr-1 shrink-0" />
         {error}
       </p>
     )}
@@ -143,16 +230,15 @@ const StepIndicator = React.memo(({ currentStep, stepCompleted }) => (
           // ... (Styling logic for active, done, and pending steps)
           <div
             key={step.id}
-            className="flex flex-col items-center relative min-w-[70px] sm:min-w-[100px] flex-shrink-0"
+            className="flex flex-col items-center relative min-w-[70px] sm:min-w-[100px] shrink-0"
           >
             <div
-              className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${
-                isDone
-                  ? "bg-gradient-to-r from-green-400 to-green-600 border-green-500 text-white shadow-lg scale-110"
-                  : isActive
-                  ? "bg-gradient-to-r from-blue-400 to-blue-600 border-blue-500 text-white shadow-lg scale-110"
+              className={`w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-300 ${isDone
+                ? "bg-linear-to-r from-green-400 to-green-600 border-green-500 text-white shadow-lg scale-110"
+                : isActive
+                  ? "bg-linear-to-r from-blue-400 to-blue-600 border-blue-500 text-white shadow-lg scale-110"
                   : "bg-white border-gray-300 text-gray-400 shadow-md"
-              }`}
+                }`}
             >
               {isDone ? (
                 <Check size={20} className="animate-pulse" />
@@ -163,16 +249,14 @@ const StepIndicator = React.memo(({ currentStep, stepCompleted }) => (
 
             <div className="text-center mt-2 sm:mt-3">
               <div
-                className={`text-xs sm:text-sm md:text-base font-bold transition-colors ${
-                  isDone || isActive ? "text-blue-600" : "text-gray-400"
-                }`}
+                className={`text-xs sm:text-sm md:text-base font-bold transition-colors ${isDone || isActive ? "text-blue-600" : "text-gray-400"
+                  }`}
               >
                 {step.title}
               </div>
               <div
-                className={`text-[8px] sm:text-xs transition-colors hidden sm:block ${
-                  isDone || isActive ? "text-blue-500" : "text-gray-400"
-                }`}
+                className={`text-[8px] sm:text-xs transition-colors hidden sm:block ${isDone || isActive ? "text-blue-500" : "text-gray-400"
+                  }`}
               >
                 {step.description}
               </div>
@@ -192,7 +276,7 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
   // Fields use formData, errors, and handleInputChange from props.
   <div className="space-y-4 sm:space-y-6">
     <div className="text-center mb-6 sm:mb-8">
-      <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+      <h2 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
         Address Information
       </h2>
       <p className="text-gray-600 text-sm sm:text-base">
@@ -209,16 +293,15 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
         value={formData.address}
         onChange={handleInputChange}
         rows={3}
-        className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all resize-none text-sm sm:text-base ${
-          errors.address
-            ? "border-red-500 bg-red-50"
-            : "border-gray-200 bg-gray-50"
-        }`}
+        className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all resize-none text-sm sm:text-base ${errors.address
+          ? "border-red-500 bg-red-50"
+          : "border-gray-200 bg-gray-50"
+          }`}
         placeholder="Enter your complete address"
       />
       {errors.address && (
         <p className="text-red-500 text-xs sm:text-sm flex items-center">
-          <X size={14} className="mr-1 flex-shrink-0" />
+          <X size={14} className="mr-1 shrink-0" />
           {errors.address}
         </p>
       )}
@@ -234,16 +317,15 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
           name="tehsil"
           value={formData.tehsil}
           onChange={handleInputChange}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.tehsil
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.tehsil
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="Enter tehsil"
         />
         {errors.tehsil && (
           <p className="text-red-500 text-xs sm:text-sm flex items-center">
-            <X size={14} className="mr-1 flex-shrink-0" />
+            <X size={14} className="mr-1 shrink-0" />
             {errors.tehsil}
           </p>
         )}
@@ -258,16 +340,15 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
           name="district"
           value={formData.district}
           onChange={handleInputChange}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.district
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.district
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="Enter district"
         />
         {errors.district && (
           <p className="text-red-500 text-xs sm:text-sm flex items-center">
-            <X size={14} className="mr-1 flex-shrink-0" />
+            <X size={14} className="mr-1 shrink-0" />
             {errors.district}
           </p>
         )}
@@ -282,16 +363,15 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
           name="state"
           value={formData.state}
           onChange={handleInputChange}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.state
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.state
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="Enter state"
         />
         {errors.state && (
           <p className="text-red-500 text-xs sm:text-sm flex items-center">
-            <X size={14} className="mr-1 flex-shrink-0" />
+            <X size={14} className="mr-1 shrink-0" />
             {errors.state}
           </p>
         )}
@@ -306,17 +386,16 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
           name="pin_code"
           value={formData.pin_code}
           onChange={handleInputChange}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.pin_code
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.pin_code
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="123456"
           maxLength={6}
         />
         {errors.pin_code && (
           <p className="text-red-500 text-xs sm:text-sm flex items-center">
-            <X size={14} className="mr-1 flex-shrink-0" />
+            <X size={14} className="mr-1 shrink-0" />
             {errors.pin_code}
           </p>
         )}
@@ -332,16 +411,15 @@ const Step2Address = React.memo(({ formData, errors, handleInputChange }) => (
         name="landmark"
         value={formData.landmark}
         onChange={handleInputChange}
-        className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-          errors.landmark
-            ? "border-red-500 bg-red-50"
-            : "border-gray-200 bg-gray-50"
-        }`}
+        className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.landmark
+          ? "border-red-500 bg-red-50"
+          : "border-gray-200 bg-gray-50"
+          }`}
         placeholder="Near any famous place"
       />
       {errors.landmark && (
         <p className="text-red-500 text-xs sm:text-sm flex items-center">
-          <X size={14} className="mr-1 flex-shrink-0" />
+          <X size={14} className="mr-1 shrink-0" />
           {errors.landmark}
         </p>
       )}
@@ -367,7 +445,7 @@ const Step3Identification = React.memo(
   }) => (
     <div className="space-y-6 sm:space-y-8">
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
           Farmer Identification
         </h2>
         <p className="text-gray-600 text-sm sm:text-base">
@@ -385,17 +463,16 @@ const Step3Identification = React.memo(
             name="aadhaar_number"
             value={formData.aadhaar_number}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.aadhaar_number
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.aadhaar_number
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="123456789012"
             maxLength={12}
           />
           {errors.aadhaar_number && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.aadhaar_number}
             </p>
           )}
@@ -410,17 +487,16 @@ const Step3Identification = React.memo(
             name="pan_number"
             value={formData.pan_number}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.pan_number
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.pan_number
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="ABCDE1234F"
             maxLength={10}
           />
           {errors.pan_number && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.pan_number}
             </p>
           )}
@@ -493,11 +569,10 @@ const Step3Identification = React.memo(
               type="button"
               onClick={handleAddKhatauniEntry}
               disabled={!formData.khatauni_id_input || !tempKhatauniImage}
-              className={`w-full px-4 py-2 sm:px-6 sm:py-3 font-semibold rounded-xl transition-all shadow-md text-sm sm:text-base flex items-center justify-center gap-2 ${
-                !formData.khatauni_id_input || !tempKhatauniImage
-                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                  : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg active:scale-95"
-              }`}
+              className={`w-full px-4 py-2 sm:px-6 sm:py-3 font-semibold rounded-xl transition-all shadow-md text-sm sm:text-base flex items-center justify-center gap-2 ${!formData.khatauni_id_input || !tempKhatauniImage
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-linear-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg active:scale-95"
+                }`}
             >
               <span>Add Khatauni Entry</span>
               <ChevronRight size={16} />
@@ -507,7 +582,7 @@ const Step3Identification = React.memo(
           {/* Display added Khatauni entries */}
           {formData.khatauni_entries &&
             formData.khatauni_entries.length > 0 && (
-              <div className="mt-4 p-4 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
+              <div className="mt-4 p-4 bg-linear-to-br from-purple-50 to-pink-50 rounded-xl border border-purple-200">
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-xs sm:text-sm text-gray-700 font-semibold flex items-center gap-2">
                     <FileText size={16} className="text-purple-600" />
@@ -521,7 +596,7 @@ const Step3Identification = React.memo(
                       className="group flex items-center gap-3 p-3 bg-white border-2 border-purple-300 rounded-lg shadow-sm hover:shadow-md transition-all"
                     >
                       {/* Preview Image */}
-                      <div className="flex-shrink-0">
+                      <div className="shrink-0">
                         <img
                           src={entry.preview}
                           alt={`Khatauni ${entry.id}`}
@@ -556,7 +631,7 @@ const Step3Identification = React.memo(
           {/* Error Message */}
           {errors.khatauni_entries && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center mt-2">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.khatauni_entries}
             </p>
           )}
@@ -593,25 +668,24 @@ const Step3Identification = React.memo(
             name="land_size"
             value={formData.land_size}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.land_size
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.land_size
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="0.0"
             min="0"
             step="0.1"
           />
           {errors.land_size && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.land_size}
             </p>
           )}
         </div>
       </div>
 
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl border border-blue-100">
+      <div className="bg-linear-to-br from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl border border-blue-100">
         <h3 className="text-base sm:text-lg font-semibold text-gray-800 mb-4 flex items-center">
           <Upload className="mr-2" size={18} />
           Other Document Uploads (All Required)
@@ -660,7 +734,7 @@ const Step4BankDetails = React.memo(
     // ... (JSX for account_number, ifsc_code, account_holder, bank_name, branch_name inputs and bank_passbook_img upload)
     <div className="space-y-6 sm:space-y-8">
       <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-indigo-600 to-teal-600 bg-clip-text text-transparent mb-2">
+        <h2 className="text-2xl sm:text-3xl font-bold bg-linear-to-r from-indigo-600 to-teal-600 bg-clip-text text-transparent mb-2">
           Bank Details
         </h2>
         <p className="text-gray-600 text-sm sm:text-base">
@@ -678,16 +752,15 @@ const Step4BankDetails = React.memo(
             name="account_number"
             value={formData.account_number}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.account_number
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.account_number
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="1234567890123456"
           />
           {errors.account_number && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.account_number}
             </p>
           )}
@@ -702,16 +775,15 @@ const Step4BankDetails = React.memo(
             name="ifsc_code"
             value={formData.ifsc_code}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.ifsc_code
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.ifsc_code
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="SBIN0001234"
           />
           {errors.ifsc_code && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.ifsc_code}
             </p>
           )}
@@ -726,16 +798,15 @@ const Step4BankDetails = React.memo(
             name="account_holder"
             value={formData.account_holder}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.account_holder
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.account_holder
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="As per bank records"
           />
           {errors.account_holder && (
             <p className="text-red-500 text-xs sm:text-sm flex items-center">
-              <X size={14} className="mr-1 flex-shrink-0" />
+              <X size={14} className="mr-1 shrink-0" />
               {errors.account_holder}
             </p>
           )}
@@ -750,11 +821,10 @@ const Step4BankDetails = React.memo(
             name="bank_name"
             value={formData.bank_name}
             onChange={handleInputChange}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-              errors.bank_name
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.bank_name
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="State Bank of India"
           />
           {errors.bank_name && (
@@ -775,11 +845,10 @@ const Step4BankDetails = React.memo(
           name="branch_name"
           value={formData.branch_name}
           onChange={handleInputChange}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.branch_name
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.branch_name
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="Branch location"
         />
         {errors.branch_name && (
@@ -844,11 +913,10 @@ const Step5Nominee = React.memo(
               name="nominee_name"
               value={formData.nominee_name}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_name
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_name
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
               placeholder="Nominee full name"
             />
             {errors.nominee_name && (
@@ -869,11 +937,10 @@ const Step5Nominee = React.memo(
               value={formData.nominee_dob}
               onChange={handleInputChange}
               max={today}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_dob
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_dob
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
             />
             {errors.nominee_dob && (
               <p className="text-red-500 text-xs sm:text-sm flex items-center">
@@ -892,11 +959,10 @@ const Step5Nominee = React.memo(
               name="nominee_phone"
               value={formData.nominee_phone}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_phone
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_phone
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
               placeholder="9876543210"
               maxLength={10}
             />
@@ -917,11 +983,10 @@ const Step5Nominee = React.memo(
               name="nominee_email"
               value={formData.nominee_email}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_email
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_email
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
               placeholder="nominee@example.com"
             />
             {errors.nominee_email && (
@@ -941,11 +1006,10 @@ const Step5Nominee = React.memo(
               name="nominee_aadhaar"
               value={formData.nominee_aadhaar}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_aadhaar
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_aadhaar
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
               placeholder="123456789012"
               maxLength={12}
             />
@@ -966,11 +1030,10 @@ const Step5Nominee = React.memo(
               name="nominee_pan"
               value={formData.nominee_pan}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_pan
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_pan
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
               placeholder="ABCDE1234F"
               maxLength={10}
             />
@@ -990,11 +1053,10 @@ const Step5Nominee = React.memo(
               name="nominee_relation"
               value={formData.nominee_relation}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_relation
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_relation
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
             >
               <option value="">Select Relation</option>
               <option value="spouse">Spouse</option>
@@ -1022,11 +1084,10 @@ const Step5Nominee = React.memo(
               name="nominee_gender"
               value={formData.nominee_gender}
               onChange={handleInputChange}
-              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-                errors.nominee_gender
-                  ? "border-red-500 bg-red-50"
-                  : "border-gray-200 bg-gray-50"
-              }`}
+              className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.nominee_gender
+                ? "border-red-500 bg-red-50"
+                : "border-gray-200 bg-gray-50"
+                }`}
             >
               <option value="">Select Gender</option>
               <option value="male">Male</option>
@@ -1051,11 +1112,10 @@ const Step5Nominee = React.memo(
             value={formData.nominee_address}
             onChange={handleInputChange}
             rows={3}
-            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all resize-none text-sm sm:text-base ${
-              errors.nominee_address
-                ? "border-red-500 bg-red-50"
-                : "border-gray-200 bg-gray-50"
-            }`}
+            className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all resize-none text-sm sm:text-base ${errors.nominee_address
+              ? "border-red-500 bg-red-50"
+              : "border-gray-200 bg-gray-50"
+              }`}
             placeholder="Nominee complete address"
           />
           {errors.nominee_address && (
@@ -1130,11 +1190,10 @@ const Step6CreatePin = React.memo(({ formData, errors, handleInputChange }) => (
           inputMode="numeric"
           autoComplete="new-password"
           maxLength={6}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.account_pin
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.account_pin
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="••••••"
         />
         {errors.account_pin && (
@@ -1157,11 +1216,10 @@ const Step6CreatePin = React.memo(({ formData, errors, handleInputChange }) => (
           inputMode="numeric"
           autoComplete="new-password"
           maxLength={6}
-          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${
-            errors.confirm_account_pin
-              ? "border-red-500 bg-red-50"
-              : "border-gray-200 bg-gray-50"
-          }`}
+          className={`w-full px-3 py-2 sm:px-4 sm:py-3 border-2 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 focus:border-blue-500 transition-all text-sm sm:text-base ${errors.confirm_account_pin
+            ? "border-red-500 bg-red-50"
+            : "border-gray-200 bg-gray-50"
+            }`}
           placeholder="••••••"
         />
         {errors.confirm_account_pin && (
@@ -1580,108 +1638,129 @@ const MultiStepRegistration = ({ moveStep }) => {
 
           case 3: {
             endpoint = `${API_BASE_URL}/register/step3`;
-            const formDataToSend = new FormData();
 
-            // Append form fields
-            formDataToSend.append("aadhaar_number", formData.aadhaar_number);
-            formDataToSend.append("pan_number", formData.pan_number);
-            formDataToSend.append("land_size", formData.land_size);
+            // Prepare files for S3 upload
+            const step3FilesToUpload = [
+              { key: "userImage", file: files.userImage },
+              { key: "aadhaarImg", file: files.aadhaarImg },
+              { key: "panImg", file: files.panImg },
+            ];
 
-            // Append khatauni entries (IDs and images as parallel arrays)
+            // Add khatauni images to upload list
             if (
               Array.isArray(formData.khatauni_entries) &&
               formData.khatauni_entries.length
             ) {
               formData.khatauni_entries.forEach((entry, index) => {
-                // Append ID
-                formDataToSend.append(`khatauni_ids[]`, entry.id);
-                // Append corresponding image with index to maintain order
-                formDataToSend.append(
-                  `khatauni_images[]`,
-                  entry.image,
-                  `khatauni_${entry.id}_${index}.jpg`
-                );
+                step3FilesToUpload.push({
+                  key: `khatauni_image_${index}`,
+                  file: entry.image,
+                });
               });
-
-              // Also send count for backend validation
-              formDataToSend.append(
-                "khatauni_count",
-                formData.khatauni_entries.length.toString()
-              );
             }
 
-            // Append other files
-            if (files.userImage)
-              formDataToSend.append("userImage", files.userImage);
-            if (files.aadhaarImg)
-              formDataToSend.append("aadhaarImg", files.aadhaarImg);
-            if (files.panImg) formDataToSend.append("panImg", files.panImg);
+            // Upload all files to S3 and get public URLs
+            const step3PublicUrls = await uploadFilesToS3(step3FilesToUpload);
+
+            // Prepare khatauni entries with public URLs
+            const khatauniEntriesWithUrls = formData.khatauni_entries.map(
+              (entry, index) => ({
+                id: entry.id,
+                imageUrl: step3PublicUrls[`khatauni_image_${index}`] || "",
+              })
+            );
+
+            // Prepare JSON payload with public URLs
+            const step3Payload = {
+              aadhaar_number: formData.aadhaar_number,
+              pan_number: formData.pan_number,
+              land_size: formData.land_size,
+              khatauni_entries: khatauniEntriesWithUrls,
+              khatauni_count: formData.khatauni_entries.length,
+              userImage: step3PublicUrls.userImage || "",
+              aadhaarImg: step3PublicUrls.aadhaarImg || "",
+              panImg: step3PublicUrls.panImg || "",
+            };
 
             options = {
               method: "POST",
               headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-                // NOTE: do NOT set Content-Type here — browser will set multipart/form-data boundary.
               },
-              body: formDataToSend,
+              body: JSON.stringify(step3Payload),
             };
             break;
           }
 
           case 4: {
             endpoint = `${API_BASE_URL}/register/step4`;
-            const formDataToSend = new FormData();
-            // Append form fields
-            formDataToSend.append("account_number", formData.account_number);
-            formDataToSend.append("ifsc_code", formData.ifsc_code);
-            formDataToSend.append("account_holder", formData.account_holder);
-            formDataToSend.append("bank_name", formData.bank_name);
-            formDataToSend.append("branch_name", formData.branch_name);
-            // Append file
-            if (files.bank_passbook_img)
-              formDataToSend.append(
-                "bank_passbook_img",
-                files.bank_passbook_img
-              );
+
+            // Prepare files for S3 upload
+            const step4FilesToUpload = [
+              { key: "bank_passbook_img", file: files.bank_passbook_img },
+            ];
+
+            // Upload files to S3 and get public URLs
+            const step4PublicUrls = await uploadFilesToS3(step4FilesToUpload);
+
+            // Prepare JSON payload with public URLs
+            const step4Payload = {
+              account_number: formData.account_number,
+              ifsc_code: formData.ifsc_code,
+              account_holder: formData.account_holder,
+              bank_name: formData.bank_name,
+              branch_name: formData.branch_name,
+              bank_passbook_img: step4PublicUrls.bank_passbook_img || "",
+            };
 
             options = {
               method: "POST",
               headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
-              body: formDataToSend,
+              body: JSON.stringify(step4Payload),
             };
             break;
           }
 
           case 5: {
             endpoint = `${API_BASE_URL}/register/step5`;
-            const formDataToSend = new FormData();
-            // Append nominee form fields
-            Object.keys(formData).forEach((key) => {
-              if (key.startsWith("nominee_"))
-                formDataToSend.append(key, formData[key]);
-            });
-            // Append nominee files
-            if (files.nominee_image)
-              formDataToSend.append("nominee_image", files.nominee_image);
-            if (files.nominee_aadhaar_image)
-              formDataToSend.append(
-                "nominee_aadhaar_image",
-                files.nominee_aadhaar_image
-              );
-            if (files.nominee_pan_image)
-              formDataToSend.append(
-                "nominee_pan_image",
-                files.nominee_pan_image
-              );
+
+            // Prepare files for S3 upload
+            const step5FilesToUpload = [
+              { key: "nominee_image", file: files.nominee_image },
+              { key: "nominee_aadhaar_image", file: files.nominee_aadhaar_image },
+              { key: "nominee_pan_image", file: files.nominee_pan_image },
+            ];
+
+            // Upload files to S3 and get public URLs
+            const step5PublicUrls = await uploadFilesToS3(step5FilesToUpload);
+
+            // Prepare JSON payload with public URLs
+            const step5Payload = {
+              nominee_name: formData.nominee_name,
+              nominee_dob: formData.nominee_dob,
+              nominee_phone: formData.nominee_phone,
+              nominee_email: formData.nominee_email,
+              nominee_aadhaar: formData.nominee_aadhaar,
+              nominee_pan: formData.nominee_pan,
+              nominee_relation: formData.nominee_relation,
+              nominee_gender: formData.nominee_gender,
+              nominee_address: formData.nominee_address,
+              nominee_image: step5PublicUrls.nominee_image || "",
+              nominee_aadhaar_image: step5PublicUrls.nominee_aadhaar_image || "",
+              nominee_pan_image: step5PublicUrls.nominee_pan_image || "",
+            };
 
             options = {
               method: "POST",
               headers: {
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
-              body: formDataToSend,
+              body: JSON.stringify(step5Payload),
             };
             break;
           }
@@ -2007,7 +2086,7 @@ const MultiStepRegistration = ({ moveStep }) => {
             {/* Exit Button - Top Right Corner */}
             <button
               type="button"
-              onClick={() => {localStorage.clear(), window.location.href = "/login";}}
+              onClick={() => { localStorage.clear(), window.location.href = "/login"; }}
               className="absolute top-4 right-4 sm:top-6 sm:right-6 flex items-center justify-center px-2 py-1.5 sm:px-3 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all transform hover:scale-110  text-red-600 hover:text-red-800 cursor-pointer underline"
               title="Exit Registration"
             >
@@ -2086,11 +2165,10 @@ const MultiStepRegistration = ({ moveStep }) => {
                         type="button"
                         onClick={handleNext}
                         disabled={isLoading}
-                        className={`flex items-center justify-center px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${
-                          isLoading
-                            ? "bg-gray-400 text-white cursor-not-allowed"
-                            : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
-                        }`}
+                        className={`flex items-center justify-center px-4 py-2 sm:px-6 sm:py-3 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${isLoading
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700"
+                          }`}
                       >
                         {isLoading ? (
                           <>
@@ -2114,11 +2192,10 @@ const MultiStepRegistration = ({ moveStep }) => {
                         type="button"
                         onClick={handleFinish}
                         disabled={isLoading}
-                        className={`px-4 py-2 sm:px-8 sm:py-3 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${
-                          isLoading
-                            ? "bg-gray-400 text-white cursor-not-allowed"
-                            : "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
-                        }`}
+                        className={`px-4 py-2 sm:px-8 sm:py-3 rounded-2xl font-semibold transition-all transform hover:scale-105 shadow-lg w-full sm:w-auto ${isLoading
+                          ? "bg-gray-400 text-white cursor-not-allowed"
+                          : "bg-gradient-to-r from-green-600 to-emerald-600 text-white hover:from-green-700 hover:to-emerald-700"
+                          }`}
                       >
                         {isLoading ? (
                           <>

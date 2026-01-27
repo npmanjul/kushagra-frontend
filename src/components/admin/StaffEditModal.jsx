@@ -89,13 +89,12 @@ const InputField = ({
             value={value || ""}
             onChange={(e) => onChange(field, e.target.value, nestedPath)}
             disabled={disabled}
-            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all ${
-              hasError
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all ${hasError
                 ? "border-red-300 bg-red-50"
                 : isChanged
-                ? "border-amber-300 bg-amber-50"
-                : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
+                  ? "border-amber-300 bg-amber-50"
+                  : "border-gray-300"
+              } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           >
             <option value="">Select {label}</option>
             {options.map((opt) => (
@@ -115,13 +114,12 @@ const InputField = ({
             disabled={disabled}
             placeholder={placeholder}
             rows={3}
-            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all resize-none ${
-              hasError
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all resize-none ${hasError
                 ? "border-red-300 bg-red-50"
                 : isChanged
-                ? "border-amber-300 bg-amber-50"
-                : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
+                  ? "border-amber-300 bg-amber-50"
+                  : "border-gray-300"
+              } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           />
         ) : (
           <input
@@ -137,13 +135,12 @@ const InputField = ({
             onBlur={() => onBlur && onBlur(field)}
             disabled={disabled}
             placeholder={placeholder}
-            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all ${
-              hasError
+            className={`w-full px-3 py-2 border rounded-lg text-sm transition-all ${hasError
                 ? "border-red-300 bg-red-50"
                 : isChanged
-                ? "border-amber-300 bg-amber-50"
-                : "border-gray-300"
-            } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
+                  ? "border-amber-300 bg-amber-50"
+                  : "border-gray-300"
+              } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""} focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500`}
           />
         )}
         {hasError && (
@@ -177,9 +174,8 @@ const SectionHeader = ({
   onToggle = null,
 }) => (
   <div
-    className={`flex items-center justify-between mb-4 ${
-      collapsible ? "cursor-pointer" : ""
-    }`}
+    className={`flex items-center justify-between mb-4 ${collapsible ? "cursor-pointer" : ""
+      }`}
     onClick={() => collapsible && onToggle && onToggle()}
   >
     <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-2">
@@ -200,32 +196,131 @@ const SectionHeader = ({
   </div>
 );
 
-// PhotoUploadComponent
+// PhotoUploadComponent - Updated for S3 presigned URL uploads
 const PhotoUploadComponent = ({
   currentImage,
   onImageChange,
   onImageRemove,
 }) => {
   const [preview, setPreview] = useState(currentImage);
+  const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState(null);
 
   useEffect(() => {
     setPreview(currentImage);
   }, [currentImage]);
 
-  const handleUpload = (e) => {
+  // Function to get presigned URL from backend
+  const getPresignedUrl = async (file) => {
+    const fileExtension = file.name.split('.').pop();
+    const fileName = `staff_photo_${Date.now()}.${fileExtension}`;
+
+    const response = await fetch(`${API_BASE_URL}/aws/getpresigneduploadurls`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({
+        files: [{
+          fileName: fileName,
+          fileType: file.type,
+          folder: 'employee-photos'
+        }]
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to get presigned URL');
+    }
+
+    const result = await response.json();
+    if (!result.success || !result.urls || result.urls.length === 0) {
+      throw new Error('Failed to get presigned URL');
+    }
+
+    return result.urls[0];
+  };
+
+  // Function to upload file to S3 using presigned URL
+  const uploadToS3 = async (file, presignedUrl) => {
+    const response = await fetch(presignedUrl, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': file.type,
+      },
+      body: file,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload file to S3');
+    }
+
+    // Return the public URL (presigned URL without query params)
+    return presignedUrl.split('?')[0];
+  };
+
+  const handleUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (!file) return;
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File size must be less than 5MB');
+      return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Only image files are allowed');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+    setUploadProgress(0);
+
+    try {
+      // Show local preview immediately
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
-        onImageChange(reader.result);
       };
       reader.readAsDataURL(file);
+
+      setUploadProgress(20);
+
+      // Get presigned URL
+      const { uploadUrl, publicUrl } = await getPresignedUrl(file);
+      setUploadProgress(40);
+
+      // Upload to S3
+      await uploadToS3(file, uploadUrl);
+      setUploadProgress(80);
+
+      // Update the preview with S3 URL and notify parent
+      setPreview(publicUrl);
+      onImageChange(publicUrl);
+      setUploadProgress(100);
+
+      // Reset progress after a short delay
+      setTimeout(() => {
+        setUploadProgress(0);
+      }, 500);
+
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setUploadError('Failed to upload image. Please try again.');
+      setPreview(currentImage); // Revert to previous image
+    } finally {
+      setUploading(false);
     }
   };
 
   const handleRemove = () => {
     setPreview(null);
+    setUploadError(null);
     onImageRemove();
   };
 
@@ -237,8 +332,14 @@ const PhotoUploadComponent = ({
       </label>
       <div className="flex items-start gap-4">
         <div className="relative group">
-          <div className="w-24 h-24 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 hover:border-cyan-400 transition-colors">
-            {preview ? (
+          <div className={`w-24 h-24 rounded-xl overflow-hidden border-2 border-dashed transition-colors ${uploading ? 'border-cyan-400 bg-cyan-50' : 'border-gray-300 hover:border-cyan-400'
+            }`}>
+            {uploading ? (
+              <div className="w-full h-full flex flex-col items-center justify-center bg-cyan-50">
+                <Loader2 className="w-6 h-6 text-cyan-500 animate-spin mb-1" />
+                <span className="text-xs text-cyan-600">{uploadProgress}%</span>
+              </div>
+            ) : preview ? (
               <>
                 <img
                   src={preview}
@@ -269,12 +370,22 @@ const PhotoUploadComponent = ({
                   className="hidden"
                   accept="image/*"
                   onChange={handleUpload}
+                  disabled={uploading}
                 />
                 <Upload className="w-6 h-6 mb-1" />
                 <span className="text-xs">Upload</span>
               </label>
             )}
           </div>
+          {/* Upload Progress Bar */}
+          {uploading && uploadProgress > 0 && (
+            <div className="absolute -bottom-2 left-0 right-0 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+          )}
         </div>
         <div className="flex-1">
           <p className="text-xs text-gray-500">
@@ -283,13 +394,20 @@ const PhotoUploadComponent = ({
           <p className="text-xs text-gray-400 mt-1">
             Supported formats: JPG, PNG (max 5MB)
           </p>
-          {preview && (
+          {uploadError && (
+            <p className="text-xs text-red-600 mt-1 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" />
+              {uploadError}
+            </p>
+          )}
+          {preview && !uploading && (
             <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-cyan-600 hover:bg-cyan-50 rounded-lg cursor-pointer transition-colors">
               <input
                 type="file"
                 className="hidden"
                 accept="image/*"
                 onChange={handleUpload}
+                disabled={uploading}
               />
               <RefreshCw className="w-3.5 h-3.5" />
               Change Photo
@@ -1005,18 +1123,16 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-shrink-0 px-4 py-2 flex items-center gap-2 font-medium rounded-lg transition-all duration-300 ${
-                    activeTab === tab.id
+                  className={`flex-shrink-0 px-4 py-2 flex items-center gap-2 font-medium rounded-lg transition-all duration-300 ${activeTab === tab.id
                       ? `bg-white text-gray-800 shadow-md scale-[1.02] border border-gray-200`
                       : "text-gray-500 hover:bg-white/50 hover:text-gray-700"
-                  }`}
+                    }`}
                 >
                   <div
-                    className={`p-1.5 rounded-lg bg-gradient-to-br ${
-                      activeTab === tab.id
+                    className={`p-1.5 rounded-lg bg-gradient-to-br ${activeTab === tab.id
                         ? tab.color
                         : "from-gray-300 to-gray-400"
-                    } shadow-sm`}
+                      } shadow-sm`}
                   >
                     <Icon className="w-3.5 h-3.5 text-white" />
                   </div>
@@ -1447,10 +1563,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                       ))}
                       {(!formData.experience ||
                         formData.experience.length === 0) && (
-                        <p className="text-sm text-gray-500 text-center py-4">
-                          No work experience added
-                        </p>
-                      )}
+                          <p className="text-sm text-gray-500 text-center py-4">
+                            No work experience added
+                          </p>
+                        )}
                     </div>
                   </div>
                 </>
@@ -1652,10 +1768,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                       ))}
                       {(!formData.education ||
                         formData.education.length === 0) && (
-                        <p className="text-sm text-gray-500 text-center py-4">
-                          No education records added
-                        </p>
-                      )}
+                          <p className="text-sm text-gray-500 text-center py-4">
+                            No education records added
+                          </p>
+                        )}
                     </div>
                   </div>
 
@@ -1780,10 +1896,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                       ))}
                       {(!formData.certifications ||
                         formData.certifications.length === 0) && (
-                        <p className="text-sm text-gray-500 text-center py-4">
-                          No certifications added
-                        </p>
-                      )}
+                          <p className="text-sm text-gray-500 text-center py-4">
+                            No certifications added
+                          </p>
+                        )}
                     </div>
                   </div>
                 </>
@@ -2013,10 +2129,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                       ))}
                       {(!formData.emergency_contacts ||
                         formData.emergency_contacts.length === 0) && (
-                        <p className="text-sm text-gray-500 text-center py-4">
-                          No emergency contacts added
-                        </p>
-                      )}
+                          <p className="text-sm text-gray-500 text-center py-4">
+                            No emergency contacts added
+                          </p>
+                        )}
                     </div>
                   </div>
 
@@ -2072,11 +2188,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                 <button
                   onClick={resetChanges}
                   disabled={!isDirty}
-                  className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
-                    isDirty
+                  className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${isDirty
                       ? "text-gray-600 hover:bg-gray-100"
                       : "text-gray-400 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   Reset Changes
@@ -2094,11 +2209,10 @@ const StaffEditModal = ({ isOpen, onClose, onSave, staffId }) => {
                   disabled={
                     !isDirty || Object.keys(errors).length > 0 || saving
                   }
-                  className={`group px-5 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium text-sm flex items-center gap-2 ${
-                    !isDirty || Object.keys(errors).length > 0 || saving
+                  className={`group px-5 py-2 bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 text-white rounded-lg hover:shadow-lg transition-all duration-300 font-medium text-sm flex items-center gap-2 ${!isDirty || Object.keys(errors).length > 0 || saving
                       ? "opacity-50 cursor-not-allowed"
                       : "transform hover:scale-105"
-                  }`}
+                    }`}
                 >
                   {saving ? (
                     <>

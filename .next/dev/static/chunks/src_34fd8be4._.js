@@ -7,7 +7,8 @@ __turbopack_context__.s([
     ()=>__TURBOPACK__default__export__
 ]);
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$build$2f$polyfills$2f$process$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = /*#__PURE__*/ __turbopack_context__.i("[project]/node_modules/next/dist/build/polyfills/process.js [app-client] (ecmascript)");
-const API_BASE_URL = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1");
+console.log("NEXT_PUBLIC_API_URL =", ("TURBOPACK compile-time value", "http://localhost:8000/api/v1"));
+const API_BASE_URL = ("TURBOPACK compile-time value", "http://localhost:8000/api/v1") || "___MISSING_ENV___";
 const __TURBOPACK__default__export__ = API_BASE_URL;
 if (typeof globalThis.$RefreshHelpers$ === 'object' && globalThis.$RefreshHelpers !== null) {
     __turbopack_context__.k.registerExports(__turbopack_context__.m, globalThis.$RefreshHelpers$);
@@ -120,11 +121,15 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/lock.js [app-client] (ecmascript) <export default as Lock>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$check$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__CheckCircle2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/circle-check.js [app-client] (ecmascript) <export default as CheckCircle2>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/loader-circle.js [app-client] (ecmascript) <export default as Loader2>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/log-out.js [app-client] (ecmascript) <export default as LogOut>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__ = __turbopack_context__.i("[project]/node_modules/lucide-react/dist/esm/icons/refresh-cw.js [app-client] (ecmascript) <export default as RefreshCw>");
 var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$hot$2d$toast$2f$dist$2f$index$2e$mjs__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/react-hot-toast/dist/index.mjs [app-client] (ecmascript)");
 var __TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/src/utils/constants.js [app-client] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/node_modules/next/navigation.js [app-client] (ecmascript)");
 ;
 var _s = __turbopack_context__.k.signature();
 "use client";
+;
 ;
 ;
 ;
@@ -135,6 +140,7 @@ function PinModal({ isOpen, onClose }) {
     const [isSuccess, setIsSuccess] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isError, setIsError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [isLoading, setIsLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
+    const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"])();
     const inactivityTimer = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRef"])(null);
     const INACTIVITY_LIMIT = 5 * 60 * 1000; // 5 minutes
     // 🕒 Detect inactivity and reopen modal
@@ -251,26 +257,26 @@ function PinModal({ isOpen, onClose }) {
                                     size: 48
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                    lineNumber: 112,
+                                    lineNumber: 113,
                                     columnNumber: 17
                                 }, this) : isLoading ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$loader$2d$circle$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Loader2$3e$__["Loader2"], {
                                     className: "text-gray-700 animate-spin",
                                     size: 48
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                    lineNumber: 114,
+                                    lineNumber: 115,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$lock$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__Lock$3e$__["Lock"], {
                                     className: `${isError ? "text-red-600" : "text-gray-700"} transition-colors`,
                                     size: 48
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                    lineNumber: 116,
+                                    lineNumber: 117,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                lineNumber: 102,
+                                lineNumber: 104,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -322,7 +328,7 @@ function PinModal({ isOpen, onClose }) {
                                 children: isLoading ? "Verifying..." : "Verify PIN"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                lineNumber: 160,
+                                lineNumber: 159,
                                 columnNumber: 13
                             }, this),
                             isError && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -332,28 +338,77 @@ function PinModal({ isOpen, onClose }) {
                                     children: "Incorrect PIN. Please try again."
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                    lineNumber: 170,
+                                    lineNumber: 169,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                                lineNumber: 169,
+                                lineNumber: 168,
                                 columnNumber: 15
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                className: "flex w-full gap-3 mt-4",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: ()=>{
+                                            localStorage.removeItem("token");
+                                            localStorage.removeItem("user");
+                                            router.push("/login");
+                                        },
+                                        className: "flex-1 py-3 rounded-xl border-2 border-red-100 text-red-600 font-medium hover:bg-red-50 hover:border-red-200 transition-all flex items-center justify-center gap-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$log$2d$out$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__LogOut$3e$__["LogOut"], {
+                                                size: 18
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/dashboard/PinModal.jsx",
+                                                lineNumber: 184,
+                                                columnNumber: 17
+                                            }, this),
+                                            "Logout"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/dashboard/PinModal.jsx",
+                                        lineNumber: 176,
+                                        columnNumber: 15
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                                        onClick: ()=>router.push("/resetpin"),
+                                        className: "flex-1 py-3 rounded-xl border-2 border-gray-100 text-gray-600 font-medium hover:bg-gray-50 hover:border-gray-200 transition-all flex items-center justify-center gap-2",
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$refresh$2d$cw$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__RefreshCw$3e$__["RefreshCw"], {
+                                                size: 18
+                                            }, void 0, false, {
+                                                fileName: "[project]/src/components/dashboard/PinModal.jsx",
+                                                lineNumber: 191,
+                                                columnNumber: 17
+                                            }, this),
+                                            "Forgot PIN?"
+                                        ]
+                                    }, void 0, true, {
+                                        fileName: "[project]/src/components/dashboard/PinModal.jsx",
+                                        lineNumber: 187,
+                                        columnNumber: 15
+                                    }, this)
+                                ]
+                            }, void 0, true, {
+                                fileName: "[project]/src/components/dashboard/PinModal.jsx",
+                                lineNumber: 175,
+                                columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                        lineNumber: 101,
+                        lineNumber: 103,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                    lineNumber: 100,
+                    lineNumber: 102,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                lineNumber: 99,
+                lineNumber: 101,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("style", {
@@ -369,17 +424,21 @@ function PinModal({ isOpen, onClose }) {
       `
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/PinModal.jsx",
-                lineNumber: 179,
+                lineNumber: 199,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/PinModal.jsx",
-        lineNumber: 98,
+        lineNumber: 100,
         columnNumber: 5
     }, this);
 }
-_s(PinModal, "nQFVsylznLITYO7wQN05YqJhIQE=");
+_s(PinModal, "H2VFu2b68Yd8A6mPbnBVmdOXMHE=", false, function() {
+    return [
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useRouter"]
+    ];
+});
 _c = PinModal;
 var _c;
 __turbopack_context__.k.register(_c, "PinModal");
@@ -686,7 +745,7 @@ const StatusBadge = ({ status })=>{
                 className: "w-3.5 h-3.5"
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 248,
+                lineNumber: 247,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -694,7 +753,7 @@ const StatusBadge = ({ status })=>{
                 children: status
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 249,
+                lineNumber: 248,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
@@ -717,12 +776,12 @@ const ImagePreview = ({ url, label })=>{
             className: "w-6 h-6 text-gray-400"
         }, void 0, false, {
             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-            lineNumber: 263,
+            lineNumber: 262,
             columnNumber: 9
         }, ("TURBOPACK compile-time value", void 0))
     }, void 0, false, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 262,
+        lineNumber: 261,
         columnNumber: 7
     }, ("TURBOPACK compile-time value", void 0));
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -740,12 +799,12 @@ const ImagePreview = ({ url, label })=>{
                                     className: "w-5 h-5 text-gray-400 animate-spin"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                    lineNumber: 276,
+                                    lineNumber: 275,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 275,
+                                lineNumber: 274,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("img", {
@@ -759,13 +818,13 @@ const ImagePreview = ({ url, label })=>{
                                 }
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 279,
+                                lineNumber: 278,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 273,
+                        lineNumber: 272,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -774,18 +833,18 @@ const ImagePreview = ({ url, label })=>{
                             className: "w-4 h-4 text-white"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 293,
+                            lineNumber: 291,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 292,
+                        lineNumber: 290,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 269,
+                lineNumber: 268,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             showPreview && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -800,7 +859,7 @@ const ImagePreview = ({ url, label })=>{
                             className: "max-w-full max-h-[85vh] object-contain rounded-3xl shadow-2xl"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 303,
+                            lineNumber: 301,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -813,23 +872,23 @@ const ImagePreview = ({ url, label })=>{
                                 className: "w-5 h-5 text-gray-700"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 315,
+                                lineNumber: 313,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 308,
+                            lineNumber: 306,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                    lineNumber: 302,
+                    lineNumber: 300,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 298,
+                lineNumber: 296,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         ]
@@ -924,7 +983,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                         label: fieldConfig[field]?.label
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 424,
+                        lineNumber: 422,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -934,7 +993,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                 children: "Current Image"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 426,
+                                lineNumber: 424,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -942,19 +1001,19 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                 children: "Upload a new one to replace"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 429,
+                                lineNumber: 427,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 425,
+                        lineNumber: 423,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 423,
+                lineNumber: 421,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -975,7 +1034,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                         disabled: disabled
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 450,
+                        lineNumber: 447,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     preview || previews.length > 0 ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -991,17 +1050,17 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                             className: "w-20 h-20 object-cover rounded-xl shadow-lg ring-2 ring-green-100"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 466,
+                                            lineNumber: 463,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, idx, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 465,
+                                        lineNumber: 462,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0)))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 463,
+                                lineNumber: 460,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "relative",
@@ -1012,7 +1071,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         className: "w-24 h-24 object-cover rounded-2xl shadow-xl ring-4 ring-green-100"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 476,
+                                        lineNumber: 473,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1021,18 +1080,18 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                             className: "w-5 h-5 text-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 482,
+                                            lineNumber: 479,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 481,
+                                        lineNumber: 478,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 475,
+                                lineNumber: 472,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1043,7 +1102,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         children: multiple && selectedFiles.length > 0 ? `${selectedFiles.length} file(s) ready to upload` : "File ready to upload"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 487,
+                                        lineNumber: 484,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     selectedFile && !multiple && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1057,7 +1116,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 493,
+                                        lineNumber: 490,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1070,19 +1129,19 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 498,
+                                        lineNumber: 495,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 486,
+                                lineNumber: 483,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 461,
+                        lineNumber: 458,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "flex flex-col items-center gap-3",
@@ -1093,12 +1152,12 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                     className: `w-8 h-8 ${disabled ? "text-gray-400" : "text-blue-600"}`
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                    lineNumber: 516,
+                                    lineNumber: 512,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 509,
+                                lineNumber: 506,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1108,7 +1167,7 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         children: disabled ? "Upload disabled" : `Drop your file${multiple ? "s" : ""} here or click to browse`
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 523,
+                                        lineNumber: 518,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1116,31 +1175,31 @@ const FileUploadField = ({ field, value, onChange, disabled, multiple = false })
                                         children: "Supports: PNG, JPG, JPEG (max 5MB)"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 534,
+                                        lineNumber: 527,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 522,
+                                lineNumber: 517,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 508,
+                        lineNumber: 505,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 436,
+                lineNumber: 434,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 421,
+        lineNumber: 419,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1162,7 +1221,7 @@ const TextField = ({ field, value, onChange, disabled, type = "text" })=>{
                     children: "Select Relation"
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                    lineNumber: 562,
+                    lineNumber: 554,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 [
@@ -1180,13 +1239,13 @@ const TextField = ({ field, value, onChange, disabled, type = "text" })=>{
                         children: r.charAt(0).toUpperCase() + r.slice(1)
                     }, r, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 573,
+                        lineNumber: 565,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-            lineNumber: 556,
+            lineNumber: 548,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -1202,7 +1261,7 @@ const TextField = ({ field, value, onChange, disabled, type = "text" })=>{
                     children: "Select Gender"
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                    lineNumber: 589,
+                    lineNumber: 581,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 [
@@ -1214,13 +1273,13 @@ const TextField = ({ field, value, onChange, disabled, type = "text" })=>{
                         children: g.charAt(0).toUpperCase() + g.slice(1)
                     }, g, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 591,
+                        lineNumber: 583,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-            lineNumber: 583,
+            lineNumber: 575,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -1233,7 +1292,7 @@ const TextField = ({ field, value, onChange, disabled, type = "text" })=>{
         placeholder: disabled ? "" : `Enter ${config?.label || field}`
     }, void 0, false, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 600,
+        lineNumber: 592,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1267,14 +1326,14 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                 className: "absolute inset-0 rounded-3xl bg-gradient-to-r from-red-400/20 to-rose-400/20 blur-xl -z-10 animate-pulse"
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 649,
+                lineNumber: 640,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                 className: `absolute top-0 left-6 right-6 h-1 rounded-full ${status === "rejected" ? "bg-gradient-to-r from-red-400 via-rose-400 to-pink-400" : status === "approved" ? "bg-gradient-to-r from-emerald-400 via-green-400 to-teal-400" : "bg-gradient-to-r from-amber-400 via-yellow-400 to-orange-400"}`
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 653,
+                lineNumber: 644,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1289,12 +1348,12 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                     className: "w-5 h-5"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                    lineNumber: 675,
+                                    lineNumber: 664,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 666,
+                                lineNumber: 656,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1304,7 +1363,7 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                         children: config?.label || field
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 678,
+                                        lineNumber: 667,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1312,32 +1371,32 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                         children: field.replace(/_/g, " ")
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 681,
+                                        lineNumber: 670,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 677,
+                                lineNumber: 666,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 665,
+                        lineNumber: 655,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(StatusBadge, {
                         status: status
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 686,
+                        lineNumber: 675,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 664,
+                lineNumber: 654,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             status === "rejected" && reason && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1349,12 +1408,12 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                             className: "w-4 h-4 text-red-600"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 693,
+                            lineNumber: 682,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 692,
+                        lineNumber: 681,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1364,7 +1423,7 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                 children: "Rejection Reason"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 696,
+                                lineNumber: 685,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1372,19 +1431,19 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                 children: reason
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 699,
+                                lineNumber: 688,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 695,
+                        lineNumber: 684,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 691,
+                lineNumber: 680,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1397,12 +1456,12 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                             children: displayValue || "—"
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 708,
+                            lineNumber: 697,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 707,
+                        lineNumber: 696,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     isFileField && !isEditable && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1416,7 +1475,7 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                         label: config?.label
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 716,
+                                        lineNumber: 705,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1424,13 +1483,13 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                         children: "Document uploaded"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 717,
+                                        lineNumber: 706,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 715,
+                                lineNumber: 704,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)),
                             Array.isArray(data) && data.length > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1443,7 +1502,7 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                                 label: `${config?.label} ${idx + 1}`
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 726,
+                                                lineNumber: 715,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             item.khatauni_id && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1454,24 +1513,24 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 731,
+                                                lineNumber: 720,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, idx, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 725,
+                                        lineNumber: 714,
                                         columnNumber: 19
                                     }, ("TURBOPACK compile-time value", void 0)))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 723,
+                                lineNumber: 712,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 713,
+                        lineNumber: 702,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     isEditable && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1486,12 +1545,12 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                             className: "w-4 h-4 text-red-600"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 746,
+                                            lineNumber: 735,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 745,
+                                        lineNumber: 734,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1499,13 +1558,13 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                         children: "Update Required"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 748,
+                                        lineNumber: 737,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 744,
+                                lineNumber: 733,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             isFileField ? /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(FileUploadField, {
@@ -1516,7 +1575,7 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                 multiple: config?.multiple || false
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 753,
+                                lineNumber: 742,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(TextField, {
                                 field: field,
@@ -1526,25 +1585,25 @@ const FieldCard = ({ fieldData, formData, onChange })=>{
                                 type: config?.type === "date" ? "date" : config?.type === "email" ? "email" : "text"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 761,
+                                lineNumber: 750,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 743,
+                        lineNumber: 732,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 705,
+                lineNumber: 694,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 642,
+        lineNumber: 634,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1575,12 +1634,12 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                     className: "w-6 h-6 text-white"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                    lineNumber: 820,
+                                    lineNumber: 807,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 815,
+                                lineNumber: 803,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1591,7 +1650,7 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                         children: config?.label || group
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 823,
+                                        lineNumber: 810,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1604,7 +1663,7 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                                         className: "w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 829,
+                                                        lineNumber: 816,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     counts.rejected,
@@ -1612,7 +1671,7 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 828,
+                                                lineNumber: 815,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             counts.pending > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1623,7 +1682,7 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 834,
+                                                lineNumber: 821,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             counts.approved > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1634,25 +1693,25 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 839,
+                                                lineNumber: 826,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 826,
+                                        lineNumber: 813,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 822,
+                                lineNumber: 809,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 814,
+                        lineNumber: 802,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1661,18 +1720,18 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                             className: `w-5 h-5 transition-colors ${isExpanded ? "text-blue-600" : "text-gray-500"}`
                         }, void 0, false, {
                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                            lineNumber: 851,
+                            lineNumber: 837,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 846,
+                        lineNumber: 833,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 810,
+                lineNumber: 798,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1687,28 +1746,28 @@ const GroupSection = ({ group, fields, formData, onChange, expandedGroups, toggl
                                 onChange: onChange
                             }, fieldData.field, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 868,
+                                lineNumber: 852,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0)))
                     }, void 0, false, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 866,
+                        lineNumber: 850,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                    lineNumber: 865,
+                    lineNumber: 849,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 860,
+                lineNumber: 845,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 804,
+        lineNumber: 793,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -1789,7 +1848,70 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
         localStorage.removeItem("user");
         window.location.href = "/login";
     };
-    // REPLACE YOUR EXISTING handleSubmit WITH THIS
+    // S3 Upload Helper Functions
+    const getPresignedUrls = async (files, folder)=>{
+        const filesData = files.map((file, index)=>{
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `farmer_${folder}_${Date.now()}_${index}.${fileExtension}`;
+            return {
+                fileName,
+                fileType: file.type,
+                folder: folder
+            };
+        });
+        const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]}/aws/getpresigneduploadurls`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`
+            },
+            body: JSON.stringify({
+                files: filesData
+            })
+        });
+        if (!response.ok) {
+            throw new Error("Failed to get presigned URLs");
+        }
+        const result = await response.json();
+        // The backend response structure is { success: true, message: "...", data: [...] }
+        if (!result.success || !result.data || result.data.length === 0) {
+            throw new Error("Failed to get presigned URLs");
+        }
+        return result.data; // Return the array of objects { uploadUrl, publicUrl, key }
+    };
+    const uploadToS3 = async (file, urlData)=>{
+        // urlData contains { uploadUrl, publicUrl, key }
+        const response = await fetch(urlData.uploadUrl, {
+            method: "PUT",
+            headers: {
+                "Content-Type": file.type
+            },
+            body: file
+        });
+        if (!response.ok) {
+            console.error("S3 Upload Failed:", response.statusText);
+            throw new Error(`Failed to upload file to S3: ${response.statusText}`);
+        }
+        // Return the public URL provided by the backend
+        return urlData.publicUrl;
+    };
+    // Upload a single file to S3
+    const uploadSingleFileToS3 = async (file, fieldName)=>{
+        // getPresignedUrls returns array of objects
+        const urls = await getPresignedUrls([
+            file
+        ], fieldName);
+        // urls[0] is the object for the first file
+        const publicUrl = await uploadToS3(file, urls[0]);
+        return publicUrl;
+    };
+    // Upload multiple files to S3
+    const uploadMultipleFilesToS3 = async (files, fieldName)=>{
+        const urls = await getPresignedUrls(files, fieldName);
+        const publicUrls = await Promise.all(files.map((file, index)=>uploadToS3(file, urls[index])));
+        return publicUrls;
+    };
+    // UPDATED handleSubmit WITH S3 PRESIGNED URL UPLOADS
     const handleSubmit = async ()=>{
         setError(null);
         // 1. Get all keys that have actually been touched
@@ -1801,48 +1923,47 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
         }
         setSubmitting(true);
         try {
-            const submitFormData = new FormData();
-            entries.forEach(([key, value])=>{
-                // Skip undefined, but allow null/empty strings (in case backend needs to clear fields)
-                if (value === undefined) return;
+            // Create a new object to hold the processed data (with S3 URLs instead of files)
+            const processedData = {};
+            // Process each field
+            for (const [key, value] of entries){
+                // Skip undefined
+                if (value === undefined) continue;
                 // CASE 1: Handle Multiple Files (Array of Files)
                 if (Array.isArray(value)) {
-                    value.forEach((item)=>{
-                        if (item instanceof File) {
-                            // Append the file directly. 
-                            // Note: Standard multer setup uses the same key name (e.g., 'khatauni_images')
-                            submitFormData.append(key, item);
-                        } else {
-                        // If it's an existing image URL string inside an array, 
-                        // usually we don't send it back unless the backend specifically asks for it.
-                        // If you need to send text arrays, un-comment below:
-                        // submitFormData.append(key, String(item));
-                        }
-                    });
+                    const fileItems = value.filter((item)=>item instanceof File);
+                    if (fileItems.length > 0) {
+                        // Upload all files to S3 and get public URLs
+                        console.log(`Uploading ${fileItems.length} files for ${key} to S3...`);
+                        const publicUrls = await uploadMultipleFilesToS3(fileItems, key);
+                        // For khatauni_images, send as array of URLs
+                        processedData[key] = publicUrls;
+                        console.log(`Uploaded ${key}:`, publicUrls);
+                    }
                 } else if (value instanceof File) {
-                    submitFormData.append(key, value);
+                    // Upload file to S3 and get public URL
+                    console.log(`Uploading file for ${key} to S3...`);
+                    const publicUrl = await uploadSingleFileToS3(value, key);
+                    processedData[key] = publicUrl;
+                    console.log(`Uploaded ${key}:`, publicUrl);
                 } else if (value instanceof Date) {
-                    submitFormData.append(key, value.toISOString());
+                    processedData[key] = value.toISOString();
                 } else {
-                    // Convert null to empty string or string "null" depending on backend requirement.
-                    // Usually sending an empty string is safer for "clearing" a value.
+                    // Convert null to empty string or keep as is
                     const stringValue = value === null ? "" : String(value);
-                    submitFormData.append(key, stringValue);
+                    processedData[key] = stringValue;
                 }
-            });
-            // --- DEBUGGING: Check Console to see exactly what is being sent ---
-            console.log("Submitting FormData:");
-            for (let pair of submitFormData.entries()){
-                console.log(`${pair[0]}:`, pair[1]);
             }
+            // --- DEBUGGING: Check Console to see exactly what is being sent ---
+            console.log("Submitting processed data:", processedData);
+            // Send JSON data (with S3 URLs) to backend
             const response = await fetch(`${__TURBOPACK__imported__module__$5b$project$5d2f$src$2f$utils$2f$constants$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"]}/user/updateprofileverification`, {
                 method: "PUT",
                 headers: {
-                    // DO NOT ADD 'Content-Type': 'multipart/form-data'
-                    // The browser adds this automatically with the boundary
+                    'Content-Type': 'application/json',
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 },
-                body: submitFormData
+                body: JSON.stringify(processedData)
             });
             const result = await response.json();
             if (!response.ok) {
@@ -1900,7 +2021,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                 className: "jsx-1381763799ead574" + " " + "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-30"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1090,
+                                lineNumber: 1143,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1915,12 +2036,12 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-8 h-8 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1095,
+                                                    lineNumber: 1148,
                                                     columnNumber: 17
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1094,
+                                                lineNumber: 1147,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1931,7 +2052,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         children: "Verification Center"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1098,
+                                                        lineNumber: 1151,
                                                         columnNumber: 17
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1939,19 +2060,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         children: "Review and update your verification documents"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1101,
+                                                        lineNumber: 1154,
                                                         columnNumber: 17
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1097,
+                                                lineNumber: 1150,
                                                 columnNumber: 15
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1093,
+                                        lineNumber: 1146,
                                         columnNumber: 13
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     !loading && data && !success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1964,7 +2085,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         className: "jsx-1381763799ead574" + " " + "w-2.5 h-2.5 bg-red-400 rounded-full animate-pulse"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1112,
+                                                        lineNumber: 1165,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1975,13 +2096,13 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1113,
+                                                        lineNumber: 1166,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1111,
+                                                lineNumber: 1164,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             pendingCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1991,7 +2112,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         className: "jsx-1381763799ead574" + " " + "w-2.5 h-2.5 bg-amber-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1120,
+                                                        lineNumber: 1173,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2002,13 +2123,13 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1121,
+                                                        lineNumber: 1174,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1119,
+                                                lineNumber: 1172,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             approvedCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2018,7 +2139,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         className: "jsx-1381763799ead574" + " " + "w-2.5 h-2.5 bg-emerald-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1128,
+                                                        lineNumber: 1181,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2029,19 +2150,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1129,
+                                                        lineNumber: 1182,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1127,
+                                                lineNumber: 1180,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1109,
+                                        lineNumber: 1162,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     !success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2051,24 +2172,24 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                             className: "w-6 h-6 text-white"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 1143,
+                                            lineNumber: 1196,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1139,
+                                        lineNumber: 1192,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1092,
+                                lineNumber: 1145,
                                 columnNumber: 11
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 1089,
+                        lineNumber: 1142,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2084,14 +2205,14 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 className: "jsx-1381763799ead574" + " " + "absolute inset-0 rounded-full border-4 border-indigo-200"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1154,
+                                                lineNumber: 1207,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                                 className: "jsx-1381763799ead574" + " " + "absolute inset-0 rounded-full border-4 border-transparent border-t-indigo-600 animate-spin"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1155,
+                                                lineNumber: 1208,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2100,18 +2221,18 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-8 h-8 text-indigo-600 animate-pulse"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1157,
+                                                    lineNumber: 1210,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1156,
+                                                lineNumber: 1209,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1153,
+                                        lineNumber: 1206,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2119,7 +2240,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Loading your data..."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1160,
+                                        lineNumber: 1213,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2127,13 +2248,13 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Please wait a moment"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1163,
+                                        lineNumber: 1216,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1152,
+                                lineNumber: 1205,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             error && !loading && !success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2145,12 +2266,12 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                             className: "w-12 h-12 text-red-500"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 1170,
+                                            lineNumber: 1223,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1169,
+                                        lineNumber: 1222,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2158,7 +2279,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Oops! Something went wrong"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1172,
+                                        lineNumber: 1225,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2166,7 +2287,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: error
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1175,
+                                        lineNumber: 1228,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2177,20 +2298,20 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 className: "w-5 h-5"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1180,
+                                                lineNumber: 1233,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             "Try Again"
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1176,
+                                        lineNumber: 1229,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1168,
+                                lineNumber: 1221,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             success && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2205,12 +2326,12 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-12 h-12 text-emerald-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1191,
+                                                    lineNumber: 1244,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1190,
+                                                lineNumber: 1243,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2219,18 +2340,18 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-6 h-6 text-white"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1194,
+                                                    lineNumber: 1247,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1193,
+                                                lineNumber: 1246,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1189,
+                                        lineNumber: 1242,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2238,7 +2359,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Submitted Successfully!"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1199,
+                                        lineNumber: 1252,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2246,7 +2367,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Your documents have been submitted for verification."
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1202,
+                                        lineNumber: 1255,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2261,12 +2382,12 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                             className: "w-8 h-8 text-amber-600"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                            lineNumber: 1210,
+                                                            lineNumber: 1263,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1209,
+                                                        lineNumber: 1262,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2277,7 +2398,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                                 children: "Waiting for Verification"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                                lineNumber: 1213,
+                                                                lineNumber: 1266,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2285,19 +2406,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                                 children: "Your documents are being reviewed"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                                lineNumber: 1216,
+                                                                lineNumber: 1269,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1212,
+                                                        lineNumber: 1265,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1208,
+                                                lineNumber: 1261,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2305,7 +2426,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 children: "Our team will review your updated documents and verify them within 24-48 hours. You will be notified once the verification is complete."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1221,
+                                                lineNumber: 1274,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2321,7 +2442,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                                 className: "jsx-1381763799ead574" + " " + "w-2 h-2 bg-amber-500 rounded-full animate-bounce"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                                lineNumber: 1228,
+                                                                lineNumber: 1281,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2331,7 +2452,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                                 className: "jsx-1381763799ead574" + " " + "w-2 h-2 bg-amber-500 rounded-full animate-bounce"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                                lineNumber: 1232,
+                                                                lineNumber: 1285,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2341,13 +2462,13 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                                 className: "jsx-1381763799ead574" + " " + "w-2 h-2 bg-amber-500 rounded-full animate-bounce"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                                lineNumber: 1236,
+                                                                lineNumber: 1289,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1227,
+                                                        lineNumber: 1280,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2355,19 +2476,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         children: "Verification in progress"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1241,
+                                                        lineNumber: 1294,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1226,
+                                                lineNumber: 1279,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1207,
+                                        lineNumber: 1260,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2378,7 +2499,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 children: "You can safely logout now"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1249,
+                                                lineNumber: 1302,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2389,7 +2510,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         className: "w-5 h-5"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1256,
+                                                        lineNumber: 1309,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2397,25 +2518,25 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         children: "Logout"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1257,
+                                                        lineNumber: 1310,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1252,
+                                                lineNumber: 1305,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1248,
+                                        lineNumber: 1301,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1187,
+                                lineNumber: 1240,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             !loading && !error && !success && data && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2430,12 +2551,12 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-7 h-7 text-red-600"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1268,
+                                                    lineNumber: 1321,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1267,
+                                                lineNumber: 1320,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2446,7 +2567,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         children: "Action Required"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1271,
+                                                        lineNumber: 1324,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2459,19 +2580,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                        lineNumber: 1274,
+                                                        lineNumber: 1327,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1270,
+                                                lineNumber: 1323,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1266,
+                                        lineNumber: 1319,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     Object.entries(groupedFields).map(([group, fields])=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(GroupSection, {
@@ -2483,19 +2604,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                             toggleGroup: toggleGroup
                                         }, group, false, {
                                             fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                            lineNumber: 1284,
+                                            lineNumber: 1337,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1264,
+                                lineNumber: 1317,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 1150,
+                        lineNumber: 1203,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     !loading && !error && !success && data && rejectedCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2508,7 +2629,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         className: "jsx-1381763799ead574" + " " + `w-3 h-3 rounded-full ${Object.keys(formData).length > 0 ? "bg-indigo-500 animate-pulse" : "bg-gray-300"}`
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1302,
+                                        lineNumber: 1355,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2522,7 +2643,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1310,
+                                                lineNumber: 1362,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             summary.fileCount > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2535,19 +2656,19 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                lineNumber: 1314,
+                                                lineNumber: 1366,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1309,
+                                        lineNumber: 1361,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1301,
+                                lineNumber: 1354,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2559,7 +2680,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1322,
+                                        lineNumber: 1374,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2572,7 +2693,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-5 h-5 animate-spin"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1339,
+                                                    lineNumber: 1390,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2580,7 +2701,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     children: "Uploading..."
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1340,
+                                                    lineNumber: 1391,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
@@ -2590,7 +2711,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     className: "w-5 h-5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1344,
+                                                    lineNumber: 1395,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2598,39 +2719,39 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
                                                     children: "Submit Updates"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1345,
+                                                    lineNumber: 1396,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$arrow$2d$right$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__ArrowRight$3e$__["ArrowRight"], {
                                                     className: "w-5 h-5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                                    lineNumber: 1346,
+                                                    lineNumber: 1397,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                        lineNumber: 1328,
+                                        lineNumber: 1380,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                                lineNumber: 1321,
+                                lineNumber: 1373,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                        lineNumber: 1300,
+                        lineNumber: 1353,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-                lineNumber: 1087,
+                lineNumber: 1140,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$styled$2d$jsx$2f$style$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
@@ -2640,7 +2761,7 @@ const FarmerVerificationModal = ({ isOpen, onClose })=>{
         ]
     }, void 0, true, {
         fileName: "[project]/src/components/dashboard/FarmerVerificationModal.jsx",
-        lineNumber: 1085,
+        lineNumber: 1138,
         columnNumber: 5
     }, ("TURBOPACK compile-time value", void 0));
 };
@@ -3161,28 +3282,39 @@ function DashboardLayout({ children }) {
                         className: "p-6 flex items-center space-x-1",
                         children: [
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$image$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"], {
-                                src: "/logo.png",
-                                alt: "Samriddh Grain Bank Logo",
+                                src: "/logo_v2.png",
+                                alt: "Kushagra Bhumitra FPO Logo",
                                 className: "w-18 h-18 rounded-xl object-cover bg-white border",
                                 width: 500,
                                 height: 500
                             }, void 0, false, {
                                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                                lineNumber: 222,
+                                lineNumber: 220,
                                 columnNumber: 11
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
-                                    className: "text-xl font-extrabold bg-gradient-to-r from-green-700 to-yellow-600 bg-clip-text text-transparent tracking-wide",
-                                    children: "Samriddh Grain Bank"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/dashboard/layout.jsx",
-                                    lineNumber: 232,
-                                    columnNumber: 13
-                                }, this)
-                            }, void 0, false, {
+                                className: "flex flex-col leading-tight",
+                                children: [
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h1", {
+                                        className: "text-xl font-bold bg-linear-to-r from-green-600 via-green-700 to-emerald-800 bg-clip-text text-transparent tracking-tight",
+                                        children: "Kushagra"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/layout.jsx",
+                                        lineNumber: 230,
+                                        columnNumber: 13
+                                    }, this),
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                        className: "text-base font-semibold bg-linear-to-r from-green-700 to-green-800 bg-clip-text text-transparent tracking-wide -mt-0.5",
+                                        children: "Bhumitra FPO"
+                                    }, void 0, false, {
+                                        fileName: "[project]/src/app/dashboard/layout.jsx",
+                                        lineNumber: 233,
+                                        columnNumber: 13
+                                    }, this)
+                                ]
+                            }, void 0, true, {
                                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                                lineNumber: 231,
+                                lineNumber: 229,
                                 columnNumber: 11
                             }, this)
                         ]
@@ -3207,25 +3339,25 @@ function DashboardLayout({ children }) {
                                             className: "h-5 w-5 mr-3"
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                            lineNumber: 258,
+                                            lineNumber: 259,
                                             columnNumber: 19
                                         }, this),
                                         item.label
                                     ]
                                 }, item.id, true, {
                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                    lineNumber: 249,
+                                    lineNumber: 250,
                                     columnNumber: 17
                                 }, this)
                             }, item.id, false, {
                                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                                lineNumber: 244,
+                                lineNumber: 245,
                                 columnNumber: 15
                             }, this);
                         })
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/layout.jsx",
-                        lineNumber: 239,
+                        lineNumber: 240,
                         columnNumber: 9
                     }, this)
                 ]
@@ -3252,12 +3384,12 @@ function DashboardLayout({ children }) {
                                                 className: "w-5 h-5 text-gray-600"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                lineNumber: 278,
+                                                lineNumber: 279,
                                                 columnNumber: 17
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                            lineNumber: 274,
+                                            lineNumber: 275,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
@@ -3265,13 +3397,13 @@ function DashboardLayout({ children }) {
                                             children: getCurrentTabName()
                                         }, void 0, false, {
                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                            lineNumber: 280,
+                                            lineNumber: 281,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                    lineNumber: 273,
+                                    lineNumber: 274,
                                     columnNumber: 13
                                 }, this),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3289,7 +3421,7 @@ function DashboardLayout({ children }) {
                                                             className: "w-6 h-6"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 292,
+                                                            lineNumber: 293,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3297,13 +3429,13 @@ function DashboardLayout({ children }) {
                                                             children: "3"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 293,
+                                                            lineNumber: 294,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                    lineNumber: 288,
+                                                    lineNumber: 289,
                                                     columnNumber: 17
                                                 }, this),
                                                 notificationOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3313,7 +3445,7 @@ function DashboardLayout({ children }) {
                                                             onClick: ()=>setNotificationOpen(false)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 300,
+                                                            lineNumber: 301,
                                                             columnNumber: 21
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3327,7 +3459,7 @@ function DashboardLayout({ children }) {
                                                                             children: "Notifications"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 307,
+                                                                            lineNumber: 308,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3336,13 +3468,13 @@ function DashboardLayout({ children }) {
                                                                             children: "Mark all as read"
                                                                         }, void 0, false, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 310,
+                                                                            lineNumber: 311,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                    lineNumber: 306,
+                                                                    lineNumber: 307,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3356,7 +3488,7 @@ function DashboardLayout({ children }) {
                                                                                     children: "D"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 319,
+                                                                                    lineNumber: 320,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3372,7 +3504,7 @@ function DashboardLayout({ children }) {
                                                                                                     children: "deposit request"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                                    lineNumber: 325,
+                                                                                                    lineNumber: 326,
                                                                                                     columnNumber: 31
                                                                                                 }, this),
                                                                                                 " ",
@@ -3380,7 +3512,7 @@ function DashboardLayout({ children }) {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 323,
+                                                                                            lineNumber: 324,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3388,19 +3520,19 @@ function DashboardLayout({ children }) {
                                                                                             children: "2m ago"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 330,
+                                                                                            lineNumber: 331,
                                                                                             columnNumber: 29
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 322,
+                                                                                    lineNumber: 323,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 318,
+                                                                            lineNumber: 319,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3411,7 +3543,7 @@ function DashboardLayout({ children }) {
                                                                                     children: "S"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 336,
+                                                                                    lineNumber: 337,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3427,7 +3559,7 @@ function DashboardLayout({ children }) {
                                                                                                     children: "grain selling order"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                                    lineNumber: 342,
+                                                                                                    lineNumber: 343,
                                                                                                     columnNumber: 31
                                                                                                 }, this),
                                                                                                 " ",
@@ -3435,7 +3567,7 @@ function DashboardLayout({ children }) {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 340,
+                                                                                            lineNumber: 341,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3443,19 +3575,19 @@ function DashboardLayout({ children }) {
                                                                                             children: "10m ago"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 347,
+                                                                                            lineNumber: 348,
                                                                                             columnNumber: 29
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 339,
+                                                                                    lineNumber: 340,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 335,
+                                                                            lineNumber: 336,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3466,7 +3598,7 @@ function DashboardLayout({ children }) {
                                                                                     children: "M"
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 353,
+                                                                                    lineNumber: 354,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3480,7 +3612,7 @@ function DashboardLayout({ children }) {
                                                                                                     children: "System maintenance"
                                                                                                 }, void 0, false, {
                                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                                    lineNumber: 358,
+                                                                                                    lineNumber: 359,
                                                                                                     columnNumber: 31
                                                                                                 }, this),
                                                                                                 " ",
@@ -3488,7 +3620,7 @@ function DashboardLayout({ children }) {
                                                                                             ]
                                                                                         }, void 0, true, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 357,
+                                                                                            lineNumber: 358,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -3496,25 +3628,25 @@ function DashboardLayout({ children }) {
                                                                                             children: "1h ago"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 363,
+                                                                                            lineNumber: 364,
                                                                                             columnNumber: 29
                                                                                         }, this)
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 356,
+                                                                                    lineNumber: 357,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 352,
+                                                                            lineNumber: 353,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                    lineNumber: 317,
+                                                                    lineNumber: 318,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3523,13 +3655,13 @@ function DashboardLayout({ children }) {
                                                                     children: "View All Notifications"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                    lineNumber: 369,
+                                                                    lineNumber: 370,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 305,
+                                                            lineNumber: 306,
                                                             columnNumber: 21
                                                         }, this)
                                                     ]
@@ -3537,7 +3669,7 @@ function DashboardLayout({ children }) {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                            lineNumber: 287,
+                                            lineNumber: 288,
                                             columnNumber: 15
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3551,7 +3683,7 @@ function DashboardLayout({ children }) {
                                                             children: profile.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 382,
+                                                            lineNumber: 383,
                                                             columnNumber: 19
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3559,13 +3691,13 @@ function DashboardLayout({ children }) {
                                                             children: profile.role ? profile.role.charAt(0).toUpperCase() + profile.role.slice(1) : ""
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 385,
+                                                            lineNumber: 386,
                                                             columnNumber: 19
                                                         }, this)
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                    lineNumber: 381,
+                                                    lineNumber: 382,
                                                     columnNumber: 17
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3581,12 +3713,12 @@ function DashboardLayout({ children }) {
                                                                 className: "w-10 h-10 rounded-full p-[2px]"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                lineNumber: 398,
+                                                                lineNumber: 399,
                                                                 columnNumber: 21
                                                             }, this)
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                            lineNumber: 394,
+                                                            lineNumber: 395,
                                                             columnNumber: 19
                                                         }, this),
                                                         dropdownOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -3596,7 +3728,7 @@ function DashboardLayout({ children }) {
                                                                     onClick: ()=>setDropdownOpen(false)
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                    lineNumber: 407,
+                                                                    lineNumber: 408,
                                                                     columnNumber: 23
                                                                 }, this),
                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3610,7 +3742,7 @@ function DashboardLayout({ children }) {
                                                                                     children: profile.name
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 414,
+                                                                                    lineNumber: 415,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3618,7 +3750,7 @@ function DashboardLayout({ children }) {
                                                                                     children: profile.email
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 417,
+                                                                                    lineNumber: 418,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3626,7 +3758,7 @@ function DashboardLayout({ children }) {
                                                                                     children: profile.farmerId
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 420,
+                                                                                    lineNumber: 421,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -3634,13 +3766,13 @@ function DashboardLayout({ children }) {
                                                                                     children: profile.role.charAt(0).toUpperCase() + profile.role.slice(1)
                                                                                 }, void 0, false, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 423,
+                                                                                    lineNumber: 424,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 413,
+                                                                            lineNumber: 414,
                                                                             columnNumber: 25
                                                                         }, this),
                                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -3657,14 +3789,14 @@ function DashboardLayout({ children }) {
                                                                                             className: "h-4 w-4 text-gray-500"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 436,
+                                                                                            lineNumber: 437,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         " Profile"
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 429,
+                                                                                    lineNumber: 430,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3678,7 +3810,7 @@ function DashboardLayout({ children }) {
                                                                                             className: "h-4 w-4 text-gray-500"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 445,
+                                                                                            lineNumber: 446,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         " ",
@@ -3686,7 +3818,7 @@ function DashboardLayout({ children }) {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 438,
+                                                                                    lineNumber: 439,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3700,7 +3832,7 @@ function DashboardLayout({ children }) {
                                                                                             className: "h-4 w-4 text-gray-500"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 455,
+                                                                                            lineNumber: 456,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         " ",
@@ -3708,7 +3840,7 @@ function DashboardLayout({ children }) {
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 448,
+                                                                                    lineNumber: 449,
                                                                                     columnNumber: 27
                                                                                 }, this),
                                                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -3722,26 +3854,26 @@ function DashboardLayout({ children }) {
                                                                                             className: "h-4 w-4"
                                                                                         }, void 0, false, {
                                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                            lineNumber: 465,
+                                                                                            lineNumber: 466,
                                                                                             columnNumber: 29
                                                                                         }, this),
                                                                                         " Logout"
                                                                                     ]
                                                                                 }, void 0, true, {
                                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                                    lineNumber: 458,
+                                                                                    lineNumber: 459,
                                                                                     columnNumber: 27
                                                                                 }, this)
                                                                             ]
                                                                         }, void 0, true, {
                                                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                            lineNumber: 428,
+                                                                            lineNumber: 429,
                                                                             columnNumber: 25
                                                                         }, this)
                                                                     ]
                                                                 }, void 0, true, {
                                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                                    lineNumber: 412,
+                                                                    lineNumber: 413,
                                                                     columnNumber: 23
                                                                 }, this)
                                                             ]
@@ -3749,30 +3881,30 @@ function DashboardLayout({ children }) {
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                                    lineNumber: 393,
+                                                    lineNumber: 394,
                                                     columnNumber: 17
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                                            lineNumber: 380,
+                                            lineNumber: 381,
                                             columnNumber: 15
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/app/dashboard/layout.jsx",
-                                    lineNumber: 286,
+                                    lineNumber: 287,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/app/dashboard/layout.jsx",
-                            lineNumber: 271,
+                            lineNumber: 272,
                             columnNumber: 11
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/layout.jsx",
-                        lineNumber: 270,
+                        lineNumber: 271,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("main", {
@@ -3780,13 +3912,13 @@ function DashboardLayout({ children }) {
                         children: children
                     }, void 0, false, {
                         fileName: "[project]/src/app/dashboard/layout.jsx",
-                        lineNumber: 478,
+                        lineNumber: 479,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/app/dashboard/layout.jsx",
-                lineNumber: 268,
+                lineNumber: 269,
                 columnNumber: 7
             }, this)
         ]
