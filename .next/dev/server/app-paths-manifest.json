@@ -1,25 +1,4 @@
 {
-  "/admin/deposit/page": "app/admin/deposit/page.js",
-  "/admin/employee/page": "app/admin/employee/page.js",
-  "/admin/graincategories/page": "app/admin/graincategories/page.js",
   "/admin/page": "app/admin/page.js",
-  "/admin/requests/page": "app/admin/requests/page.js",
-  "/admin/transactions/page": "app/admin/transactions/page.js",
-  "/admin/warehouses/page": "app/admin/warehouses/page.js",
-  "/admin/withdraw/page": "app/admin/withdraw/page.js",
-  "/dashboard/page": "app/dashboard/page.js",
-  "/dashboard/sell/page": "app/dashboard/sell/page.js",
-  "/dashboard/transactions/page": "app/dashboard/transactions/page.js",
-  "/forget-password/page": "app/forget-password/page.js",
-  "/login/page": "app/login/page.js",
-  "/manager/page": "app/manager/page.js",
-  "/manager/requests/page": "app/manager/requests/page.js",
-  "/manager/withdraw/page": "app/manager/withdraw/page.js",
-  "/page": "app/page.js",
-  "/resetpin/page": "app/resetpin/page.js",
-  "/supervisor/deposit/page": "app/supervisor/deposit/page.js",
-  "/supervisor/page": "app/supervisor/page.js",
-  "/supervisor/requests/page": "app/supervisor/requests/page.js",
-  "/supervisor/transactions/page": "app/supervisor/transactions/page.js",
-  "/supervisor/withdraw/page": "app/supervisor/withdraw/page.js"
+  "/page": "app/page.js"
 }

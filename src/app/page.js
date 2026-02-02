@@ -57,7 +57,7 @@ export default function LandingPage() {
       highlight: "Grains",
       subtitle: "for Farmers",
       description: "Kushagra Bhumitra FPO enables farmers to store grains safely, access instant credit, and sell at the best market prices — all through a simple mobile app.",
-      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop"
+      image: "/Hero_4.png"
     },
     {
       badge: "तत्काल लोन, बिना झंझट",
@@ -65,7 +65,7 @@ export default function LandingPage() {
       highlight: "Credit",
       subtitle: "for Your Harvest",
       description: "Get up to 60% instant loan against your stored grains. No collateral needed — your grain is your guarantee. Money directly in your bank account.",
-      image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=800&h=600&fit=crop"
+      image: "/Hero_1.jpeg"
     },
     {
       badge: "सही दाम, सही समय",
@@ -73,7 +73,7 @@ export default function LandingPage() {
       highlight: "Prices",
       subtitle: "When You Sell",
       description: "No more distress selling! Store your grain, wait for the right price, and sell with one click. We connect you to buyers across India.",
-      image: "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=800&h=600&fit=crop"
+      image: "/Hero_3.png"
     }
   ];
 
@@ -317,20 +317,14 @@ export default function LandingPage() {
             {/* Left: Visual */}
             <div className="relative">
               <div className="aspect-square bg-stone-100 rounded-3xl lg:rounded-[3rem] overflow-hidden shadow-xl">
-                <div className="h-full w-full bg-linear-to-tr from-amber-100 to-emerald-50 flex items-center justify-center p-10">
-                  <div className="grid grid-cols-2 gap-4 sm:gap-6 w-full max-w-sm">
-                    {[
-                      { icon: Warehouse, label: "Safe Storage" },
-                      { icon: IndianRupee, label: "Instant Credit" },
-                      { icon: TrendingUp, label: "Best Prices" },
-                      { icon: Smartphone, label: "Mobile App" }
-                    ].map((item, idx) => (
-                      <div key={idx} className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg text-center hover:shadow-xl transition-shadow">
-                        <item.icon className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 text-emerald-600" />
-                        <span className="text-sm font-bold text-stone-700">{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
+                <div className="h-full w-full bg-linear-to-tr from-amber-50 to-emerald-50 flex items-center justify-center p-5">
+                  <Image 
+                    src="/image-about_v1.png"
+                    alt="About Us Image"
+                    width={800}
+                    height={800}
+                    className="w-full h-full object-contain"
+                  />
                 </div>
               </div>
               <div className="absolute -bottom-6 -right-6 bg-emerald-600 text-white p-6 rounded-2xl shadow-xl hidden lg:block">
@@ -577,25 +571,25 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <div className="text-emerald-600 font-bold text-sm tracking-widest uppercase mb-3">Leadership</div>
-            <h3 className="text-3xl lg:text-5xl font-bold text-stone-900">Meet The <span className="text-emerald-600">Team</span></h3>
+            <h3 className="text-3xl lg:text-5xl font-bold text-stone-900">Board of  <span className="text-emerald-600">Directors</span></h3>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { name: "Kishor Kumar Jha", role: "CEO & Director", bio: "Visionary leader driving the Agri-FinTech revolution." },
-              { name: "Praveen Kumar", role: "COO & Director", bio: "Operations expert ensuring seamless farmer experience." },
-              { name: "Smriti Chandra", role: "Nominee Director", bio: "Strategic advisor with deep industry knowledge." },
-              { name: "Rahul Kumar", role: "Independent Director", bio: "Governance and compliance champion." }
+              { name: "Sumit Singh", role: "CEO & Director",image:"/sumit.jpeg"},
+              { name: "Shraddha Srivastava", role: "CEO & Director",image:"/shraddha.jpeg"},
+              { name: "Deendayal Singh", role: "CEO & Director",image:"/deendayal.jpeg"},
+              { name: "Brijesh Kumar Singh", role: "CEO & Director",image:"/brijesh.jpeg"},
+              { name: "Dharmendra Singh", role: "CEO & Director", image:"/dharmendra.jpeg"},
             ].map((member, idx) => (
               <div key={idx} className="flex flex-col items-center text-center group">
                 <div className="w-40 h-40 rounded-full bg-linear-to-br from-stone-100 to-stone-200 mb-6 overflow-hidden relative shadow-lg group-hover:shadow-xl transition-shadow">
                   <div className="absolute inset-0 flex items-center justify-center text-stone-400">
-                    <Users className="w-16 h-16 opacity-40" />
+                    <Image src={member.image} alt={member.name} width={160} height={160} className="w-full h-full object-cover" />
                   </div>
                 </div>
                 <h4 className="text-xl font-bold text-stone-900 mb-0.5 group-hover:text-emerald-600 transition-colors">{member.name}</h4>
                 <p className="text-emerald-600 font-semibold text-sm mb-2">{member.role}</p>
-                <p className="text-stone-400 text-xs px-4">{member.bio}</p>
               </div>
             ))}
           </div>
@@ -717,13 +711,13 @@ export default function LandingPage() {
                 <li className="flex items-start gap-3">
                   <Phone className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
                   <div>
-                    <p className="hover:text-emerald-400 transition-colors">+91 98765 43210</p>
-                    <p className="hover:text-emerald-400 transition-colors">+91 12345 67890</p>
+                    <p className="hover:text-emerald-400 transition-colors">+91 760703385</p>
+                    <p className="hover:text-emerald-400 transition-colors">+91 9369595897</p>
                   </div>
                 </li>
                 <li className="flex items-center gap-3">
                   <Mail className="w-4 h-4 text-emerald-500 shrink-0" />
-                  <a href="mailto:info@kushagrafpo.com" className="hover:text-emerald-400 transition-colors">info@kushagrafpo.com</a>
+                  <a href="mailto:info@kushagrafpo.com" className="hover:text-emerald-400 transition-colors">info@kushagrafpo.in</a>
                 </li>
                 <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
