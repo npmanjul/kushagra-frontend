@@ -2,6 +2,7 @@
   "/_global-error/page": "app/_global-error/page.js",
   "/_not-found/page": "app/_not-found/page.js",
   "/admin/approval/page": "app/admin/approval/page.js",
+  "/admin/contact/page": "app/admin/contact/page.js",
   "/admin/credit/page": "app/admin/credit/page.js",
   "/admin/deposit/page": "app/admin/deposit/page.js",
   "/admin/employee/page": "app/admin/employee/page.js",

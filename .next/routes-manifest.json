@@ -52,6 +52,12 @@
       "namedRegex": "^/admin/approval(?:/)?$"
     },
     {
+      "page": "/admin/contact",
+      "regex": "^/admin/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/contact(?:/)?$"
+    },
+    {
       "page": "/admin/credit",
       "regex": "^/admin/credit(?:/)?$",
       "routeKeys": {},

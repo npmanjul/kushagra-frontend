@@ -2,6 +2,7 @@
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
   "/admin/approval/page": "/admin/approval",
+  "/admin/contact/page": "/admin/contact",
   "/admin/credit/page": "/admin/credit",
   "/admin/deposit/page": "/admin/deposit",
   "/admin/employee/page": "/admin/employee",
