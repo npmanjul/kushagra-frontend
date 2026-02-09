@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 22, "column": 0}, "map": {"version":3,"sources":["file:///Users/anjulsachan/Documents/grain_bank/Frontend/src/app/admin/contact/page.jsx"],"sourcesContent":["import React from \"react\";\n\nconst page = () => {\n  const fetchContact = async () => {\n    const response = await fetch(`${API_BASE_URL}/contact/get-all-contacts`, {\n      method: \"GET\",\n      headers: {\n        \"Content-Type\": \"application/json\",\n      },\n    });\n\n    if (response.ok) {\n      const data = await response.json();\n      console.log(data);\n    } else {\n      console.error(\"Error fetching contacts:\", response.status);\n    }\n  };\n\n  useEffect(() => {\n    fetchContact();\n  }, []);\n\n  return <div>page</div>;\n};\n\nexport default page;\n"],"names":[],"mappings":";;;;;AAAA;;;AAEA,MAAM,OAAO;IACX,MAAM,eAAe;QACnB,MAAM,WAAW,MAAM,MAAM,GAAG,aAAa,yBAAyB,CAAC,EAAE;YACvE,QAAQ;YACR,SAAS;gBACP,gBAAgB;YAClB;QACF;QAEA,IAAI,SAAS,EAAE,EAAE;YACf,MAAM,OAAO,MAAM,SAAS,IAAI;YAChC,QAAQ,GAAG,CAAC;QACd,OAAO;YACL,QAAQ,KAAK,CAAC,4BAA4B,SAAS,MAAM;QAC3D;IACF;IAEA,UAAU;QACR;IACF,GAAG,EAAE;IAEL,qBAAO,8OAAC;kBAAI;;;;;;AACd;uCAEe"}}]
+}

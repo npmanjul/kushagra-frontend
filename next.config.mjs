@@ -11,6 +11,11 @@ const nextConfig = {
         hostname: "dev-bucket-7896.s3.ap-south-1.amazonaws.com",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "kushagrafpo123.s3.ap-south-1.amazonaws.com",
+        pathname: "/**",
+      },
     ],
   },
 };

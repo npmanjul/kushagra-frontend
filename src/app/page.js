@@ -40,12 +40,24 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import toast from "react-hot-toast";
+import API_BASE_URL from "@/utils/constants";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("farmer");
   const [activeSection, setActiveSection] = useState("");
   const [heroSlide, setHeroSlide] = useState(0);
+  
+  // Contact form state
+  const [contactForm, setContactForm] = useState({
+    name: "",
+    phone_number: "",
+    email: "",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
 
   const navItems = ["About", "How It Works", "Plans", "Team", "News", "Contact"];
 
@@ -110,6 +122,47 @@ export default function LandingPage() {
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  // Handle contact form input changes
+  const handleContactChange = (e) => {
+    const { name, value } = e.target;
+    setContactForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Handle contact form submission
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/contact/submit-contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactForm)
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setContactForm({ name: "", phone_number: "", email: "", message: "" }); // Reset form
+        setTimeout(() => setSubmitStatus(null), 5000); // Clear message after 5s
+        toast.success('Contact form submitted successfully!');
+      } else {
+        setSubmitStatus('error');
+        toast.error('Error submitting contact form!');
+      }
+    } catch (error) {
+      console.error('Contact form submission error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans text-stone-900 selection:bg-emerald-100 selection:text-emerald-900 antialiased">
@@ -635,23 +688,82 @@ export default function LandingPage() {
           </div>
 
           <div className="bg-stone-50 p-8 md:p-12 rounded-3xl shadow-lg border border-stone-100">
-            <form className="space-y-6">
+            <form onSubmit={handleContactSubmit} className="space-y-6">
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-stone-700 mb-2">Full Name</label>
-                  <input type="text" placeholder="Karan Singh" className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400" />
+                  <input 
+                    type="text" 
+                    name="name"
+                    value={contactForm.name}
+                    onChange={handleContactChange}
+                    placeholder="Karan Singh" 
+                    required
+                    className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400" 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-stone-700 mb-2">Phone Number</label>
-                  <input type="tel" placeholder="+91 98765 43210" className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400" />
+                  <input 
+                    type="tel" 
+                    name="phone_number"
+                    value={contactForm.phone_number}
+                    onChange={handleContactChange}
+                    placeholder="+91 98765 43210" 
+                    required
+                    className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400" 
+                  />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-bold text-stone-700 mb-2">Your Message</label>
-                <textarea rows="5" placeholder="How can we help you today?" className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400 resize-none"></textarea>
+                <label className="block text-sm font-bold text-stone-700 mb-2">Email Address</label>
+                <input 
+                  type="email" 
+                  name="email"
+                  value={contactForm.email}
+                  onChange={handleContactChange}
+                  placeholder="karan.singh@example.com" 
+                  required
+                  className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400" 
+                />
               </div>
-              <button type="button" className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-emerald-200 hover:shadow-xl transition-all flex items-center justify-center group">
-                Send Message <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              <div>
+                <label className="block text-sm font-bold text-stone-700 mb-2">Your Message</label>
+                <textarea 
+                  rows="5" 
+                  name="message"
+                  value={contactForm.message}
+                  onChange={handleContactChange}
+                  placeholder="How can we help you today?" 
+                  required
+                  className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-50 outline-none transition-all font-medium text-stone-800 placeholder-stone-400 resize-none"
+                ></textarea>
+              </div>
+              
+              {/* Success/Error Messages */}
+              {submitStatus === 'success' && (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-700 text-sm font-medium flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5" />
+                  Thank you! Your message has been sent successfully. We'll get back to you soon.
+                </div>
+              )}
+              {submitStatus === 'error' && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-medium flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5" />
+                  Oops! Something went wrong. Please try again later.
+                </div>
+              )}
+              
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-lg shadow-lg shadow-emerald-200 hover:shadow-xl transition-all flex items-center justify-center group disabled:bg-stone-400 disabled:cursor-not-allowed disabled:shadow-none"
+              >
+                {isSubmitting ? (
+                  <>Processing...</>
+                ) : (
+                  <>Send Message <Send className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" /></>
+                )}
               </button>
             </form>
           </div>

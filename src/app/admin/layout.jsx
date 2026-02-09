@@ -103,12 +103,12 @@ const sidebarItems = [
     icon: User,
     href: "/admin/staff",
   },
-  // {
-  //   id: "creditmanagement",
-  //   label: "Credit",
-  //   icon: CreditCard,
-  //   href: "/admin/credit",
-  // },
+  {
+    id: "contact",
+    label: "Contact",
+    icon: CreditCard,
+    href: "/admin/contact",
+  },
   {
     id: "transactions",
     label: "Transactions",

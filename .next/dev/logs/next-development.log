@@ -1,201 +1,44 @@
-[00:00:00.973] Server  LOG      ✓ Ready in 614ms
-[00:00:04.027] Server  LOG      ○ Compiling / ...
-[00:00:05.613] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:06.979] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
-[00:00:07.604] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:08.227] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:08.227] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:08.544] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:08.544] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:08.845] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:08.845] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:09.181] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:09.181] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:35.294] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:35.675] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:35.675] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:39.231] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:39.537] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:39.537] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:39.877] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:39.877] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:40.261] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:00:40.261] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:00:46.587] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:00.085] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:00.235] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:27.824] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:28.000] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:28.001] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:28.834] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:28.995] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:28.995] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:29.185] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:29.328] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:29.328] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:29.508] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:29.677] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:29.677] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:29.869] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:30.027] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:30.027] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:30.233] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:30.377] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:30.377] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:30.577] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:30.728] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:30.728] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:31.314] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:31.477] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:31.478] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:31.670] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:31.835] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:31.835] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:32.056] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:32.221] Browser WARN    Image with src "/image-about.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:32.221] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:01:53.613] Server  LOG      ✓ Compiled in 145ms
-[00:01:55.341] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:01:55.496] Browser WARN    Image with src "/image-about_v1.png" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
-Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
-[00:01:55.496] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:02:21.268] Server  LOG      ✓ Compiled in 334ms
-[00:02:48.737] Server  WARN     ⚠ Cross origin request detected from untampered-jarrett-consonantly.ngrok-free.dev to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
-[00:02:48.896] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
-[00:02:48.897] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
-
-- A server/client branch `if (typeof window !== 'undefined')`.
-- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-- Date formatting in a user's locale which doesn't match the server.
-- External changing data without sending a snapshot of it along with the HTML.
-- Invalid HTML tag nesting.
-
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
-
-%s%s https://react.dev/link/hydration-mismatch 
-
-  ...
-    <HTTPAccessFallbackBoundary notFound={<SegmentViewNode>} forbidden={undefined} unauthorized={undefined}>
-      <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<SegmentViewNode>} forbidden={undefined} ...>
-        <RedirectBoundary>
-          <RedirectErrorBoundary router={{...}}>
-            <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} segmentPath={[...]} ...>
-              <SegmentViewNode type="page" pagePath="page.js">
-                <SegmentTrieNode>
-                <ClientPageRoot Component={function LandingPage} serverProvidedParams={{...}}>
-                  <LandingPage params={Promise} searchParams={Promise}>
-                    <div className="min-h-scre...">
-                      <header>
-                      <section className="relative h...">
-                        <div>
-                        <div>
-                        <div>
-                        <div className="relative z...">
-                          <div className="max-w-7xl ...">
-                            <div className="max-w-2xl">
-                              <div>
-                              <div>
-                              <div>
-                              <div className="flex flex-...">
-                                <LinkComponent>
-                                <button
-                                  className="px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white round..."
--                                 fdprocessedid="9gu3np"
-                                >
-+                                 Watch Video
-                              <div className="flex items...">
-                                <div className="flex gap-2">
-                                  <button
-                                    onClick={function onClick}
-                                    className="h-1.5 rounded-full transition-all duration-500 w-8 bg-emerald-500"
--                                   fdprocessedid="xvu3vd"
-                                  >
-                                  <button
-                                    onClick={function onClick}
-                                    className="h-1.5 rounded-full transition-all duration-500 w-1.5 bg-white/40 hover:..."
--                                   fdprocessedid="hayvq9"
-                                  >
-                                  <button
-                                    onClick={function onClick}
-                                    className="h-1.5 rounded-full transition-all duration-500 w-1.5 bg-white/40 hover:..."
--                                   fdprocessedid="fm1zfw"
-                                  >
-                                ...
-                      <section>
-                      <section>
-                      <section id="how-it-works" className="py-15 bg-w...">
-                        <div className="max-w-7xl ...">
-                          <div className="text-cente...">
-                            <div>
-                            <h3>
-                            <p>
-                            <div className="inline-fle...">
-                              <button
-                                onClick={function onClick}
-                                className="px-8 py-3 rounded-full text-sm font-bold transition-all duration-300 capita..."
--                               fdprocessedid="xsrqbw"
-                              >
-                              <button
-                                onClick={function onClick}
-                                className="px-8 py-3 rounded-full text-sm font-bold transition-all duration-300 capita..."
--                               fdprocessedid="3n8r1w"
-                              >
-                          ...
-                      <section>
-                      <section>
-                      <section>
-                      <section id="contact" className="py-15 bg-w...">
-                        <div className="max-w-4xl ...">
-                          <div>
-                          <div className="bg-stone-5...">
-                            <form className="space-y-6">
-                              <div className="grid md:gr...">
-                                <div>
-                                  <label>
-                                  <input
-                                    type="text"
-                                    placeholder="Karan Singh"
-                                    className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:bo..."
--                                   fdprocessedid="f8i9lr"
-                                  >
-                                <div>
-                                  <label>
-                                  <input
-                                    type="tel"
-                                    placeholder="+91 98765 43210"
-                                    className="w-full px-5 py-4 bg-white rounded-xl border-2 border-stone-200 focus:bo..."
--                                   fdprocessedid="jg70e"
-                                  >
-                              <div>
-                              <button
-                                type="button"
-                                className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-..."
--                               fdprocessedid="gze72c"
-                              >
-                      ...
-              ...
-            ...
-
-[00:02:48.898] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
-[00:02:59.330] Server  LOG      ✓ Compiled in 189ms
+[00:00:01.174] Server  LOG      ✓ Ready in 774ms
+[00:00:06.307] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:08:17.416] Server  LOG      ✓ Compiled in 660ms
+[00:08:24.665] Server  LOG      ✓ Compiled in 370ms
+[00:08:43.861] Server  LOG      ✓ Compiled in 392ms
+[00:08:44.046] Browser ERROR   A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+[00:09:41.903] Server  LOG      ✓ Compiled in 185ms
+[00:10:34.171] Server  LOG      ✓ Compiled in 303ms
+[00:11:27.691] Server  LOG      ✓ Compiled in 118ms
+[00:11:44.440] Server  LOG      ✓ Compiled in 195ms
+[00:11:54.410] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[00:13:32.113] Server  LOG      ✓ Compiled in 258ms
+[00:14:10.757] Browser LOG     {"message":"Internal server error","success":false}
+[00:14:10.757] Browser LOG     {"message":"Internal server error","success":false}
+[00:14:13.852] Browser LOG     API_BASE_URL used in browser: http://localhost:8000/api/v1
+[00:14:14.117] Browser LOG     Login response: {"currentStep":6,"message":"login successful","role":"admin","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTc4YjJjN2E3YTA2MDQ4ZjY3MDhlYzciLCJpYXQiOjE3NzA2NDQxOTQsImV4cCI6MTc3MTI0ODk5NH0.K-2DfI_lpOcpPIeqxni9QOe2KPSRG8bp3UWgebDyMhI"}
+[00:14:15.199] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:14:15.199] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:15:58.603] Server  LOG      ✓ Compiled in 182ms
+[00:15:58.785] Server  ERROR    ⨯ ReferenceError: useEffect is not defined
+[00:15:59.022] Browser ERROR   uncaughtError: ReferenceError: useEffect is not defined
+[00:18:11.336] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:18:11.358] Server  LOG      ✓ Compiled in 524ms
+[00:18:12.684] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[00:18:12.787] Browser ERROR   Error: {}
+[00:18:12.787] Browser ERROR   Error: {}
+[00:18:18.452] Browser ERROR   Error: {}
+[00:18:18.452] Browser ERROR   Error: {}
+[00:18:19.767] Browser ERROR   Error: {}
+[00:18:20.234] Browser ERROR   Error: {}
+[00:18:20.434] Browser ERROR   Error: {}
+[01:08:15.845] Server  LOG      ✓ Compiled in 335ms
+[01:08:43.543] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[01:12:46.046] Server  LOG      ✓ Compiled in 454ms
+[01:13:37.312] Server  LOG      ✓ Compiled in 171ms
+[01:13:43.786] Server  LOG      ✓ Compiled in 127ms
+[01:13:53.184] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[01:13:56.381] Browser WARN    Image with src "/logo_v2.png" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "auto"' or 'height: "auto"' to maintain the aspect ratio.
+[01:15:11.822] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[01:17:54.399] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[01:19:41.840] Server  LOG      ✓ Compiled in 212ms
+[01:20:26.860] Server  LOG      ✓ Compiled in 189ms
+[01:54:52.650] Browser LOG     {"message":"Token is valid","role":"admin","success":true}
+[01:55:47.985] Server  LOG      ✓ Compiled in 2.7s
