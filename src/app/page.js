@@ -218,7 +218,7 @@ export default function LandingPage() {
               <div className="flex items-center gap-2 shrink-0">
                 <Link
                   href="/login"
-                  className="hidden sm:flex bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 items-center group border border-emerald-500"
+                  className="hidden sm:flex bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded-full text-xs sm:text-sm font-bold transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 items-center group border border-emerald-500"
                 >
                   Login{" "}
                   <ArrowRight className="ml-1 h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
