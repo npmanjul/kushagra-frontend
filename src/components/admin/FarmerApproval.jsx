@@ -48,14 +48,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [rejectionModal, setRejectionModal] = useState({ isOpen: false, field: null, label: "" });
   const [rejectionReason, setRejectionReason] = useState("");
-  // API states
   const [farmerData, setFarmerData] = useState(null);
   const [overallStatus, setOverallStatus] = useState("pending");
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const scrollContainerRef = React.useRef(null);
 
-  // Fetch farmer verification data
   const fetchVerificationData = useCallback(async () => {
     if (!farmerId) return;
 
@@ -83,10 +82,8 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
       const initialStatus = {};
       Object.keys(data.data).forEach((key) => {
         if (key !== "overallStatus" && data.data[key]?.status === "pending") {
-          // Only track pending fields that have values (submitted by farmer)
           const fieldData = data.data[key];
           if (hasFieldValue(fieldData)) {
-            // Don't set initial status - leave it undefined until user takes action
           }
         }
       });
@@ -110,7 +107,6 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
     return true;
   };
 
-  // Submit verification updates
   const submitVerification = async () => {
     const changedFields = {};
 
@@ -278,6 +274,9 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
   const handleVerification = (field, status) => {
     if (!canModifyField(field)) return;
 
+    // Save current scroll position
+    const scrollPosition = scrollContainerRef.current?.scrollTop;
+
     if (status === "rejected") {
       setRejectionModal({ isOpen: true, field, label: field.replace(/_/g, " ") });
     } else {
@@ -285,25 +284,52 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
         ...prev,
         [field]: { status: "accepted", reason: "" },
       }));
+
+      // Restore scroll position after state update
+      requestAnimationFrame(() => {
+        if (scrollContainerRef.current && scrollPosition !== undefined) {
+          scrollContainerRef.current.scrollTop = scrollPosition;
+        }
+      });
     }
   };
 
   const handleRejectWithReason = () => {
     if (rejectionReason.trim()) {
+      // Save current scroll position
+      const scrollPosition = scrollContainerRef.current?.scrollTop;
+
       setVerificationStatus((prev) => ({
         ...prev,
         [rejectionModal.field]: { status: "rejected", reason: rejectionReason },
       }));
       setRejectionModal({ isOpen: false, field: null, label: "" });
       setRejectionReason("");
+
+      // Restore scroll position after state update
+      requestAnimationFrame(() => {
+        if (scrollContainerRef.current && scrollPosition !== undefined) {
+          scrollContainerRef.current.scrollTop = scrollPosition;
+        }
+      });
     }
   };
 
   const handleResetVerification = (field) => {
+    // Save current scroll position
+    const scrollPosition = scrollContainerRef.current?.scrollTop;
+
     setVerificationStatus((prev) => {
       const newStatus = { ...prev };
       delete newStatus[field];
       return newStatus;
+    });
+
+    // Restore scroll position after state update
+    requestAnimationFrame(() => {
+      if (scrollContainerRef.current && scrollPosition !== undefined) {
+        scrollContainerRef.current.scrollTop = scrollPosition;
+      }
     });
   };
 
@@ -1276,7 +1302,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
                   <div
                     className={`p-1.5 rounded-lg bg-gradient-to-br ${activeTab === tab.id ? tab.color : "from-gray-300 to-gray-400"
                       } shadow-sm`}
-                  >
+                    >
                     <Icon className="w-3.5 h-3.5 text-white" />
                   </div>
                   <span className="text-sm whitespace-nowrap">{tab.label}</span>
@@ -1286,7 +1312,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete }) =
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-gray-50 via-white to-gray-50">
+          <div ref={scrollContainerRef} className="flex-1 p-4 overflow-y-auto bg-gradient-to-br from-gray-50 via-white to-gray-50">
             <div className="space-y-3">
               {renderTabContent()}
             </div>

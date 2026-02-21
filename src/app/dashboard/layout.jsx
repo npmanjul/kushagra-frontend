@@ -24,6 +24,7 @@ import PinModal from "@/components/dashboard/PinModal";
 import NoticeModal from "@/components/dashboard/NoticeModal";
 import Loader from "@/components/common/Loader";
 import { FarmerVerificationModal } from "@/components/dashboard/FarmerVerificationModal";
+import AlertModal from "@/components/dashboard/AlertModal";
 
 const sidebarItems = [
   { id: "dashboard", label: "Dashboard", icon: Home, href: "/dashboard" },
@@ -33,12 +34,6 @@ const sidebarItems = [
     icon: TrendingUp,
     href: "/dashboard/sell",
   },
-  // {
-  //   id: "calculator",
-  //   label: "Storage Calculator",
-  //   icon: Calculator,
-  //   href: "/dashboard/calculator",
-  // },
   {
     id: "loan",
     label: "Loan",
@@ -51,12 +46,6 @@ const sidebarItems = [
     icon: History,
     href: "/dashboard/transactions",
   },
-  // {
-  //   id: "analytics",
-  //   label: "Analytics",
-  //   icon: PieChart,
-  //   href: "/dashboard/analytics",
-  // },
   {
     id: "notifications",
     label: "Notifications",
@@ -158,6 +147,7 @@ export default function DashboardLayout({ children }) {
         const res = await getprofile();
         console.log("Profile details:", res);
         setProfile(res.profile);
+        setShowAlert(res.profile.is_active);
         if (res.profile.farmerVerification.overallStatus === "rejected") {
           setIsOpenVerificationModal(true);
         } else if (res.profile.farmerVerification.overallStatus === "pending") {
@@ -183,15 +173,13 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="h-screen bg-gray-50 flex relative">
       <PinModal isOpen={pinModalOpen} onClose={() => setPinModalOpen(false)} />
-      {/* <AlertModal
-        isOpen={showAlert}
+      <AlertModal
+        isOpen={!showAlert}
         onClose={() => setShowAlert(false)}
         title="Important Notice"
-        message="Your session will expire in 5 minutes. Please save your work."
-      /> */}
+      />
       <FarmerVerificationModal isOpen={isOpenVerificationModal} />
       <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} />
-      {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"

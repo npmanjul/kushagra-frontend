@@ -65,13 +65,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
         label: ""
     });
     const [rejectionReason, setRejectionReason] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("");
-    // API states
     const [farmerData, setFarmerData] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
     const [overallStatus, setOverallStatus] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])("pending");
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [submitting, setSubmitting] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(false);
     const [error, setError] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useState"])(null);
-    // Fetch farmer verification data
+    const scrollContainerRef = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["default"].useRef(null);
     const fetchVerificationData = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$index$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["useCallback"])({
         "FarmerApproval.useCallback[fetchVerificationData]": async ()=>{
             if (!farmerId) return;
@@ -96,11 +95,8 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                 Object.keys(data.data).forEach({
                     "FarmerApproval.useCallback[fetchVerificationData]": (key)=>{
                         if (key !== "overallStatus" && data.data[key]?.status === "pending") {
-                            // Only track pending fields that have values (submitted by farmer)
                             const fieldData = data.data[key];
-                            if (hasFieldValue(fieldData)) {
-                            // Don't set initial status - leave it undefined until user takes action
-                            }
+                            if (hasFieldValue(fieldData)) {}
                         }
                     }
                 }["FarmerApproval.useCallback[fetchVerificationData]"]);
@@ -124,7 +120,6 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
         if (typeof value === 'object' && !value.$numberDecimal && Object.keys(value).length === 0) return false;
         return true;
     };
-    // Submit verification updates
     const submitVerification = async ()=>{
         const changedFields = {};
         Object.keys(verificationStatus).forEach((key)=>{
@@ -270,6 +265,8 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
     };
     const handleVerification = (field, status)=>{
         if (!canModifyField(field)) return;
+        // Save current scroll position
+        const scrollPosition = scrollContainerRef.current?.scrollTop;
         if (status === "rejected") {
             setRejectionModal({
                 isOpen: true,
@@ -284,10 +281,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         reason: ""
                     }
                 }));
+            // Restore scroll position after state update
+            requestAnimationFrame(()=>{
+                if (scrollContainerRef.current && scrollPosition !== undefined) {
+                    scrollContainerRef.current.scrollTop = scrollPosition;
+                }
+            });
         }
     };
     const handleRejectWithReason = ()=>{
         if (rejectionReason.trim()) {
+            // Save current scroll position
+            const scrollPosition = scrollContainerRef.current?.scrollTop;
             setVerificationStatus((prev)=>({
                     ...prev,
                     [rejectionModal.field]: {
@@ -301,15 +306,29 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                 label: ""
             });
             setRejectionReason("");
+            // Restore scroll position after state update
+            requestAnimationFrame(()=>{
+                if (scrollContainerRef.current && scrollPosition !== undefined) {
+                    scrollContainerRef.current.scrollTop = scrollPosition;
+                }
+            });
         }
     };
     const handleResetVerification = (field)=>{
+        // Save current scroll position
+        const scrollPosition = scrollContainerRef.current?.scrollTop;
         setVerificationStatus((prev)=>{
             const newStatus = {
                 ...prev
             };
             delete newStatus[field];
             return newStatus;
+        });
+        // Restore scroll position after state update
+        requestAnimationFrame(()=>{
+            if (scrollContainerRef.current && scrollPosition !== undefined) {
+                scrollContainerRef.current.scrollTop = scrollPosition;
+            }
         });
     };
     const getStatusColor = (field)=>{
@@ -334,7 +353,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-3.5 h-3.5 text-gray-500"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 332,
+                        lineNumber: 358,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -342,13 +361,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         children: "Not Submitted"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 333,
+                        lineNumber: 359,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 331,
+                lineNumber: 357,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -361,7 +380,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-3.5 h-3.5 text-white"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 342,
+                        lineNumber: 368,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -369,18 +388,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         children: isModified ? "Approved (New)" : "Approved"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 343,
+                        lineNumber: 369,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 341,
+                lineNumber: 367,
                 columnNumber: 11
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 340,
+            lineNumber: 366,
             columnNumber: 9
         }, ("TURBOPACK compile-time value", void 0));
         if (status === "rejected") return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -392,7 +411,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-3.5 h-3.5 text-white"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 353,
+                        lineNumber: 379,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -400,18 +419,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         children: isModified ? "Rejected (New)" : "Rejected"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 354,
+                        lineNumber: 380,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 352,
+                lineNumber: 378,
                 columnNumber: 11
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 351,
+            lineNumber: 377,
             columnNumber: 9
         }, ("TURBOPACK compile-time value", void 0));
         return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -421,7 +440,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-3.5 h-3.5 text-amber-600"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 362,
+                    lineNumber: 388,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -429,13 +448,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     children: "Pending Review"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 363,
+                    lineNumber: 389,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 361,
+            lineNumber: 387,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -489,7 +508,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 418,
+                    lineNumber: 444,
                     columnNumber: 16
                 }, ("TURBOPACK compile-time value", void 0));
             }
@@ -498,7 +517,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
             className: "w-4 h-4"
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 421,
+            lineNumber: 447,
             columnNumber: 12
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -550,7 +569,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 466,
+                    lineNumber: 492,
                     columnNumber: 78
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -562,7 +581,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 467,
+                    lineNumber: 493,
                     columnNumber: 79
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -574,7 +593,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 468,
+                    lineNumber: 494,
                     columnNumber: 71
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -586,7 +605,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 469,
+                    lineNumber: 495,
                     columnNumber: 70
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -598,7 +617,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 470,
+                    lineNumber: 496,
                     columnNumber: 91
                 }, ("TURBOPACK compile-time value", void 0))
             }
@@ -612,7 +631,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 473,
+                    lineNumber: 499,
                     columnNumber: 65
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -624,7 +643,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 474,
+                    lineNumber: 500,
                     columnNumber: 63
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -636,7 +655,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 475,
+                    lineNumber: 501,
                     columnNumber: 67
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -648,7 +667,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 476,
+                    lineNumber: 502,
                     columnNumber: 61
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -660,7 +679,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 477,
+                    lineNumber: 503,
                     columnNumber: 67
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -672,7 +691,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 478,
+                    lineNumber: 504,
                     columnNumber: 67
                 }, ("TURBOPACK compile-time value", void 0))
             }
@@ -687,7 +706,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 481,
+                    lineNumber: 507,
                     columnNumber: 87
                 }, ("TURBOPACK compile-time value", void 0)),
                 relatedImageField: "khatauni_images"
@@ -702,7 +721,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 484,
+                    lineNumber: 510,
                     columnNumber: 88
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -714,7 +733,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 485,
+                    lineNumber: 511,
                     columnNumber: 79
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -726,7 +745,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 486,
+                    lineNumber: 512,
                     columnNumber: 69
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -738,7 +757,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 487,
+                    lineNumber: 513,
                     columnNumber: 84
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -750,7 +769,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 488,
+                    lineNumber: 514,
                     columnNumber: 69
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -762,7 +781,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 489,
+                    lineNumber: 515,
                     columnNumber: 73
                 }, ("TURBOPACK compile-time value", void 0))
             }
@@ -776,7 +795,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 492,
+                    lineNumber: 518,
                     columnNumber: 78
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -788,7 +807,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 493,
+                    lineNumber: 519,
                     columnNumber: 94
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -800,7 +819,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 494,
+                    lineNumber: 520,
                     columnNumber: 86
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -812,7 +831,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 495,
+                    lineNumber: 521,
                     columnNumber: 75
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -824,7 +843,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 496,
+                    lineNumber: 522,
                     columnNumber: 75
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -836,7 +855,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 497,
+                    lineNumber: 523,
                     columnNumber: 76
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -848,7 +867,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 498,
+                    lineNumber: 524,
                     columnNumber: 77
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -860,7 +879,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 499,
+                    lineNumber: 525,
                     columnNumber: 81
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -872,7 +891,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 500,
+                    lineNumber: 526,
                     columnNumber: 73
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -884,7 +903,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 501,
+                    lineNumber: 527,
                     columnNumber: 79
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -896,7 +915,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 502,
+                    lineNumber: 528,
                     columnNumber: 71
                 }, ("TURBOPACK compile-time value", void 0))
             },
@@ -908,7 +927,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     className: "w-4 h-4"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 503,
+                    lineNumber: 529,
                     columnNumber: 81
                 }, ("TURBOPACK compile-time value", void 0))
             }
@@ -997,7 +1016,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             className: "w-4 h-4 text-green-300"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 589,
+                            lineNumber: 615,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1005,13 +1024,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: "Fully Approved"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 590,
+                            lineNumber: 616,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 588,
+                    lineNumber: 614,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             case "rejected":
@@ -1022,7 +1041,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             className: "w-4 h-4 text-red-300"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 596,
+                            lineNumber: 622,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1030,13 +1049,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: "Has Rejections"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 597,
+                            lineNumber: 623,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 595,
+                    lineNumber: 621,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
             default:
@@ -1047,7 +1066,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             className: "w-4 h-4 text-amber-300"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 603,
+                            lineNumber: 629,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1055,13 +1074,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: "Pending Review"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 604,
+                            lineNumber: 630,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 602,
+                    lineNumber: 628,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1093,12 +1112,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-6 h-6 text-white"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 630,
+                                        lineNumber: 656,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 629,
+                                    lineNumber: 655,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1108,7 +1127,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: "Rejection Reason"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 633,
+                                            lineNumber: 659,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1116,24 +1135,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: rejectionModal.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 634,
+                                            lineNumber: 660,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 632,
+                                    lineNumber: 658,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 628,
+                            lineNumber: 654,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 627,
+                        lineNumber: 653,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1144,7 +1163,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: "Please provide a reason for rejecting this field. This will help the farmer understand what needs to be corrected."
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 643,
+                                lineNumber: 669,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1155,7 +1174,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         children: "Quick Select"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 649,
+                                        lineNumber: 675,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1166,18 +1185,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 children: reason
                                             }, index, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 654,
+                                                lineNumber: 680,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0)))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 652,
+                                        lineNumber: 678,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 648,
+                                lineNumber: 674,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1187,7 +1206,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         children: "Rejection Reason"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 670,
+                                        lineNumber: 696,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1197,7 +1216,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "absolute left-3 top-3 w-5 h-5 text-gray-400"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 674,
+                                                lineNumber: 700,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -1208,13 +1227,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 rows: 3
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 675,
+                                                lineNumber: 701,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 673,
+                                        lineNumber: 699,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1225,19 +1244,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 683,
+                                        lineNumber: 709,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 669,
+                                lineNumber: 695,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 642,
+                        lineNumber: 668,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1256,7 +1275,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: "Cancel"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 691,
+                                lineNumber: 717,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0)),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1268,31 +1287,31 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-4 h-4"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 708,
+                                        lineNumber: 734,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     "Confirm Rejection"
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 700,
+                                lineNumber: 726,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 690,
+                        lineNumber: 716,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 625,
+                lineNumber: 651,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 624,
+            lineNumber: 650,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -1310,12 +1329,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-5 h-5 text-white group-hover:rotate-90 transition-transform duration-300"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 731,
+                        lineNumber: 757,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 727,
+                    lineNumber: 753,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1329,12 +1348,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 737,
+                        lineNumber: 763,
                         columnNumber: 13
                     }, ("TURBOPACK compile-time value", void 0))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 736,
+                    lineNumber: 762,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["Fragment"], {
@@ -1349,12 +1368,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-6 h-6 text-white group-hover:-translate-x-1 transition-transform"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 753,
+                                lineNumber: 779,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 746,
+                            lineNumber: 772,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1367,12 +1386,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-6 h-6 text-white group-hover:translate-x-1 transition-transform"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 762,
+                                lineNumber: 788,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 755,
+                            lineNumber: 781,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
@@ -1393,20 +1412,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     }
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 773,
+                                    lineNumber: 799,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                     className: "absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/70 to-transparent"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 781,
+                                    lineNumber: 807,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 772,
+                            lineNumber: 798,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1422,19 +1441,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white transform -scale-x-100 group-hover:rotate-[-90deg] transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 792,
+                                            lineNumber: 818,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 787,
+                                        lineNumber: 813,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 795,
+                                        lineNumber: 821,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1445,19 +1464,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white group-hover:rotate-90 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 802,
+                                            lineNumber: 828,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 797,
+                                        lineNumber: 823,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 805,
+                                        lineNumber: 831,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1468,19 +1487,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4 text-white group-hover:scale-110 transition-transform duration-300"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 812,
+                                            lineNumber: 838,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 807,
+                                        lineNumber: 833,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                         className: "w-px h-6 bg-white/20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 815,
+                                        lineNumber: 841,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -1492,7 +1511,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-4 h-4 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 822,
+                                                lineNumber: 848,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1500,30 +1519,30 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 children: "Download"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 823,
+                                                lineNumber: 849,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 817,
+                                        lineNumber: 843,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 786,
+                                lineNumber: 812,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 785,
+                            lineNumber: 811,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 768,
+                    lineNumber: 794,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0)),
                 allImages.length > 1 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1542,23 +1561,23 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-full h-full object-cover"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 846,
+                                lineNumber: 872,
                                 columnNumber: 17
                             }, ("TURBOPACK compile-time value", void 0))
                         }, index, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 833,
+                            lineNumber: 859,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)))
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 831,
+                    lineNumber: 857,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             ]
         }, void 0, true, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 722,
+            lineNumber: 748,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -1574,7 +1593,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-full h-full object-cover"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 858,
+                        lineNumber: 884,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1585,28 +1604,28 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-4 h-4 text-white"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 861,
+                                lineNumber: 887,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 860,
+                            lineNumber: 886,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 859,
+                        lineNumber: 885,
                         columnNumber: 9
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 857,
+                lineNumber: 883,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 856,
+            lineNumber: 882,
             columnNumber: 5
         }, ("TURBOPACK compile-time value", void 0));
     const VerificationField = ({ label, value, field, relatedImage = null, icon, fieldType })=>{
@@ -1634,12 +1653,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: icon || getFieldIcon(field)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 886,
+                                lineNumber: 912,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 885,
+                            lineNumber: 911,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1653,7 +1672,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 890,
+                                            lineNumber: 916,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1663,7 +1682,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5 text-gray-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 894,
+                                                    lineNumber: 920,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1671,19 +1690,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Not Submitted"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 895,
+                                                    lineNumber: 921,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 893,
+                                            lineNumber: 919,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 889,
+                                    lineNumber: 915,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1691,24 +1710,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Awaiting farmer submission"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 898,
+                                    lineNumber: 924,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 888,
+                            lineNumber: 914,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 884,
+                    lineNumber: 910,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 883,
+                lineNumber: 909,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1725,12 +1744,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 children: icon || getFieldIcon(field)
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 910,
+                                lineNumber: 936,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 909,
+                            lineNumber: 935,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1744,7 +1763,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 914,
+                                            lineNumber: 940,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1754,7 +1773,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5 text-gray-500"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 918,
+                                                    lineNumber: 944,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1762,19 +1781,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Not Submitted"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 919,
+                                                    lineNumber: 945,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 917,
+                                            lineNumber: 943,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 913,
+                                    lineNumber: 939,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1782,24 +1801,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Awaiting farmer submission"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 922,
+                                    lineNumber: 948,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 912,
+                            lineNumber: 938,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 908,
+                    lineNumber: 934,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 907,
+                lineNumber: 933,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -1824,12 +1843,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         children: icon || getFieldIcon(field)
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 947,
+                                        lineNumber: 973,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 941,
+                                    lineNumber: 967,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1843,7 +1862,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: label
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 951,
+                                                    lineNumber: 977,
                                                     columnNumber: 19
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 getStatusBadge(field),
@@ -1852,13 +1871,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     children: "Modified"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 956,
+                                                    lineNumber: 982,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 950,
+                                            lineNumber: 976,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         value && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1866,7 +1885,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: value
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 961,
+                                            lineNumber: 987,
                                             columnNumber: 27
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         verifierInfo && !canModify && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1876,7 +1895,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-3.5 h-3.5"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 966,
+                                                    lineNumber: 992,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1887,7 +1906,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             children: verifierInfo.name
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 968,
+                                                            lineNumber: 994,
                                                             columnNumber: 35
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1899,7 +1918,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 969,
+                                                            lineNumber: 995,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         verifierInfo.date && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -1910,19 +1929,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 971,
+                                                            lineNumber: 997,
                                                             columnNumber: 25
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 967,
+                                                    lineNumber: 993,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 965,
+                                            lineNumber: 991,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         status === "rejected" && reason && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1934,7 +1953,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-4 h-4 text-red-500 mt-0.5 flex-shrink-0"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 981,
+                                                        lineNumber: 1007,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1944,7 +1963,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Rejection Reason"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 983,
+                                                                lineNumber: 1009,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -1952,24 +1971,24 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: reason
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 986,
+                                                                lineNumber: 1012,
                                                                 columnNumber: 25
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 982,
+                                                        lineNumber: 1008,
                                                         columnNumber: 23
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 980,
+                                                lineNumber: 1006,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 979,
+                                            lineNumber: 1005,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         relatedImage && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -1982,14 +2001,14 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-3.5 h-3.5"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 995,
+                                                            lineNumber: 1021,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         fieldType === "image" ? "Document" : "Supporting Documents"
                                                     ]
                                                 }, void 0, true, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 994,
+                                                    lineNumber: 1020,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2000,7 +2019,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             onClick: ()=>openImageViewer(img, relatedImage)
                                                         }, index, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1001,
+                                                            lineNumber: 1027,
                                                             columnNumber: 27
                                                         }, ("TURBOPACK compile-time value", void 0))) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(ImageThumbnail, {
                                                         src: relatedImage,
@@ -2008,35 +2027,35 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         onClick: ()=>openImageViewer(relatedImage)
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1009,
+                                                        lineNumber: 1035,
                                                         columnNumber: 25
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 998,
+                                                    lineNumber: 1024,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 993,
+                                            lineNumber: 1019,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 949,
+                                    lineNumber: 975,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 940,
+                            lineNumber: 966,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 939,
+                        lineNumber: 965,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2048,7 +2067,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Verify"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1026,
+                                    lineNumber: 1052,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2063,20 +2082,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1038,
+                                                    lineNumber: 1064,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 status === "accepted" && isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full animate-ping"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1040,
+                                                    lineNumber: 1066,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1030,
+                                            lineNumber: 1056,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2088,20 +2107,20 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1051,
+                                                    lineNumber: 1077,
                                                     columnNumber: 21
                                                 }, ("TURBOPACK compile-time value", void 0)),
                                                 status === "rejected" && isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                                     className: "absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-red-400 rounded-full animate-ping"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                    lineNumber: 1053,
+                                                    lineNumber: 1079,
                                                     columnNumber: 23
                                                 }, ("TURBOPACK compile-time value", void 0))
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1043,
+                                            lineNumber: 1069,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         isModified && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2112,18 +2131,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-4 h-4"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1062,
+                                                lineNumber: 1088,
                                                 columnNumber: 23
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1057,
+                                            lineNumber: 1083,
                                             columnNumber: 21
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1029,
+                                    lineNumber: 1055,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
@@ -2135,7 +2154,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Verified"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1069,
+                                    lineNumber: 1095,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2144,40 +2163,40 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-5 h-5 text-green-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1077,
+                                        lineNumber: 1103,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0)) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$circle$2d$x$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__$3c$export__default__as__XCircle$3e$__["XCircle"], {
                                         className: "w-5 h-5 text-red-600"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1079,
+                                        lineNumber: 1105,
                                         columnNumber: 21
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1072,
+                                    lineNumber: 1098,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1068,
+                            lineNumber: 1094,
                             columnNumber: 15
                         }, ("TURBOPACK compile-time value", void 0)) : null
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1023,
+                        lineNumber: 1049,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 938,
+                lineNumber: 964,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 935,
+            lineNumber: 961,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     };
@@ -2224,12 +2243,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     children: "No data available"
                 }, void 0, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1105,
+                    lineNumber: 1131,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1104,
+                lineNumber: 1130,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0));
         }
@@ -2246,7 +2265,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                     fieldType: fieldDef.type
                 }, fieldDef.field, false, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1117,
+                    lineNumber: 1143,
                     columnNumber: 13
                 }, ("TURBOPACK compile-time value", void 0));
             })
@@ -2264,7 +2283,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         className: "w-12 h-12 text-indigo-600 animate-spin"
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1139,
+                        lineNumber: 1165,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0)),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2272,18 +2291,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                         children: "Loading verification data..."
                     }, void 0, false, {
                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                        lineNumber: 1140,
+                        lineNumber: 1166,
                         columnNumber: 11
                     }, ("TURBOPACK compile-time value", void 0))
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1138,
+                lineNumber: 1164,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 1137,
+            lineNumber: 1163,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -2302,12 +2321,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                 className: "w-8 h-8 text-red-600"
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1153,
+                                lineNumber: 1179,
                                 columnNumber: 15
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1152,
+                            lineNumber: 1178,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
@@ -2315,7 +2334,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: "Error Loading Data"
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1155,
+                            lineNumber: 1181,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2323,7 +2342,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                             children: error
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1156,
+                            lineNumber: 1182,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2335,7 +2354,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: "Close"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1158,
+                                    lineNumber: 1184,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2346,36 +2365,36 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             className: "w-4 h-4"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1168,
+                                            lineNumber: 1194,
                                             columnNumber: 17
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         "Retry"
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1164,
+                                    lineNumber: 1190,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1157,
+                            lineNumber: 1183,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1151,
+                    lineNumber: 1177,
                     columnNumber: 11
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1150,
+                lineNumber: 1176,
                 columnNumber: 9
             }, ("TURBOPACK compile-time value", void 0))
         }, void 0, false, {
             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-            lineNumber: 1149,
+            lineNumber: 1175,
             columnNumber: 7
         }, ("TURBOPACK compile-time value", void 0));
     }
@@ -2395,12 +2414,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48Y2lyY2xlIGN4PSIzMCIgY3k9IjMwIiByPSIyIi8+PC9nPjwvZz48L3N2Zz4=')] opacity-20"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1186,
+                                        lineNumber: 1212,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1185,
+                                    lineNumber: 1211,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2418,7 +2437,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "absolute -inset-1 bg-white/20 rounded-lg blur animate-pulse"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1193,
+                                                                lineNumber: 1219,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2427,18 +2446,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                     className: "w-5 h-5 text-white"
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                    lineNumber: 1195,
+                                                                    lineNumber: 1221,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1194,
+                                                                lineNumber: 1220,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1192,
+                                                        lineNumber: 1218,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2451,13 +2470,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                         className: "w-4 h-4 text-yellow-300 animate-pulse"
                                                                     }, void 0, false, {
                                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                        lineNumber: 1201,
+                                                                        lineNumber: 1227,
                                                                         columnNumber: 23
                                                                     }, ("TURBOPACK compile-time value", void 0))
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1199,
+                                                                lineNumber: 1225,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2465,19 +2484,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Review and verify all farmer documents"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1203,
+                                                                lineNumber: 1229,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1198,
+                                                        lineNumber: 1224,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1191,
+                                                lineNumber: 1217,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2492,7 +2511,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: "Progress:"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1213,
+                                                                lineNumber: 1239,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2504,12 +2523,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                     }
                                                                 }, void 0, false, {
                                                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                    lineNumber: 1215,
+                                                                    lineNumber: 1241,
                                                                     columnNumber: 23
                                                                 }, ("TURBOPACK compile-time value", void 0))
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1214,
+                                                                lineNumber: 1240,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2520,13 +2539,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 ]
                                                             }, void 0, true, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1220,
+                                                                lineNumber: 1246,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1212,
+                                                        lineNumber: 1238,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2536,7 +2555,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-green-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1224,
+                                                                lineNumber: 1250,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2544,13 +2563,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.approved
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1225,
+                                                                lineNumber: 1251,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1223,
+                                                        lineNumber: 1249,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2560,7 +2579,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-red-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1229,
+                                                                lineNumber: 1255,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2568,13 +2587,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.rejected
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1230,
+                                                                lineNumber: 1256,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1228,
+                                                        lineNumber: 1254,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2584,7 +2603,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 className: "w-3.5 h-3.5 text-amber-300"
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1234,
+                                                                lineNumber: 1260,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0)),
                                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2592,13 +2611,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                                 children: stats.pending
                                                             }, void 0, false, {
                                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                                lineNumber: 1235,
+                                                                lineNumber: 1261,
                                                                 columnNumber: 21
                                                             }, ("TURBOPACK compile-time value", void 0))
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1233,
+                                                        lineNumber: 1259,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2608,35 +2627,35 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4 text-white"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1242,
+                                                            lineNumber: 1268,
                                                             columnNumber: 21
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1238,
+                                                        lineNumber: 1264,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1208,
+                                                lineNumber: 1234,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1190,
+                                        lineNumber: 1216,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1189,
+                                    lineNumber: 1215,
                                     columnNumber: 13
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1183,
+                            lineNumber: 1209,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         error && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2646,7 +2665,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     className: "w-5 h-5 text-red-500 flex-shrink-0"
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1252,
+                                    lineNumber: 1278,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -2654,7 +2673,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                     children: error
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1253,
+                                    lineNumber: 1279,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0)),
                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2664,18 +2683,18 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                         className: "w-4 h-4 text-red-500"
                                     }, void 0, false, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1258,
+                                        lineNumber: 1284,
                                         columnNumber: 17
                                     }, ("TURBOPACK compile-time value", void 0))
                                 }, void 0, false, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1254,
+                                    lineNumber: 1280,
                                     columnNumber: 15
                                 }, ("TURBOPACK compile-time value", void 0))
                             ]
                         }, void 0, true, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1251,
+                            lineNumber: 1277,
                             columnNumber: 13
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2692,12 +2711,12 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 className: "w-3.5 h-3.5 text-white"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1280,
+                                                lineNumber: 1306,
                                                 columnNumber: 21
                                             }, ("TURBOPACK compile-time value", void 0))
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1276,
+                                            lineNumber: 1302,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0)),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2705,34 +2724,35 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                             children: tab.label
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                            lineNumber: 1282,
+                                            lineNumber: 1308,
                                             columnNumber: 19
                                         }, ("TURBOPACK compile-time value", void 0))
                                     ]
                                 }, tab.id, true, {
                                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                    lineNumber: 1268,
+                                    lineNumber: 1294,
                                     columnNumber: 17
                                 }, ("TURBOPACK compile-time value", void 0));
                             })
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1264,
+                            lineNumber: 1290,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                            ref: scrollContainerRef,
                             className: "flex-1 p-4 overflow-y-auto bg-gradient-to-br from-gray-50 via-white to-gray-50",
                             children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "space-y-3",
                                 children: renderTabContent()
                             }, void 0, false, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1290,
+                                lineNumber: 1316,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1289,
+                            lineNumber: 1315,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0)),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2750,7 +2770,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1300,
+                                                        lineNumber: 1326,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2762,13 +2782,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1301,
+                                                        lineNumber: 1327,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1299,
+                                                lineNumber: 1325,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2778,7 +2798,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gradient-to-r from-red-500 to-rose-500 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1304,
+                                                        lineNumber: 1330,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2790,13 +2810,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1305,
+                                                        lineNumber: 1331,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1303,
+                                                lineNumber: 1329,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2806,7 +2826,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-amber-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1308,
+                                                        lineNumber: 1334,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2818,13 +2838,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1309,
+                                                        lineNumber: 1335,
                                                         columnNumber: 19
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1307,
+                                                lineNumber: 1333,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             stats.notSubmitted > 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2834,7 +2854,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         className: "w-2.5 h-2.5 bg-gray-400 rounded-full"
                                                     }, void 0, false, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1313,
+                                                        lineNumber: 1339,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0)),
                                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
@@ -2846,19 +2866,19 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                         ]
                                                     }, void 0, true, {
                                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                        lineNumber: 1314,
+                                                        lineNumber: 1340,
                                                         columnNumber: 21
                                                     }, ("TURBOPACK compile-time value", void 0))
                                                 ]
                                             }, void 0, true, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1312,
+                                                lineNumber: 1338,
                                                 columnNumber: 19
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1298,
+                                        lineNumber: 1324,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0)),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -2871,7 +2891,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                 children: "Cancel"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1319,
+                                                lineNumber: 1345,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0)),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -2884,7 +2904,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4 animate-spin"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1333,
+                                                            lineNumber: 1359,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Submitting..."
@@ -2895,7 +2915,7 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-4 h-4"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1338,
+                                                            lineNumber: 1364,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0)),
                                                         "Submit Verification (",
@@ -2905,42 +2925,42 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                                                             className: "w-3.5 h-3.5 group-hover:translate-x-1 transition-transform"
                                                         }, void 0, false, {
                                                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                            lineNumber: 1340,
+                                                            lineNumber: 1366,
                                                             columnNumber: 23
                                                         }, ("TURBOPACK compile-time value", void 0))
                                                     ]
                                                 }, void 0, true)
                                             }, void 0, false, {
                                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                                lineNumber: 1326,
+                                                lineNumber: 1352,
                                                 columnNumber: 17
                                             }, ("TURBOPACK compile-time value", void 0))
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                        lineNumber: 1318,
+                                        lineNumber: 1344,
                                         columnNumber: 15
                                     }, ("TURBOPACK compile-time value", void 0))
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                                lineNumber: 1297,
+                                lineNumber: 1323,
                                 columnNumber: 13
                             }, ("TURBOPACK compile-time value", void 0))
                         }, void 0, false, {
                             fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                            lineNumber: 1296,
+                            lineNumber: 1322,
                             columnNumber: 11
                         }, ("TURBOPACK compile-time value", void 0))
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                    lineNumber: 1181,
+                    lineNumber: 1207,
                     columnNumber: 9
                 }, ("TURBOPACK compile-time value", void 0))
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1180,
+                lineNumber: 1206,
                 columnNumber: 7
             }, ("TURBOPACK compile-time value", void 0)),
             renderRejectionModal(),
@@ -2949,13 +2969,13 @@ const FarmerApproval = ({ isOpen, onClose, farmerId, onVerificationComplete })=>
                 onClose: ()=>setSelectedImage(null)
             }, void 0, false, {
                 fileName: "[project]/src/components/admin/FarmerApproval.jsx",
-                lineNumber: 1354,
+                lineNumber: 1380,
                 columnNumber: 25
             }, ("TURBOPACK compile-time value", void 0))
         ]
     }, void 0, true);
 };
-_s(FarmerApproval, "bX2F28UqU/tXtscHERsoRWwWJEU=");
+_s(FarmerApproval, "MgpBWS1xJmuCtTjH9MAus83QaJY=");
 _c = FarmerApproval;
 const __TURBOPACK__default__export__ = FarmerApproval;
 var _c;

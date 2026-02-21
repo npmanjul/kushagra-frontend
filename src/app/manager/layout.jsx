@@ -178,6 +178,7 @@ export default function DashboardLayout({ children }) {
         // if(res.profile.role !== "manager"){
         //   setIsFarmer(true);
         // }
+        setShowAlert(res.profile.is_active);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching profile:", error);
@@ -195,12 +196,11 @@ export default function DashboardLayout({ children }) {
   return (
     <div className="h-screen bg-gray-50 flex relative">
       <PinModal isOpen={pinModalOpen} onClose={() => setPinModalOpen(false)} />
-      {/* <AlertModal
-        isOpen={showAlert}
+      <AlertModal
+        isOpen={!showAlert}
         onClose={() => setShowAlert(false)}
         title="Important Notice"
-        message="Your session will expire in 5 minutes. Please save your work."
-      /> */}
+      />
       {/* <NoticeModal isOpen={showNotice} onClose={() => setShowNotice(false)} /> */}
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (

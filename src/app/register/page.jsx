@@ -532,6 +532,8 @@ export default function SignupForm() {
                       name="dob"
                       value={formData.dob}
                       onChange={handleInputChange}
+                      min={new Date(new Date().getFullYear() - 120, 0, 1).toISOString().split('T')[0]}
+                      max={new Date(new Date().getFullYear() - 13, new Date().getMonth(), new Date().getDate()).toISOString().split('T')[0]}
                       className={`w-full px-0 py-3 border-0 border-b-2 bg-transparent text-slate-900 focus:outline-none focus:ring-0 transition-all duration-300 cursor-pointer ${
                         errors.dob
                           ? "border-rose-400 focus:border-rose-500"
